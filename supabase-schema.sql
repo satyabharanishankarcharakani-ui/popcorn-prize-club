@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS users (
     last_login_at TIMESTAMPTZ
 );
 
--- Index for authentication lookup
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 
 -- 3. CAMPAIGNS TABLE
@@ -50,7 +49,6 @@ CREATE TABLE IF NOT EXISTS rewards (
     notes TEXT
 );
 
--- Crucial unique index on reward code for high-performance lookup
 CREATE UNIQUE INDEX IF NOT EXISTS idx_rewards_code ON rewards(code);
 CREATE INDEX IF NOT EXISTS idx_rewards_status ON rewards(status);
 CREATE INDEX IF NOT EXISTS idx_rewards_created_at ON rewards(created_at DESC);
@@ -71,8 +69,7 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at DESC);
 
 -- 6. ATOMIC CONCURRENCY ENGINE: SINGLE-USE REDEMPTION STORED PROCEDURE
--- This procedure guarantees that two simultaneous requests for the same code CANNOT both succeed.
--- It acquires an exclusive row-level lock (FOR UPDATE) and only updates rows in 'WAITING' status.
+-- Guarantees atomic row-level locking (SELECT ... FOR UPDATE) and state check.
 CREATE OR REPLACE FUNCTION redeem_reward_atomic(
     p_code VARCHAR,
     p_operator_id UUID,
@@ -82,12 +79,11 @@ CREATE OR REPLACE FUNCTION redeem_reward_atomic(
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public
 AS $$
 DECLARE
     v_reward rewards%ROWTYPE;
-    v_result JSONB;
 BEGIN
-    -- Standardize input
     p_code := UPPER(TRIM(p_code));
 
     -- Acquire exclusive row lock
@@ -180,7 +176,7 @@ VALUES (
     'ACTIVE',
     '[
         {"name": "Free Popcorn Tub!", "icon": "🍿", "desc": "One fresh popcorn tub on the house."},
-        {"name": "50% Off Any Bag", "icon": "🏷️", "desc": "Enjoy half off on your next purchase."},
+        {"name": "50% Off Any Bag", "icon": "🏷️", "desc": "Enjoy half off on your next visit."},
         {"name": "Free Topping Upgrade", "icon": "✨", "desc": "Add caramel or butter drizzle free."},
         {"name": "Buy 1 Get 1 Free", "icon": "🎉", "desc": "Bring a friend for a free treat."},
         {"name": "Bonus Mini Movie Pack", "icon": "🍿", "desc": "Complimentary snack pack."}
@@ -188,11 +184,25 @@ VALUES (
 )
 ON CONFLICT DO NOTHING;
 
--- 8. ROW LEVEL SECURITY (RLS) POLICIES
+-- 8. STRICT ROW LEVEL SECURITY (RLS) POLICIES
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rewards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Server functions with service role bypass RLS, ensuring zero public data exposure.
--- Public anon cannot select or insert into users or audit_logs.
+-- Service Role (Serverless API Functions) has full access
+CREATE POLICY service_role_all_users ON users FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY service_role_all_rewards ON rewards FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY service_role_all_campaigns ON campaigns FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY service_role_all_audit ON audit_logs FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+-- Public / Anon Users: Strict Zero Access to Private Tables
+-- Deny anon from reading or modifying users
+REVOKE ALL ON users FROM anon, authenticated;
+-- Deny anon from reading or modifying audit logs
+REVOKE ALL ON audit_logs FROM anon, authenticated;
+-- Deny anon from directly reading or modifying rewards (all operations go through /api/rewards and /api/redeem)
+REVOKE ALL ON rewards FROM anon, authenticated;
+
+-- Anon can read active campaigns description
+CREATE POLICY anon_read_active_campaigns ON campaigns FOR SELECT TO anon USING (status = 'ACTIVE');

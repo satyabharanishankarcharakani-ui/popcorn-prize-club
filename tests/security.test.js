@@ -2,13 +2,16 @@
 // Automated Security & Cryptography Verification
 const assert = require('assert');
 const {
+  getAuthSecret,
   hashPassword,
   verifyPassword,
   createSessionToken,
   verifySessionToken,
+  revokeToken,
   generateSecureRewardCode,
   checkRateLimit,
 } = require('../api/_security');
+const { assertDatabaseConfigured } = require('../api/_db');
 
 console.log('--- RUNNING SECURITY & CRYPTOGRAPHY TESTS ---');
 
@@ -55,7 +58,12 @@ console.log('--- RUNNING SECURITY & CRYPTOGRAPHY TESTS ---');
   const tamperedResult = verifySessionToken(tamperedToken);
   assert.strictEqual(tamperedResult, null, 'Tampered token signature must fail verification');
 
-  console.log('✓ HMAC-SHA256 session tokens and tamper resistance passed.');
+  // Revocation test (Logout invalidation)
+  revokeToken(token);
+  const revokedResult = verifySessionToken(token);
+  assert.strictEqual(revokedResult, null, 'Revoked token must fail verification immediately');
+
+  console.log('✓ HMAC-SHA256 session tokens, tamper resistance, and logout revocation passed.');
 }
 
 // 3. Cryptographically Secure Code Generator
@@ -73,14 +81,48 @@ console.log('--- RUNNING SECURITY & CRYPTOGRAPHY TESTS ---');
 
 // 4. Rate Limiting Sliding Window
 {
-  const testIp = 'test-client-ip-99';
-  let allowedCount = 0;
-  for (let i = 0; i < 7; i++) {
-    if (checkRateLimit(testIp, 5, 10000)) allowedCount++;
-  }
-  assert.strictEqual(allowedCount, 5, 'Rate limiter must cap exactly at threshold (5)');
+  (async () => {
+    const testIp = 'test-client-ip-99';
+    let allowedCount = 0;
+    for (let i = 0; i < 7; i++) {
+      if (await checkRateLimit(testIp, 5, 10000)) allowedCount++;
+    }
+    assert.strictEqual(allowedCount, 5, 'Rate limiter must cap exactly at threshold (5)');
+    console.log('✓ Rate limiting sliding window passed.');
+  })();
+}
 
-  console.log('✓ Rate limiting sliding window passed.');
+// 5. Fail-Closed Enforcement Verification in Production Mode
+{
+  const originalEnv = process.env.NODE_ENV;
+  const originalSecret = process.env.AUTH_SECRET;
+  const originalUrl = process.env.SUPABASE_URL;
+
+  try {
+    process.env.NODE_ENV = 'production';
+    delete process.env.AUTH_SECRET;
+    delete process.env.SUPABASE_URL;
+
+    // Must throw when AUTH_SECRET is missing in production
+    assert.throws(
+      () => getAuthSecret(),
+      /CRITICAL CONFIGURATION ERROR/,
+      'Must fail closed when AUTH_SECRET is missing in production'
+    );
+
+    // Must throw when SUPABASE_URL is missing in production
+    assert.throws(
+      () => assertDatabaseConfigured(),
+      /CRITICAL CONFIGURATION ERROR/,
+      'Must fail closed when database credentials are missing in production'
+    );
+
+    console.log('✓ Production fail-closed enforcement verified (no silent in-memory fallback).');
+  } finally {
+    process.env.NODE_ENV = originalEnv;
+    if (originalSecret) process.env.AUTH_SECRET = originalSecret;
+    if (originalUrl) process.env.SUPABASE_URL = originalUrl;
+  }
 }
 
 console.log('ALL SECURITY TESTS PASSED SUCCESSFULLY! ✓\n');

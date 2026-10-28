@@ -4,6 +4,8 @@ const {
   verifyPassword,
   createSessionToken,
   getSessionFromRequest,
+  getTokenFromRequest,
+  revokeToken,
   checkRateLimit,
   sanitizeString,
 } = require('./_security');
@@ -17,20 +19,20 @@ const {
 } = require('./_db');
 
 module.exports = async function handler(req, res) {
-  // CORS & Security Headers
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Cache-Control', 'no-store');
 
   const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1';
 
   // Rate Limiting on Auth attempts (max 10 per minute per IP)
-  if (req.method === 'POST' && !checkRateLimit(`auth-${ip}`, 12, 60000)) {
+  const isAllowed = await checkRateLimit(`auth-${ip}`, 12, 60000);
+  if (req.method === 'POST' && !isAllowed) {
+    res.setHeader('Retry-After', '60');
     return res.status(429).json({
       error: 'Too many authentication attempts. Please wait 60 seconds.',
     });
   }
 
-  // Parse Body safely
   let body = req.body;
   if (typeof body === 'string') {
     try {
@@ -99,10 +101,7 @@ module.exports = async function handler(req, res) {
         return res.status(401).json({ error: 'Invalid username or password.' });
       }
 
-      // Generate Session Token
       const token = createSessionToken(user);
-
-      // Set Secure HttpOnly Cookie
       const isProduction = process.env.NODE_ENV === 'production';
       const cookieHeader = `popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
       res.setHeader('Set-Cookie', cookieHeader);
@@ -130,6 +129,10 @@ module.exports = async function handler(req, res) {
     // 3. POST /api/auth?action=logout
     if (req.method === 'POST' && action === 'logout') {
       const session = getSessionFromRequest(req);
+      const rawToken = getTokenFromRequest(req);
+      if (rawToken) {
+        revokeToken(rawToken);
+      }
       if (session) {
         await addAuditLog({
           actor_id: session.id,
@@ -143,13 +146,12 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true, message: 'Logged out successfully.' });
     }
 
-    // 4. Owner & Admin RBAC Operations
+    // 4. Protected RBAC Operations
     const session = getSessionFromRequest(req);
     if (!session) {
       return res.status(401).json({ error: 'Authentication required.' });
     }
 
-    // List Team Members (Owner or Admin only)
     if (action === 'list-users') {
       if (session.role !== 'OWNER' && session.role !== 'ADMIN') {
         return res.status(403).json({ error: 'Unauthorized: Owner or Admin role required.' });
@@ -158,7 +160,6 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ users });
     }
 
-    // Create New Staff Account (Owner only)
     if (action === 'create-user') {
       if (session.role !== 'OWNER') {
         return res.status(403).json({ error: 'Unauthorized: Only the Primary Owner can create staff accounts.' });
@@ -206,7 +207,6 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Update User Status or Role (Owner only)
     if (action === 'update-user') {
       if (session.role !== 'OWNER') {
         return res.status(403).json({ error: 'Unauthorized: Only the Primary Owner can modify account privileges.' });
@@ -239,7 +239,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(400).json({ error: 'Invalid auth action.' });
   } catch (err) {
-    console.error('Auth endpoint error:', err);
-    return res.status(500).json({ error: 'An unexpected authentication error occurred.' });
+    console.error('Auth endpoint error:', err.message);
+    return res.status(500).json({ error: err.message || 'An unexpected authentication error occurred.' });
   }
 };
