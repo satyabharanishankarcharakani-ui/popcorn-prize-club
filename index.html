@@ -883,6 +883,9 @@
           <button class="sidebar-item active" data-dash-nav="overview" type="button">
             <span class="icon">📊</span> Overview
           </button>
+          <button class="sidebar-item" data-dash-nav="pnl" type="button">
+            <span class="icon">📈</span> Offers Profit & Loss
+          </button>
           <button class="sidebar-item" data-dash-nav="rewards" type="button">
             <span class="icon">🎟️</span> QR & Rewards
           </button>
@@ -972,6 +975,176 @@
                     <tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">Loading entries...</td></tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1B. OFFERS PROFIT & LOSS SECTION -->
+          <div class="dash-panel" id="panel-pnl" style="display:none;">
+            <!-- Filter & Action Header -->
+            <div class="glass-card" style="margin-bottom:20px; padding:18px 20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <h3 style="margin:0;">Offers Financial Performance</h3>
+                    <span class="tag-status collected" style="font-size:10px;">● ACCURATE COST ACCOUNTING</span>
+                  </div>
+                  <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+                    Real-time net profit, return on investment, and verified gift redemptions.
+                  </p>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                  <select class="input" id="pnlFilterStatus" style="height:38px; width:130px; font-size:12px; padding:0 10px;">
+                    <option value="">All Statuses</option>
+                    <option value="ACTIVE" selected>Active Offers</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="PAUSED">Paused</option>
+                  </select>
+                  <button class="btn sm primary" id="btnOpenPnlEditModal" type="button">✎ Edit Financial Figures</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7 Summary Cards Grid -->
+            <div class="metrics-grid" style="grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:22px;">
+              <!-- 1. Total Attributed Sales -->
+              <div class="metric-card" style="border-color:rgba(255,149,0,0.3);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="metric-label">Offer-Attributed Sales</span>
+                  <span style="font-size:14px; color:var(--highlight-orange);">↗</span>
+                </div>
+                <div class="metric-value" id="pnlTotalSales" style="color:#FFF;">$0.00</div>
+                <div class="metric-sub" id="pnlSalesEstimateLabel">From verified offer transactions</div>
+              </div>
+
+              <!-- 2. Cost of Products Sold -->
+              <div class="metric-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="metric-label">Product Cost (COGS)</span>
+                  <span style="font-size:14px; color:var(--text-muted);">↗</span>
+                </div>
+                <div class="metric-value" id="pnlProductCost" style="color:var(--text-secondary);">$0.00</div>
+                <div class="metric-sub">Corn, seasoning, oil expenditures</div>
+              </div>
+
+              <!-- 3. Gift / Reward Cost -->
+              <div class="metric-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="metric-label">Total Gifts / Rewards Cost</span>
+                  <span style="font-size:14px; color:var(--text-muted);">↗</span>
+                </div>
+                <div class="metric-value" id="pnlGiftCost" style="color:var(--text-secondary);">$0.00</div>
+                <div class="metric-sub"><b id="pnlRedeemedBadge">0</b> verified redeemed treats only</div>
+              </div>
+
+              <!-- 4. Other Offer Expenses -->
+              <div class="metric-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="metric-label">Other Offer Expenses</span>
+                  <span style="font-size:14px; color:var(--text-muted);">↗</span>
+                </div>
+                <div class="metric-value" id="pnlOtherExpenses" style="color:var(--text-secondary);">$0.00</div>
+                <div class="metric-sub">Packaging cards + marketing</div>
+              </div>
+
+              <!-- 5. Net Profit or Loss -->
+              <div class="metric-card" style="border-color:var(--glass-border-orange); background:rgba(255,122,0,0.06);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="metric-label" style="color:var(--highlight-orange);">Net Offer Profit / Loss</span>
+                  <span style="font-size:14px; color:var(--highlight-orange);">✦</span>
+                </div>
+                <div class="metric-value" id="pnlNetProfit" style="color:var(--success-green);">$0.00</div>
+                <div class="metric-sub">Sales − All Costs & Expenses</div>
+              </div>
+
+              <!-- 6. Profit Margin % -->
+              <div class="metric-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="metric-label">Profit Margin</span>
+                  <span style="font-size:14px; color:var(--text-muted);">%</span>
+                </div>
+                <div class="metric-value" id="pnlProfitMargin">0.0%</div>
+                <div class="metric-sub">Net Profit ÷ Attributed Sales</div>
+              </div>
+
+              <!-- 7. Rewards Redeemed -->
+              <div class="metric-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="metric-label">Rewards Redeemed</span>
+                  <span style="font-size:14px; color:var(--success-green);">✓</span>
+                </div>
+                <div class="metric-value" id="pnlRewardsRedeemed" style="color:#FFF;">0</div>
+                <div class="metric-sub">Verified in-shop collections</div>
+              </div>
+            </div>
+
+            <!-- Visual Capsule Chart (Inspired by Reference Design) -->
+            <div class="glass-card orange-glow" style="margin-bottom:24px; padding:22px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                <div>
+                  <h4 style="font-size:15px; margin:0; color:#FFF;">Attributed Sales vs Total Campaign Investment</h4>
+                  <span style="font-size:11px; color:var(--text-muted);">Visual ratio of revenue generated against operational expenditures</span>
+                </div>
+                <div style="display:flex; gap:16px; font-size:11px; align-items:center;">
+                  <span style="display:flex; align-items:center; gap:5px;"><span style="width:10px; height:10px; border-radius:3px; background:var(--highlight-orange);"></span> Offer Sales</span>
+                  <span style="display:flex; align-items:center; gap:5px;"><span style="width:10px; height:10px; border-radius:3px; background:#4B3F35;"></span> Total Investment</span>
+                </div>
+              </div>
+
+              <div id="pnlVisualBars" style="display:flex; gap:24px; align-items:flex-end; height:120px; padding:10px 0; border-bottom:1px solid var(--glass-border);">
+                <!-- Dynamically rendered capsule bars -->
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-size:12px; color:var(--text-secondary); flex-wrap:wrap; gap:10px;">
+                <div>Total Offer Investment: <b style="color:#FFF;" id="pnlTotalInvestmentText">$0.00</b></div>
+                <div>Calculated Campaign ROI: <b style="color:var(--highlight-orange);" id="pnlOverallRoiText">0.0%</b></div>
+              </div>
+            </div>
+
+            <!-- Offer-Wise Performance Table -->
+            <div class="glass-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                <div>
+                  <h3>Offer-Wise Campaign Breakdown</h3>
+                  <span style="font-size:12px; color:var(--text-muted);">Detailed financial metrics and redemption analytics per campaign</span>
+                </div>
+                <span class="tag-status" id="pnlEstimateNotice" style="background:rgba(255,149,0,0.12); color:#FCD34D; border:1px solid rgba(255,149,0,0.25);">
+                  Estimates Labeled
+                </span>
+              </div>
+
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Offer Name</th>
+                      <th>Dates</th>
+                      <th>QR Generated</th>
+                      <th>Scans / Won</th>
+                      <th>Redeemed</th>
+                      <th>Attributed Sales</th>
+                      <th>Product Cost</th>
+                      <th>Gift Cost</th>
+                      <th>Other Exp.</th>
+                      <th>Net Profit</th>
+                      <th>Margin / ROI</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pnlTableBody">
+                    <tr><td colspan="13" style="text-align:center; padding:24px; color:var(--text-muted);">Loading financial performance records...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Mathematical Accounting Standards Banner -->
+              <div style="margin-top:16px; padding:12px 16px; background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); border:1px solid var(--glass-border); font-size:11px; color:var(--text-muted); line-height:1.6;">
+                <strong style="color:var(--highlight-orange); display:block; margin-bottom:2px;">Financial Calculation Standards:</strong>
+                • <b>Net Offer Profit</b> = Attributed Sales − Cost of Products Sold − Gift/Reward Costs − Packaging Costs − Other Offer Expenses.<br>
+                • <b>Profit Margin %</b> = (Net Offer Profit ÷ Attributed Sales) × 100, when sales > 0.<br>
+                • <b>ROI %</b> = (Net Offer Profit ÷ Total Offer Investment) × 100, when total investment > 0.<br>
+                • <b>Gift Costs</b> are calculated strictly from verified claimed redemptions (status: <code style="color:var(--success-green);">COLLECTED</code>). Unredeemed or waiting lucky cards cost $0 in distributed gift rewards.
               </div>
             </div>
           </div>
@@ -1252,7 +1425,93 @@
     </div>
   </div>
 
-  <div class="toast" id="globalToast">Notification</div>
+  <!-- ========================================================================
+       MODAL: EDIT CAMPAIGN FINANCIALS (OWNER / ADMIN ONLY)
+       ======================================================================== -->
+  <div class="modal-overlay" id="editPnlModal">
+    <div class="modal-card" style="max-width:560px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3>Edit Offer Financial Records</h3>
+        <button id="btnCloseEditPnlModal" type="button" style="background:transparent; border:none; color:var(--text-muted); font-size:20px; cursor:pointer;">✕</button>
+      </div>
+
+      <form id="editPnlForm">
+        <input type="hidden" id="editPnlCampaignId">
+        
+        <div class="form-group">
+          <label for="editPnlCampaignName">Offer Campaign Name</label>
+          <input class="input" id="editPnlCampaignName" required maxlength="100">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label for="editPnlStartDate">Start Date</label>
+            <input class="input" type="date" id="editPnlStartDate">
+          </div>
+          <div class="form-group">
+            <label for="editPnlEndDate">End Date</label>
+            <input class="input" type="date" id="editPnlEndDate">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label for="editPnlSales">Attributed Sales ($/₹)</label>
+            <input class="input" type="number" step="0.01" min="0" id="editPnlSales" required>
+          </div>
+          <div class="form-group">
+            <label for="editPnlProductCost">Cost of Products Sold ($/₹)</label>
+            <input class="input" type="number" step="0.01" min="0" id="editPnlProductCost" required>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label for="editPnlPackagingCost">Packaging Cost ($/₹)</label>
+            <input class="input" type="number" step="0.01" min="0" id="editPnlPackagingCost">
+          </div>
+          <div class="form-group">
+            <label for="editPnlOtherExpenses">Other Offer Expenses ($/₹)</label>
+            <input class="input" type="number" step="0.01" min="0" id="editPnlOtherExpenses">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label for="editPnlUnitGiftCost">Unit Reward Cost ($/₹ per claimed treat)</label>
+            <input class="input" type="number" step="0.01" min="0" id="editPnlUnitGiftCost" value="0.60">
+          </div>
+          <div class="form-group">
+            <label for="editPnlStatus">Campaign Status</label>
+            <select class="input" id="editPnlStatus">
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="PAUSED">PAUSED</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="display:flex; align-items:center; gap:8px; margin:10px 0;">
+          <input type="checkbox" id="editPnlIsEstimate" style="width:16px; height:16px; accent-color:var(--highlight-orange);">
+          <label for="editPnlIsEstimate" style="margin:0; text-transform:none; font-size:13px; color:var(--text-secondary); cursor:pointer;">
+            Values contain estimates (uncheck if audited from actual POS register sales)
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="editPnlNotes">Financial Notes / Source</label>
+          <input class="input" id="editPnlNotes" placeholder="e.g. Audited via register report #42" maxlength="200">
+        </div>
+
+        <div id="editPnlError" style="display:none; color:var(--error-red); font-size:12px; margin-bottom:12px;"></div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+          <button class="btn sm" id="btnCancelEditPnl" type="button">Cancel</button>
+          <button class="btn sm primary" type="submit">Save Financial Figures ✓</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- ========================================================================
        CLIENT APPLICATION LOGIC
@@ -1599,6 +1858,7 @@
           // Update titles
           const titles = {
             overview: 'Dashboard Overview',
+            pnl: 'Offers Profit & Loss Analysis',
             rewards: 'QR & Reward Inventory',
             history: 'Redemption Audit History',
             customers: 'Customer Registry',
@@ -1654,6 +1914,11 @@
         // 4. Load Audit if in Audit panel
         if (state.activeDashNav === 'audit') {
           loadAuditData();
+        }
+
+        // 5. Load Offers Profit & Loss if in P&L panel
+        if (state.activeDashNav === 'pnl') {
+          loadPnlData();
         }
       }
 
@@ -1989,6 +2254,234 @@
       }
 
       document.getElementById('btnRefreshAudit').onclick = () => loadAuditData();
+
+      // ========================================================================
+      // 3B. OFFERS PROFIT & LOSS DATA & INTERACTION
+      // ========================================================================
+      let currentPnlData = null;
+
+      async function loadPnlData() {
+        const status = document.getElementById('pnlFilterStatus')?.value || '';
+        let query = '/api/pnl?';
+        if (status) query += `status=${encodeURIComponent(status)}&`;
+
+        try {
+          const res = await fetch(query);
+          if (res.ok) {
+            const data = await res.json();
+            currentPnlData = data;
+            renderPnlSummary(data.summary);
+            renderPnlBars(data.offers);
+            renderPnlTable(data.offers);
+
+            const isOwnerOrAdmin = state.currentUser?.role === 'OWNER' || state.currentUser?.role === 'ADMIN';
+            const btnEdit = document.getElementById('btnOpenPnlEditModal');
+            if (btnEdit) btnEdit.style.display = isOwnerOrAdmin ? 'inline-flex' : 'none';
+          }
+        } catch (e) {
+          console.warn('Failed to load PnL:', e);
+        }
+      }
+
+      function formatMoney(val) {
+        return '$' + Number(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function renderPnlSummary(summary) {
+        if (!summary) return;
+        document.getElementById('pnlTotalSales').textContent = formatMoney(summary.total_attributed_sales);
+        document.getElementById('pnlProductCost').textContent = formatMoney(summary.total_product_cost);
+        document.getElementById('pnlGiftCost').textContent = formatMoney(summary.total_gift_reward_cost);
+        document.getElementById('pnlOtherExpenses').textContent = formatMoney(summary.total_other_expenses);
+
+        const netProfitEl = document.getElementById('pnlNetProfit');
+        netProfitEl.textContent = formatMoney(summary.net_profit);
+        netProfitEl.style.color = summary.net_profit >= 0 ? 'var(--success-green)' : 'var(--error-red)';
+
+        document.getElementById('pnlProfitMargin').textContent = summary.profit_margin.toFixed(1) + '%';
+        document.getElementById('pnlRewardsRedeemed').textContent = summary.rewards_redeemed;
+        document.getElementById('pnlRedeemedBadge').textContent = summary.rewards_redeemed;
+
+        document.getElementById('pnlTotalInvestmentText').textContent = formatMoney(summary.total_investment);
+        const roiEl = document.getElementById('pnlOverallRoiText');
+        roiEl.textContent = summary.roi.toFixed(1) + '%';
+        roiEl.style.color = summary.roi >= 0 ? 'var(--highlight-orange)' : 'var(--error-red)';
+
+        const notice = document.getElementById('pnlEstimateNotice');
+        if (notice) {
+          notice.textContent = summary.is_estimate ? 'Estimates Labeled' : 'Audited Actuals';
+          notice.style.color = summary.is_estimate ? '#FCD34D' : '#6EE7B7';
+        }
+      }
+
+      function renderPnlBars(offers) {
+        const container = document.getElementById('pnlVisualBars');
+        if (!container) return;
+        if (!offers || offers.length === 0) {
+          container.innerHTML = '<div style="color:var(--text-muted); font-size:12px; margin:auto;">No active campaign data for visualization.</div>';
+          return;
+        }
+
+        const maxVal = Math.max(...offers.map(o => Math.max(o.attributed_sales, o.total_investment)), 100);
+
+        container.innerHTML = offers.map(o => {
+          const salesHeight = Math.max(12, Math.round((o.attributed_sales / maxVal) * 90));
+          const costHeight = Math.max(12, Math.round((o.total_investment / maxVal) * 90));
+          return `
+            <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+              <div style="display:flex; align-items:flex-end; gap:6px; height:90px;">
+                <!-- Sales Bar -->
+                <div title="Sales: ${formatMoney(o.attributed_sales)}" style="width:22px; height:${salesHeight}px; border-radius:12px; background:linear-gradient(180deg, var(--highlight-orange), var(--accent-orange)); box-shadow:0 0 14px rgba(255,122,0,0.35); transition:height 0.4s ease;"></div>
+                <!-- Costs Bar -->
+                <div title="Total Costs: ${formatMoney(o.total_investment)}" style="width:22px; height:${costHeight}px; border-radius:12px; background:linear-gradient(180deg, #624F42, #382B22); transition:height 0.4s ease;"></div>
+              </div>
+              <span style="font-size:11px; color:var(--text-secondary); max-width:90px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${esc(o.campaign_name)}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderPnlTable(offers) {
+        const tbody = document.getElementById('pnlTableBody');
+        if (!offers || offers.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; padding:24px; color:var(--text-muted);">No campaign records match current filters.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = offers.map(o => `
+          <tr>
+            <td>
+              <strong style="color:#FFF; display:block;">${esc(o.campaign_name)}</strong>
+              ${o.is_estimate ? '<span style="font-size:10px; color:#FCD34D;">(Estimate)</span>' : '<span style="font-size:10px; color:var(--success-green);">(Audited)</span>'}
+            </td>
+            <td style="font-size:11px; color:var(--text-muted);">${o.start_date || '—'}<br>to ${o.end_date || '—'}</td>
+            <td style="font-weight:600;">${o.qr_generated}</td>
+            <td>${o.qr_scans} / ${o.rewards_won}</td>
+            <td>
+              <strong style="color:var(--highlight-orange);">${o.rewards_redeemed}</strong>
+              <div style="font-size:10px; color:var(--text-muted);">@ ${formatMoney(o.unit_reward_cost)}</div>
+            </td>
+            <td style="font-weight:600; color:#FFF;">${formatMoney(o.attributed_sales)}</td>
+            <td style="color:var(--text-secondary);">${formatMoney(o.product_cost)}</td>
+            <td style="color:var(--text-secondary);">${formatMoney(o.gift_reward_cost)}</td>
+            <td style="color:var(--text-secondary);">${formatMoney(o.packaging_cost + o.other_expenses)}</td>
+            <td>
+              <span class="tag-status ${o.net_profit >= 0 ? 'collected' : 'waiting'}" style="font-weight:700;">
+                ${formatMoney(o.net_profit)}
+              </span>
+            </td>
+            <td>
+              <span style="font-weight:600;">${o.profit_margin.toFixed(1)}%</span>
+              <div style="font-size:10px; color:${o.roi >= 0 ? 'var(--highlight-orange)' : 'var(--error-red)'}; font-weight:700;">ROI: ${o.roi.toFixed(1)}%</div>
+            </td>
+            <td>
+              <span class="tag-status ${o.status === 'ACTIVE' ? 'collected' : ''}">● ${esc(o.status)}</span>
+            </td>
+            <td>
+              <button class="btn sm" onclick="window.openEditPnlModal('${esc(o.campaign_id)}')">Edit</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      document.getElementById('pnlFilterStatus')?.addEventListener('change', () => loadPnlData());
+
+      const editPnlModal = document.getElementById('editPnlModal');
+      document.getElementById('btnOpenPnlEditModal')?.addEventListener('click', () => {
+        const firstOffer = currentPnlData?.offers?.[0];
+        if (firstOffer) {
+          window.openEditPnlModal(firstOffer.campaign_id);
+        } else {
+          window.openEditPnlModal('cmp-golden-ticket-2026');
+        }
+      });
+
+      document.getElementById('btnCloseEditPnlModal')?.addEventListener('click', () => editPnlModal.classList.remove('active'));
+      document.getElementById('btnCancelEditPnl')?.addEventListener('click', () => editPnlModal.classList.remove('active'));
+
+      window.openEditPnlModal = function(campaignId) {
+        const offer = currentPnlData?.offers?.find(o => o.campaign_id === campaignId) || {
+          campaign_id: campaignId,
+          campaign_name: 'Popcorn Paradise Golden Ticket',
+          status: 'ACTIVE',
+          start_date: '2026-10-01',
+          end_date: '2026-11-30',
+          attributed_sales: 1240,
+          product_cost: 310,
+          packaging_cost: 75,
+          other_expenses: 45,
+          unit_reward_cost: 0.60,
+          is_estimate: true,
+          notes: ''
+        };
+
+        document.getElementById('editPnlCampaignId').value = offer.campaign_id;
+        document.getElementById('editPnlCampaignName').value = offer.campaign_name;
+        document.getElementById('editPnlStatus').value = offer.status || 'ACTIVE';
+        document.getElementById('editPnlStartDate').value = offer.start_date || '';
+        document.getElementById('editPnlEndDate').value = offer.end_date || '';
+        document.getElementById('editPnlSales').value = offer.attributed_sales;
+        document.getElementById('editPnlProductCost').value = offer.product_cost;
+        document.getElementById('editPnlPackagingCost').value = offer.packaging_cost;
+        document.getElementById('editPnlOtherExpenses').value = offer.other_expenses;
+        document.getElementById('editPnlUnitGiftCost').value = offer.unit_reward_cost || 0.60;
+        document.getElementById('editPnlIsEstimate').checked = Boolean(offer.is_estimate);
+        document.getElementById('editPnlNotes').value = offer.notes || '';
+        document.getElementById('editPnlError').style.display = 'none';
+
+        editPnlModal.classList.add('active');
+      };
+
+      document.getElementById('editPnlForm')?.addEventListener('submit', async e => {
+        e.preventDefault();
+        const campaign_id = document.getElementById('editPnlCampaignId').value;
+        const campaign_name = document.getElementById('editPnlCampaignName').value.trim();
+        const status = document.getElementById('editPnlStatus').value;
+        const start_date = document.getElementById('editPnlStartDate').value;
+        const end_date = document.getElementById('editPnlEndDate').value;
+        const attributed_sales = parseFloat(document.getElementById('editPnlSales').value) || 0;
+        const product_cost = parseFloat(document.getElementById('editPnlProductCost').value) || 0;
+        const packaging_cost = parseFloat(document.getElementById('editPnlPackagingCost').value) || 0;
+        const other_expenses = parseFloat(document.getElementById('editPnlOtherExpenses').value) || 0;
+        const unit_reward_cost = parseFloat(document.getElementById('editPnlUnitGiftCost').value) || 0.60;
+        const is_estimate = document.getElementById('editPnlIsEstimate').checked;
+        const notes = document.getElementById('editPnlNotes').value.trim();
+        const errBox = document.getElementById('editPnlError');
+
+        try {
+          const res = await fetch('/api/pnl?action=update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              campaign_id,
+              campaign_name,
+              status,
+              start_date,
+              end_date,
+              attributed_sales,
+              product_cost,
+              packaging_cost,
+              other_expenses,
+              unit_reward_cost,
+              is_estimate,
+              notes
+            })
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            editPnlModal.classList.remove('active');
+            showToast('Offers P&L records updated successfully.');
+            loadPnlData();
+          } else {
+            errBox.textContent = data.error || 'Failed to update financial figures.';
+            errBox.style.display = 'block';
+          }
+        } catch (err) {
+          errBox.textContent = 'Network error saving financial records.';
+          errBox.style.display = 'block';
+        }
+      });
 
       // Data Backup & Export
       document.getElementById('btnExportData').onclick = () => {

@@ -4,11 +4,12 @@
   "description": "LR Popcorn Club - Lucky Gift Rewards & Owner Dashboard",
   "private": true,
   "scripts": {
-    "test": "node tests/security.test.js && node tests/concurrency.test.js && node tests/rbac.test.js && node tests/integration.test.js",
+    "test": "node tests/security.test.js && node tests/concurrency.test.js && node tests/rbac.test.js && node tests/integration.test.js && node tests/pnl.test.js",
     "test:security": "node tests/security.test.js",
     "test:concurrency": "node tests/concurrency.test.js",
     "test:rbac": "node tests/rbac.test.js",
-    "test:integration": "node tests/integration.test.js"
+    "test:integration": "node tests/integration.test.js",
+    "test:pnl": "node tests/pnl.test.js"
   },
   "keywords": [
     "popcorn",

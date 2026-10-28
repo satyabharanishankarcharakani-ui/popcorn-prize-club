@@ -30,6 +30,7 @@ const memoryStore = {
   users: new Map(),
   rewards: new Map(),
   campaigns: new Map(),
+  finances: new Map(),
   auditLogs: [],
   locks: new Set(),
   bootstrapCompleted: false,
@@ -51,6 +52,26 @@ const defaultCampaign = {
   created_at: new Date().toISOString(),
 };
 memoryStore.campaigns.set(defaultCampaign.id, defaultCampaign);
+
+// Seed default campaign finances
+const defaultFinances = {
+  id: 'fin-golden-ticket-2026',
+  campaign_id: defaultCampaign.id,
+  campaign_name: defaultCampaign.name,
+  status: 'ACTIVE',
+  start_date: '2026-10-01',
+  end_date: '2026-11-30',
+  attributed_sales: 1240.00,
+  product_cost: 310.00,
+  packaging_cost: 75.00,
+  other_expenses: 45.00,
+  unit_reward_cost: 0.60,
+  is_estimate: true,
+  notes: 'Initial launch estimate for popcorn pack insert cards',
+  updated_at: new Date().toISOString(),
+  updated_by: 'Mom (Owner)',
+};
+memoryStore.finances.set(defaultFinances.campaign_id, defaultFinances);
 
 // Supabase REST helper
 async function supabaseRequest(path, options = {}) {
@@ -515,6 +536,193 @@ async function listAuditLogs({ limit = 30 } = {}) {
   return memoryStore.auditLogs.slice(0, limit);
 }
 
+// 6. Offers Profit & Loss Engine
+async function getCampaignFinances(campaignId) {
+  const { isConfigured } = getSupabaseConfig();
+  if (isConfigured) {
+    const res = await supabaseRequest(`campaign_finances?campaign_id=eq.${encodeURIComponent(campaignId)}&limit=1`);
+    if (res && res.length > 0) return res[0];
+    return null;
+  }
+  if (isProd()) assertDatabaseConfigured();
+  return memoryStore.finances.get(campaignId) || null;
+}
+
+async function updateCampaignFinances(campaignId, data, updatedBy = 'Owner') {
+  const cleanId = String(campaignId);
+  const updatedRecord = {
+    campaign_id: cleanId,
+    campaign_name: data.campaign_name || 'Campaign Offer',
+    status: data.status || 'ACTIVE',
+    start_date: data.start_date || null,
+    end_date: data.end_date || null,
+    attributed_sales: Math.max(0, parseFloat(data.attributed_sales) || 0),
+    product_cost: Math.max(0, parseFloat(data.product_cost) || 0),
+    packaging_cost: Math.max(0, parseFloat(data.packaging_cost) || 0),
+    other_expenses: Math.max(0, parseFloat(data.other_expenses) || 0),
+    unit_reward_cost: Math.max(0, parseFloat(data.unit_reward_cost) || 0.50),
+    is_estimate: Boolean(data.is_estimate),
+    notes: data.notes || '',
+    updated_at: new Date().toISOString(),
+    updated_by: updatedBy,
+  };
+
+  const { isConfigured } = getSupabaseConfig();
+  if (isConfigured) {
+    const existing = await getCampaignFinances(cleanId);
+    let res;
+    if (existing) {
+      res = await supabaseRequest(`campaign_finances?campaign_id=eq.${encodeURIComponent(cleanId)}`, {
+        method: 'PATCH',
+        body: updatedRecord,
+      });
+    } else {
+      res = await supabaseRequest('campaign_finances', {
+        method: 'POST',
+        body: updatedRecord,
+      });
+    }
+    if (res && res.length > 0) return res[0];
+    throw new Error('Failed to update campaign finances in database.');
+  }
+
+  if (isProd()) assertDatabaseConfigured();
+  memoryStore.finances.set(cleanId, updatedRecord);
+  return updatedRecord;
+}
+
+async function listCampaignFinances({ status, startDate, endDate } = {}) {
+  const { isConfigured } = getSupabaseConfig();
+  if (isConfigured) {
+    let query = 'campaign_finances?select=*&order=updated_at.desc';
+    if (status) query += `&status=eq.${encodeURIComponent(status)}`;
+    const res = await supabaseRequest(query);
+    if (res) return res;
+    throw new Error('Failed to list campaign finances from database.');
+  }
+
+  if (isProd()) assertDatabaseConfigured();
+  let list = Array.from(memoryStore.finances.values());
+  if (status) {
+    list = list.filter(f => f.status === status);
+  }
+  if (startDate) {
+    list = list.filter(f => !f.start_date || f.start_date >= startDate);
+  }
+  if (endDate) {
+    list = list.filter(f => !f.end_date || f.end_date <= endDate);
+  }
+  return list;
+}
+
+async function getOffersProfitLoss({ startDate, endDate, campaignId, status } = {}) {
+  await bootstrapOwnerIfEmpty();
+  const allRewards = await listRewards({ limit: 5000 });
+  const allFinances = await listCampaignFinances({ status, startDate, endDate });
+
+  const offers = [];
+  let totalAttributedSales = 0;
+  let totalProductCost = 0;
+  let totalGiftRewardCost = 0;
+  let totalPackagingCost = 0;
+  let totalOtherExpenses = 0;
+  let totalRewardsRedeemed = 0;
+  let totalRewardsWon = 0;
+  let totalQrGenerated = 0;
+
+  for (const fin of allFinances) {
+    if (campaignId && fin.campaign_id !== campaignId) continue;
+
+    const campaignRewards = allRewards.filter(r => (r.campaign_id || defaultCampaign.id) === fin.campaign_id);
+    const qrGenerated = campaignRewards.length;
+    const qrScans = qrGenerated;
+    const rewardsWon = qrGenerated;
+
+    // CRITICAL: Count ONLY verified, successfully redeemed rewards (status === 'COLLECTED')
+    const redeemedRewards = campaignRewards.filter(r => r.status === 'COLLECTED');
+    const rewardsRedeemed = redeemedRewards.length;
+
+    const unitRewardCost = parseFloat(fin.unit_reward_cost) || 0.50;
+    const giftRewardCost = Number((rewardsRedeemed * unitRewardCost).toFixed(2));
+
+    const sales = parseFloat(fin.attributed_sales) || 0;
+    const productCost = parseFloat(fin.product_cost) || 0;
+    const packagingCost = parseFloat(fin.packaging_cost) || 0;
+    const otherExpenses = parseFloat(fin.other_expenses) || 0;
+
+    // Net Offer Profit = Offer-attributed Sales − Cost of Products Sold − Gift/Reward Costs − Packaging Costs − Other Offer Expenses
+    const totalExpenses = Number((productCost + giftRewardCost + packagingCost + otherExpenses).toFixed(2));
+    const netProfit = Number((sales - totalExpenses).toFixed(2));
+
+    // Profit Margin = (Net Offer Profit ÷ Offer-attributed Sales) × 100, when sales > 0
+    const profitMargin = sales > 0 ? Number(((netProfit / sales) * 100).toFixed(2)) : 0;
+
+    // ROI = (Net Offer Profit ÷ Total Offer Investment) × 100, when investment > 0
+    const roi = totalExpenses > 0 ? Number(((netProfit / totalExpenses) * 100).toFixed(2)) : 0;
+
+    offers.push({
+      campaign_id: fin.campaign_id,
+      campaign_name: fin.campaign_name,
+      status: fin.status,
+      start_date: fin.start_date,
+      end_date: fin.end_date,
+      qr_generated: qrGenerated,
+      qr_scans: qrScans,
+      rewards_won: rewardsWon,
+      rewards_redeemed: rewardsRedeemed,
+      attributed_sales: sales,
+      product_cost: productCost,
+      gift_reward_cost: giftRewardCost,
+      packaging_cost: packagingCost,
+      other_expenses: otherExpenses,
+      total_investment: totalExpenses,
+      net_profit: netProfit,
+      profit_margin: profitMargin,
+      roi: roi,
+      is_estimate: fin.is_estimate,
+      unit_reward_cost: unitRewardCost,
+      notes: fin.notes || '',
+      updated_at: fin.updated_at,
+    });
+
+    totalAttributedSales += sales;
+    totalProductCost += productCost;
+    totalGiftRewardCost += giftRewardCost;
+    totalPackagingCost += packagingCost;
+    totalOtherExpenses += otherExpenses;
+    totalRewardsRedeemed += rewardsRedeemed;
+    totalRewardsWon += rewardsWon;
+    totalQrGenerated += qrGenerated;
+  }
+
+  const overallInvestment = Number(
+    (totalProductCost + totalGiftRewardCost + totalPackagingCost + totalOtherExpenses).toFixed(2)
+  );
+  const overallNetProfit = Number((totalAttributedSales - overallInvestment).toFixed(2));
+  const overallProfitMargin = totalAttributedSales > 0 ? Number(((overallNetProfit / totalAttributedSales) * 100).toFixed(2)) : 0;
+  const overallRoi = overallInvestment > 0 ? Number(((overallNetProfit / overallInvestment) * 100).toFixed(2)) : 0;
+
+  return {
+    summary: {
+      total_attributed_sales: Number(totalAttributedSales.toFixed(2)),
+      total_product_cost: Number(totalProductCost.toFixed(2)),
+      total_gift_reward_cost: Number(totalGiftRewardCost.toFixed(2)),
+      total_other_expenses: Number((totalPackagingCost + totalOtherExpenses).toFixed(2)),
+      total_packaging_cost: Number(totalPackagingCost.toFixed(2)),
+      total_miscellaneous_expenses: Number(totalOtherExpenses.toFixed(2)),
+      total_investment: overallInvestment,
+      net_profit: overallNetProfit,
+      profit_margin: overallProfitMargin,
+      roi: overallRoi,
+      rewards_redeemed: totalRewardsRedeemed,
+      rewards_won: totalRewardsWon,
+      qr_generated: totalQrGenerated,
+      is_estimate: offers.some(o => o.is_estimate),
+    },
+    offers,
+  };
+}
+
 module.exports = {
   assertDatabaseConfigured,
   bootstrapOwnerIfEmpty,
@@ -530,22 +738,8 @@ module.exports = {
   getDashboardStats,
   addAuditLog,
   listAuditLogs,
-};
-
-
-module.exports = {
-  assertDatabaseConfigured,
-  bootstrapOwnerIfEmpty,
-  getUserByUsername,
-  getUserById,
-  createUser,
-  listUsers,
-  updateUserStatus,
-  createReward,
-  getRewardByCode,
-  listRewards,
-  redeemRewardAtomic,
-  getDashboardStats,
-  addAuditLog,
-  listAuditLogs,
+  getCampaignFinances,
+  updateCampaignFinances,
+  listCampaignFinances,
+  getOffersProfitLoss,
 };
