@@ -1,0 +1,21 @@
+{
+  "name": "popcorn-prize-club",
+  "version": "2.0.0",
+  "description": "LR Popcorn Club - Lucky Gift Rewards & Owner Dashboard",
+  "private": true,
+  "scripts": {
+    "test": "node tests/security.test.js && node tests/concurrency.test.js && node tests/rbac.test.js && node tests/integration.test.js",
+    "test:security": "node tests/security.test.js",
+    "test:concurrency": "node tests/concurrency.test.js",
+    "test:rbac": "node tests/rbac.test.js",
+    "test:integration": "node tests/integration.test.js"
+  },
+  "keywords": [
+    "popcorn",
+    "qr-rewards",
+    "owner-dashboard",
+    "security-hardened"
+  ],
+  "author": "LR Popcorn Club",
+  "license": "UNLICENSED"
+}

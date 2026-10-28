@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /sitemap.xml
+Disallow: /api/
+Disallow: /*?page=owner*
+Disallow: /*?page=partner*
+Disallow: /*?page=shop*
+Disallow: /dashboard
+
+Sitemap: https://popcorn-prize-club.vercel.app/sitemap.xml
