@@ -38,48 +38,164 @@
 .btn:disabled{opacity:.58;cursor:not-allowed;transform:none}
 @media(max-width:600px){.profile-fields{grid-template-columns:1fr}}
 #check .btn{background:var(--orange);color:#fff;min-width:84px;min-height:44px}#printQr{background:var(--orange);color:#fff;min-width:138px;min-height:44px}#printQr:disabled{opacity:1;background:#7a4a30;color:#fff;border:1px solid #d28b5f;cursor:not-allowed;transform:none}
-/* =========================================================
-   OWNER DASHBOARD GLASSMORPHISM & OFFERS P&L (OWNER ONLY)
-   ========================================================= */
-#owner.view.active, #partner.view.active, #shop.view.active {
-  display: block;
-  animation: ownerFadeIn 0.3s ease-out;
+/* ============================================================================
+   FULL BLACK & ORANGE GLASSMORPHISM OWNER DASHBOARD (SCOPED TO OWNER VIEWS)
+   ============================================================================ */
+body.owner-mode-active {
+  background: radial-gradient(circle at 18% 12%, rgba(255, 118, 43, 0.16), transparent 36%),
+              radial-gradient(circle at 82% 85%, rgba(255, 107, 36, 0.12), transparent 40%),
+              #070605 !important;
+  color: #f7ede2 !important;
 }
-@keyframes ownerFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-#owner .owner-box, #partner .owner-box {
-  background: rgba(18, 14, 11, 0.85) !important;
+body.owner-mode-active header {
+  background: rgba(14, 11, 9, 0.72) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(255, 122, 0, 0.25) !important;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 107, 36, 0.12) !important;
-  border-radius: 24px !important;
+  border-bottom: 1px solid rgba(255, 122, 0, 0.18) !important;
+}
+body.owner-mode-active .brand { color: #fff !important; }
+body.owner-mode-active .nav { color: #c4b5a6 !important; }
+body.owner-mode-active .nav.active {
+  background: linear-gradient(135deg, #ff762b, #df5416) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(255, 118, 43, 0.35) !important;
+}
+
+#owner.view.active, #partner.view.active, #shop.view.active {
+  display: block;
+  animation: ownerFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes ownerFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Auth Box Glassmorphism */
+#owner .owner-box, #partner .owner-box {
+  max-width: 490px;
+  margin: 36px auto;
+  background: rgba(18, 14, 11, 0.78) !important;
+  backdrop-filter: blur(24px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+  border: 1px solid rgba(255, 122, 0, 0.28) !important;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.75), 0 0 40px rgba(255, 107, 36, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  border-radius: 26px !important;
+  padding: clamp(24px, 5vw, 38px) !important;
   color: #f7ede2 !important;
 }
 #owner .owner-box h2, #partner .owner-box h2 {
   color: #fff !important;
   font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 32px !important;
+  margin: 10px 0 8px !important;
 }
 #owner .owner-note, #partner .owner-note { color: #bfaea0 !important; }
+#owner label, #partner label, #shop label {
+  color: #e4d6c8 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  display: block;
+  margin-top: 10px;
+}
+
+/* Auth Mode Switcher Tabs (Login vs Sign Up) */
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: rgba(10, 8, 6, 0.65);
+  padding: 5px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 14px 0 18px;
+}
+.auth-tab {
+  border: 0;
+  background: transparent;
+  color: #a89a8e;
+  font: 700 13px 'Space Grotesk', sans-serif;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.auth-tab.active {
+  background: linear-gradient(135deg, #ff762b, #e05214);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255, 118, 43, 0.35);
+}
+
+/* Social Login Buttons */
+.social-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 14px;
+  color: #8a7c70;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.social-divider::before, .social-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.social-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 14px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(30, 24, 20, 0.72);
+  color: #f5ede3;
+  font: 600 12px 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.social-btn:hover {
+  background: rgba(255, 118, 43, 0.16);
+  border-color: rgba(255, 118, 43, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Inputs inside Owner Views */
 #owner .input, #partner .input, #shop .input {
-  background: rgba(28, 22, 18, 0.7) !important;
+  background: rgba(28, 22, 18, 0.72) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   color: #fff !important;
-  border-radius: 14px !important;
+  border-radius: 13px !important;
+  backdrop-filter: blur(10px) !important;
 }
 #owner .input:focus, #partner .input:focus, #shop .input:focus {
   border-color: #ff762b !important;
   box-shadow: 0 0 0 3px rgba(255, 118, 43, 0.25) !important;
 }
-#shop .dash-head h2 { color: #fff !important; font-family: 'Space Grotesk', sans-serif !important; }
+
+/* Owner Dashboard Glass Panels */
+#shop .dash-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+#shop .dash-head h2 { color: #fff !important; font-family: 'Space Grotesk', sans-serif !important; margin: 6px 0 !important; }
 #shop .dash-head .lead { color: #d1c2b5 !important; }
 #shop .panel {
-  background: rgba(20, 16, 13, 0.8) !important;
+  background: rgba(20, 16, 13, 0.78) !important;
   backdrop-filter: blur(22px) saturate(190%) !important;
   -webkit-backdrop-filter: blur(22px) saturate(190%) !important;
-  border: 1px solid rgba(255, 130, 45, 0.22) !important;
+  border: 1px solid rgba(255, 130, 45, 0.24) !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
   border-radius: 22px !important;
   color: #f5f0e8 !important;
@@ -88,151 +204,466 @@
 #shop .sub { color: #a89a8e !important; }
 #shop .stat { border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important; color: #b0a397 !important; }
 #shop .stat b { color: #ff914d !important; text-shadow: 0 0 16px rgba(255, 145, 77, 0.3) !important; }
-#shop .tip { background: rgba(255, 118, 43, 0.08) !important; border-left: 3px solid #ff762b !important; color: #e6dacd !important; }
-#shop table th { color: #ff9d63 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important; }
-#shop table td { border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important; color: #e5ded5 !important; }
-#shop .partner-row { background: rgba(28, 22, 18, 0.6) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; border-radius: 14px !important; }
-.owner-nav-tabs { display: flex; gap: 8px; margin-bottom: 22px; background: rgba(20, 16, 13, 0.75); backdrop-filter: blur(16px); padding: 6px; border-radius: 16px; border: 1px solid rgba(255, 122, 0, 0.2); width: fit-content; }
-.owner-tab-btn { background: transparent; border: 0; color: #a89a8e; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 7px; }
-.owner-tab-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
-.owner-tab-btn.active { background: linear-gradient(135deg, #ff762b, #df5416); color: #fff; box-shadow: 0 4px 15px rgba(255, 118, 43, 0.35); }
-.pnl-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
-.pnl-card { background: rgba(22, 17, 13, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 122, 0, 0.2); border-radius: 20px; padding: 20px; box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45); }
-.pnl-card-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: #a89a8e; margin-bottom: 8px; }
+#shop .tip { background: rgba(255, 118, 43, 0.09) !important; border-left: 3px solid #ff762b !important; color: #e6dacd !important; }
+#shop .result {
+  background: rgba(22, 34, 21, 0.85) !important;
+  border: 1px solid rgba(74, 222, 128, 0.35) !important;
+  color: #ecfdf5 !important;
+}
+#shop .result.error {
+  background: rgba(42, 20, 16, 0.85) !important;
+  border-color: rgba(248, 113, 113, 0.4) !important;
+  color: #fecaca !important;
+}
+
+/* Owner Top Navigation Tabs */
+.owner-nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: rgba(20, 16, 13, 0.78);
+  backdrop-filter: blur(18px);
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  width: fit-content;
+}
+.owner-tab-btn {
+  background: transparent;
+  border: 0;
+  color: #b5a698;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 11px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.owner-tab-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+.owner-tab-btn.active {
+  background: linear-gradient(135deg, #ff762b, #df5416);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255, 118, 43, 0.38);
+}
+
+/* P&L Cards & Table */
+.pnl-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 22px;
+}
+.pnl-card {
+  background: rgba(22, 17, 13, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.5);
+}
+.pnl-card-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: #a89a8e; margin-bottom: 8px; display: flex; justify-content: space-between; }
 .pnl-card-val { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: #fff; }
 .pnl-card-sub { font-size: 11px; color: #8a7c70; margin-top: 6px; }
-.pnl-profit { color: #4ade80 !important; text-shadow: 0 0 15px rgba(74, 222, 128, 0.3); }
-.pnl-loss { color: #f87171 !important; text-shadow: 0 0 15px rgba(248, 113, 113, 0.3); }
-.pnl-orange { color: #ff914d !important; text-shadow: 0 0 15px rgba(255, 145, 77, 0.3); }
-.pnl-table-panel { background: rgba(22, 17, 13, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 122, 0, 0.2); border-radius: 22px; padding: 24px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); }
+.pnl-profit { color: #4ade80 !important; text-shadow: 0 0 15px rgba(74, 222, 128, 0.28); }
+.pnl-loss { color: #f87171 !important; text-shadow: 0 0 15px rgba(248, 113, 113, 0.28); }
+.pnl-orange { color: #ff914d !important; text-shadow: 0 0 15px rgba(255, 145, 77, 0.28); }
+
+.pnl-table-panel {
+  background: rgba(22, 17, 13, 0.82);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  margin-bottom: 20px;
+}
 .pnl-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .pnl-table th { padding: 12px 10px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #ff9d63; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-.pnl-table td { padding: 14px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); color: #e5ded5; }
+.pnl-table td { padding: 13px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); color: #e5ded5; }
 .roi-badge { display: inline-block; padding: 4px 10px; border-radius: 99px; font-weight: 700; font-size: 11px; }
 .roi-badge.pos { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
 .roi-badge.neg { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+
+/* QR Generator & Printable Paper Slips */
+.qr-alloc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 14px 0 18px;
+}
+.qr-offer-item {
+  background: rgba(28, 22, 18, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.qr-offer-info b { display: block; font-size: 13px; color: #fff; }
+.qr-offer-info small { font-size: 11px; color: #ff9d63; }
+.qr-qty-input {
+  width: 68px !important;
+  height: 40px !important;
+  text-align: center;
+  font-weight: 700;
+  margin: 0 !important;
+}
+
+.qr-slips-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.qr-paper-slip {
+  background: #fffdf9;
+  color: #191613;
+  border: 2px dashed #d97724;
+  border-radius: 14px;
+  padding: 12px 10px;
+  text-align: center;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  position: relative;
+}
+.qr-paper-slip .slip-head {
+  font: 700 10px 'Space Grotesk', sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #df5416;
+  margin-bottom: 6px;
+}
+.qr-paper-slip img {
+  width: 116px;
+  height: 116px;
+  display: block;
+  margin: 4px auto;
+  border-radius: 8px;
+}
+.qr-paper-slip .slip-code {
+  font: 700 12px 'Space Grotesk', sans-serif;
+  background: #fff0e5;
+  color: #191613;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 4px;
+  letter-spacing: 0.8px;
+}
+.qr-paper-slip .slip-prize {
+  font-size: 11px;
+  font-weight: 700;
+  color: #3f3831;
+  margin-top: 5px;
+}
+.qr-paper-slip .slip-cut {
+  font-size: 9px;
+  color: #8c7f73;
+  margin-top: 3px;
+}
+
+@media print {
+  header, .dash-head, .owner-nav-tabs, #qrConfigPanel, .foot, .no-print { display: none !important; }
+  body, main, #shop, #subTabQr { background: #fff !important; color: #000 !important; padding: 0 !important; margin: 0 !important; }
+  .qr-slips-sheet { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .qr-paper-slip { box-shadow: none !important; break-inside: avoid; page-break-inside: avoid; border: 1.5px dashed #000; }
+}
 </style></head><body>
 <header><div class="brand"><span class="mark">✦</span> POPCORN <span style="color:var(--orange)">CLUB</span></div><nav id="siteNav"><button class="theme-toggle" id="themeToggle" type="button">☾ <span>Dark mode</span></button><div id="mainNavItems"><button class="nav active" data-view="welcome">Play</button><button class="nav" data-view="owner" id="ownerLink">Owner</button></div><div id="ownerMenu" class="owner-menu" hidden><button id="ownerAvatar" class="owner-avatar" type="button" aria-label="Owner profile" aria-haspopup="true" aria-expanded="false">O</button><div id="ownerDropdown" class="owner-dropdown" hidden><button id="editProfileMenu" class="owner-menu-item" type="button">Edit profile</button><button id="partnerAccessMenu" class="owner-menu-item" type="button">Partner access</button><button id="menuLogout" class="owner-menu-item" type="button">Log out</button></div></div></nav></header><main>
-<section class="view active" id="welcome"><div class="hero"><div><div class="eyebrow">A little surprise inside</div><h1>Pop. Scan.<br><span style="color:var(--orange)">Win.</span></h1><p class="lead">Found one of our lucky cards in your popcorn? You're one quick scan away from a tasty little surprise.</p><form id="nameForm"><label for="name">First, what should we call you?</label><input class="input" id="name" maxlength="24" placeholder="Your name" required><button class="btn orange full">Let's play →</button><div class="note">Your name helps us keep your prize attached to you.</div></form><div class="steps"><div class="step"><i class="num">1</i><b>Find a lucky card</b>Only in selected packs</div><div class="step"><i class="num">2</i><b>Scratch to reveal</b>A surprise is waiting</div><div class="step"><i class="num">3</i><b>Show your code</b>Pick up in the shop</div></div></div><div class="art"><img class="hero-promo" id="heroImage" src="popcorn-light-hero.jpg" data-dark-src="popcorn-dark-hero.jpg" data-light-src="popcorn-light-hero.jpg" alt="Popcorn Paradise popcorn flavors"></div></div></section>
+<section class="view active" id="welcome"><div class="hero"><div><div class="eyebrow">A little surprise inside</div><h1>Pop. Scan.<br><span style="color:var(--orange)">Win.</span></h1><p class="lead">Found one of our lucky cards in your popcorn? You're one quick scan away from a tasty little surprise.</p><form id="nameForm"><label for="name">First, what should we call you?</label><input class="input" id="name" maxlength="24" placeholder="Your name" required><button class="btn orange full">Let's play →</button><div class="note">Your name helps us keep your prize attached to you.</div></form><div class="steps"><div class="step"><i class="num">1</i><b>Find a lucky card</b>Only in selected packs</div><div class="step"><i class="num">2</i><b>Scratch to reveal</b>A surprise is waiting</div><div class="step"><i class="num">3</i><b>Show your code</b>Pick up in the shop</div></div></div><div class="art"><img class="hero-promo" id="heroImage" src="popcorn-light-hero.jpg?v=2" data-dark-src="popcorn-dark-hero.jpg?v=2" data-light-src="popcorn-light-hero.jpg?v=2" alt="Popcorn Paradise popcorn flavors"></div></div></section>
 <section class="view" id="scratch"><div class="eyebrow">Hey, <span id="hello">friend</span> · Your lucky card</div><div class="scratch-layout"><div class="card"><div class="card-head"><span>Scratch to reveal</span><span class="tag">ONE SURPRISE</span></div><div class="scratch"><div class="prize"><div id="giftArt" aria-label="Prize illustration"></div><h3 id="giftName">A free popcorn!</h3><p id="giftDesc">Show this code at the counter to claim your treat.</p><span class="code" id="giftCode">PC-000000</span><p style="color:var(--green);font-weight:700">● Ready to claim</p></div><div class="cover" id="cover" role="button" tabindex="0" aria-label="Scratch the card to reveal your prize"><canvas class="scratch-layer" id="scratchLayer" aria-hidden="true"></canvas><div class="cover-copy"><strong>YOUR SURPRISE<br>IS INSIDE</strong><small>Rub to scratch & reveal ↗</small></div></div></div><p class="hint">Rub your finger across the card to reveal your prize.</p></div><div><div class="eyebrow">You found a lucky card</div><h2>Good things<br>are popping.</h2><p class="lead">Scratch your card to reveal your surprise. Keep the code handy and show it to our team in the shop.</p><div class="tip">Your prize is linked to a one-time code. Our shop screen can check it before we hand over your treat.</div><button class="btn back-btn" id="back" style="margin-top:20px">← Back to home</button></div></div></section>
-<section class="view" id="owner"><div class="owner-box"><div class="eyebrow">Private counter access</div><h2 id="ownerTitle">Owner login</h2><p class="owner-note" id="ownerNote">Sign in to review lucky-card winners and verify prize codes.</p><form id="ownerForm"><label for="ownerName">Owner / founder name</label><input class="input" id="ownerName" maxlength="48" autocomplete="username" placeholder="Your mom's name" required><label for="ownerPassword">Password</label><input class="input" type="password" id="ownerPassword" minlength="6" autocomplete="current-password" placeholder="At least 6 characters" required><div id="confirmGroup" style="display:none"><label for="ownerConfirm">Confirm password</label><input class="input" type="password" id="ownerConfirm" minlength="6" autocomplete="new-password" placeholder="Enter the same password"></div><p class="owner-error" id="ownerError"></p><button class="btn orange full" id="ownerSubmit">Sign in</button></form><a href="?page=partner" class="owner-note" style="display:inline-block;margin-top:17px">Partner? Request access →</a><p class="note">For this prototype, owner access is saved in this browser on this device.</p></div></section><section class="view" id="partner"><div class="owner-box"><div class="eyebrow">Partner access</div><h2>Request to join</h2><p class="owner-note">Send an access request to the owner. Your access code will work only after your mom approves it.</p><form id="partnerRequestForm"><label for="partnerName">Your name</label><input class="input" id="partnerName" maxlength="48" required placeholder="Full name"><label for="partnerContact">Email or phone</label><input class="input" id="partnerContact" maxlength="80" required placeholder="How the owner can reach you"><label for="partnerReason">Why do you need access?</label><textarea class="input" id="partnerReason" maxlength="180" required placeholder="A short note for the owner" style="height:76px;padding:12px;resize:vertical"></textarea><p class="owner-error" id="partnerError"></p><button class="btn orange full">Send access request</button></form><div id="partnerConfirmation" class="owner-note" style="display:none;margin-top:14px"></div><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><form id="partnerLoginForm"><label for="partnerCode">Already approved? Enter your owner-approved access code</label><input class="input" id="partnerCode" maxlength="20" placeholder="Partner access code" required><p class="owner-error" id="partnerLoginError"></p><button class="btn full">Sign in as partner</button></form><a href="?page=owner" class="owner-note" style="display:inline-block;margin-top:15px">← Owner login</a></div></section><section class="view" id="shop">
-<div class="dash-head">
-  <div>
-    <div class="eyebrow">Owner Control Center</div>
-    <h2>Owner Dashboard</h2>
-    <p class="lead">Manage prize verification, lucky-card winners, and campaign profitability.</p>
-  </div>
-  <div style="display:flex;gap:9px;align-items:center">
-    <button class="btn orange" id="demo">＋ Add demo winner</button>
-  </div>
-</div>
-<div class="owner-nav-tabs">
-  <button class="owner-tab-btn active" id="tabCounter" onclick="switchOwnerSubTab('counter')">🎟️ Prize Check-in</button>
-  <button class="owner-tab-btn" id="tabPnl" onclick="switchOwnerSubTab('pnl')">📊 Offers Profit & Loss</button>
-</div>
 
-<div id="subTabCounter">
-  <div class="grid"><div class="panel"><div style="display:flex;justify-content:space-between"><div><h3>Verify a prize</h3><div class="sub">Enter the code shown by the customer</div></div><span class="status">● LIVE ON THIS DEVICE</span></div><form class="search" id="check"><input class="input" id="query" placeholder="e.g. PC-4A82F1"><button class="btn">Check</button></form><div class="result" id="result"></div><div class="table-wrap"><div class="table-title">Recent lucky-card entries</div><table><thead><tr><th>Customer</th><th>Code</th><th>Prize</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div></div><aside class="panel"><div><h3>Today's surprises</h3><div class="sub">A quick counter snapshot</div></div><div class="stat">Cards played on this device<b id="plays">0 plays</b></div><div class="stat">Prizes waiting to collect<b id="pending">0 waiting</b></div><div class="tip"><b>How this works</b><br>Only selected packs have an insert card. Each prize gets a one-time code for checking and redemption.</div></aside></div><div class="panel" id="partnerRequests" style="margin-top:18px"><div class="panel-head"><div><h3>Partner access requests</h3><div class="sub">Only the owner can approve or reject requests.</div></div><span class="status">OWNER CONTROL</span></div><div id="partnerRows" class="partner-rows"></div></div>
-</div>
+<section class="view" id="owner">
+  <div class="owner-box">
+    <div class="eyebrow">Private Owner & Team Portal</div>
+    <h2 id="ownerTitle">Owner Dashboard Access</h2>
+    <p class="owner-note" id="ownerNote">Sign in with your account or create a new owner account below.</p>
 
-<div id="subTabPnl" style="display:none" class="pnl-container">
-  <!-- 7 SUMMARY CARDS -->
-  <div class="pnl-cards-grid">
-    <div class="pnl-card">
-      <div class="pnl-card-label"><span>Attributed Sales</span> <span>💰</span></div>
-      <div class="pnl-card-val" id="pnlSales">₹48,500</div>
-      <div class="pnl-card-sub">Revenue from offer packs</div>
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" id="authTabLogin" onclick="setAuthMode('login')">Sign In</button>
+      <button type="button" class="auth-tab" id="authTabSignup" onclick="setAuthMode('signup')">Sign Up (New)</button>
     </div>
-    <div class="pnl-card">
-      <div class="pnl-card-label"><span>Product Cost</span> <span>🍿</span></div>
-      <div class="pnl-card-val" id="pnlProdCost">₹19,400</div>
-      <div class="pnl-card-sub">Raw goods & kernels</div>
-    </div>
-    <div class="pnl-card">
-      <div class="pnl-card-label"><span>Redeemed Gifts Cost</span> <span>🎁</span></div>
-      <div class="pnl-card-val pnl-orange" id="pnlGiftCost">₹4,200</div>
-      <div class="pnl-card-sub">Verified redemptions only</div>
-    </div>
-    <div class="pnl-card">
-      <div class="pnl-card-label"><span>Packaging & Marketing</span> <span>📦</span></div>
-      <div class="pnl-card-val" id="pnlPackCost">₹2,100</div>
-      <div class="pnl-card-sub">Cards, stickers & promo</div>
-    </div>
-    <div class="pnl-card">
-      <div class="pnl-card-label"><span>Net Offer Profit</span> <span>✨</span></div>
-      <div class="pnl-card-val pnl-profit" id="pnlNetProfit">₹22,800</div>
-      <div class="pnl-card-sub">Net business gain</div>
-    </div>
-    <div class="pnl-card">
-      <div class="pnl-card-label"><span>Profit Margin</span> <span>📈</span></div>
-      <div class="pnl-card-val pnl-profit" id="pnlMargin">47.0%</div>
-      <div class="pnl-card-sub">Net profit / Sales</div>
-    </div>
-    <div class="pnl-card">
-      <div class="pnl-card-label"><span>Campaign ROI</span> <span>🚀</span></div>
-      <div class="pnl-card-val pnl-profit" id="pnlRoi">88.7%</div>
-      <div class="pnl-card-sub">Return on investment</div>
-    </div>
-  </div>
 
-  <!-- OFFER WISE TABLE -->
-  <div class="pnl-table-panel">
-    <div class="pnl-table-header">
-      <div>
-        <h3 style="margin:0;font-size:17px;color:#fff;">Offer-wise Performance Breakdown</h3>
-        <div class="sub">Financial & distribution metrics per campaign</div>
+    <form id="ownerForm">
+      <div id="signupNameGroup">
+        <label for="ownerName">Full Name / Owner Name</label>
+        <input class="input" id="ownerName" maxlength="48" autocomplete="name" placeholder="e.g. Mom / Shankar" required>
       </div>
-      <div class="pnl-filters">
-        <select class="pnl-select" id="pnlCampaignFilter" onchange="updatePnlView()" style="background:rgba(30,24,20,0.8);border:1px solid rgba(255,255,255,0.12);color:#fff;padding:8px 12px;border-radius:10px;font-size:12px;">
-          <option value="all">All Campaigns</option>
-          <option value="diwali">Diwali Golden Batch</option>
-          <option value="weekend">Weekend Crunch Special</option>
-          <option value="launch">Launch Gift Cards</option>
-        </select>
-        <select class="pnl-select" id="pnlStatusFilter" onchange="updatePnlView()" style="background:rgba(30,24,20,0.8);border:1px solid rgba(255,255,255,0.12);color:#fff;padding:8px 12px;border-radius:10px;font-size:12px;">
-          <option value="all">All Statuses</option>
-          <option value="active">Active</option>
-          <option value="completed">Completed</option>
-        </select>
+      <div id="signupEmailGroup" style="display:none">
+        <label for="ownerEmail">Email or Mobile Number</label>
+        <input class="input" id="ownerEmail" maxlength="80" autocomplete="email" placeholder="owner@popcornclub.com">
       </div>
-    </div>
-    <div style="overflow-x:auto;">
-      <table class="pnl-table">
-        <thead>
-          <tr>
-            <th>Campaign</th>
-            <th>Dates</th>
-            <th>QRs Issued</th>
-            <th>Scanned</th>
-            <th>Redeemed</th>
-            <th>Attributed Sales</th>
-            <th>Total Cost</th>
-            <th>Net Profit</th>
-            <th>ROI</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="pnlTableRows">
-          <!-- Populated by JS -->
-        </tbody>
-      </table>
+      <label for="ownerPassword">Password</label>
+      <input class="input" type="password" id="ownerPassword" minlength="6" autocomplete="current-password" placeholder="At least 6 characters" required>
+      <div id="confirmGroup" style="display:none">
+        <label for="ownerConfirm">Confirm Password</label>
+        <input class="input" type="password" id="ownerConfirm" minlength="6" autocomplete="new-password" placeholder="Re-enter same password">
+      </div>
+      <p class="owner-error" id="ownerError"></p>
+      <button class="btn orange full" id="ownerSubmit" style="margin-top:8px">Sign In →</button>
+    </form>
+
+    <div class="social-divider">or continue with</div>
+    <div class="social-grid">
+      <button type="button" class="social-btn" onclick="socialLogin('Google')">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/><path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 20.9 7.4 24 12 24z"/></svg>
+        Google
+      </button>
+      <button type="button" class="social-btn" onclick="socialLogin('Phone OTP')">
+        <span>📱</span> Phone / Passkey
+      </button>
     </div>
   </div>
-</div>
+</section>
 
+<section class="view" id="partner">
+  <div class="owner-box">
+    <div class="eyebrow">Partner access</div>
+    <h2>Request to join</h2>
+    <p class="owner-note">Use the Sign Up tab on the Owner Login page to create an account.</p>
+    <a href="?page=owner" class="btn orange full" style="display:inline-block;text-align:center;text-decoration:none">← Go to Sign Up / Login</a>
+  </div>
+</section>
+
+<section class="view" id="shop">
+  <div class="dash-head">
+    <div>
+      <div class="eyebrow">LR Popcorn Club · Glassmorphism Control Center</div>
+      <h2>Owner Dashboard</h2>
+      <p class="lead">Verify customer codes, track real-time gift profit & loss, and print packet QR slips.</p>
+    </div>
+    <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <button class="btn orange" id="demo">＋ Add demo winner</button>
+      <button class="btn" id="ownerLogoutBtn" onclick="logoutOwner()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16)">Log out</button>
+    </div>
+  </div>
+
+  <!-- 3 DEDICATED PAGES / TABS -->
+  <div class="owner-nav-tabs">
+    <button class="owner-tab-btn active" id="tabCounter" onclick="switchOwnerSubTab('counter')">🎟️ Prize Check-in</button>
+    <button class="owner-tab-btn" id="tabPnl" onclick="switchOwnerSubTab('pnl')">📊 Offers Profit & Loss</button>
+    <button class="owner-tab-btn" id="tabQr" onclick="switchOwnerSubTab('qr')">🖨️ Generate QR Slips (10–50 / 100 Packs)</button>
+  </div>
+
+  <!-- PAGE 1: PRIZE CHECK-IN (ONLY VERIFY A PRIZE + TODAY'S SURPRISES) -->
+  <div id="subTabCounter">
+    <div class="grid">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h3>Verify a prize</h3>
+            <div class="sub">Enter or scan the code shown by the customer at the counter</div>
+          </div>
+          <span class="status">● LIVE COUNTER</span>
+        </div>
+        <form class="search" id="check">
+          <input class="input" id="query" placeholder="e.g. PC-4A82F1">
+          <button class="btn orange">Check Code</button>
+        </form>
+        <div class="result" id="result"></div>
+        <div class="tip" style="margin-top:18px">
+          <b>How dashboard updates automatically:</b><br>
+          1. When a customer scans a paper QR slip & scratches, it registers as <b>Waiting</b>.<br>
+          2. When they come to your shop counter, enter their code above and tap <b>Mark as collected</b>.<br>
+          3. The gift cost (₹10 water bottle, ₹20 water bottle, free popcorn, etc.) is <b>automatically deducted</b> in the <b>Offers Profit & Loss</b> page!
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div>
+          <h3>Today's surprises</h3>
+          <div class="sub">Live counter snapshot</div>
+        </div>
+        <div class="stat">Cards played / scratched<b id="plays">0 plays</b></div>
+        <div class="stat">Prizes waiting to collect<b id="pending">0 waiting</b></div>
+        <div class="stat">Gifts handed over (Collected)<b id="collectedStat">0 collected</b></div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- PAGE 2: OFFERS PROFIT & LOSS -->
+  <div id="subTabPnl" style="display:none" class="pnl-container">
+    <div class="pnl-cards-grid">
+      <div class="pnl-card">
+        <div class="pnl-card-label"><span>Total Packet Sales</span> <span>💰</span></div>
+        <div class="pnl-card-val" id="pnlSales">₹0</div>
+        <div class="pnl-card-sub" id="pnlSalesSub">From batches sold</div>
+      </div>
+      <div class="pnl-card">
+        <div class="pnl-card-label"><span>Popcorn Making Cost</span> <span>🍿</span></div>
+        <div class="pnl-card-val" id="pnlProdCost">₹0</div>
+        <div class="pnl-card-sub">Raw corn, oil, seasoning</div>
+      </div>
+      <div class="pnl-card">
+        <div class="pnl-card-label"><span>Gifts & Water Bottles Cost</span> <span>🎁</span></div>
+        <div class="pnl-card-val pnl-orange" id="pnlGiftCost">₹0</div>
+        <div class="pnl-card-sub" id="pnlGiftSub">0 gifts redeemed</div>
+      </div>
+      <div class="pnl-card">
+        <div class="pnl-card-label"><span>Paper Slips & Packing</span> <span>📦</span></div>
+        <div class="pnl-card-val" id="pnlPackCost">₹0</div>
+        <div class="pnl-card-sub">QR paper slips & pouches</div>
+      </div>
+      <div class="pnl-card">
+        <div class="pnl-card-label"><span>Net Profit / Loss</span> <span>✨</span></div>
+        <div class="pnl-card-val pnl-profit" id="pnlNetProfit">+₹0</div>
+        <div class="pnl-card-sub">Sales minus all costs</div>
+      </div>
+      <div class="pnl-card">
+        <div class="pnl-card-label"><span>Profit Margin</span> <span>📈</span></div>
+        <div class="pnl-card-val pnl-profit" id="pnlMargin">0.0%</div>
+        <div class="pnl-card-sub">Net Profit ÷ Sales</div>
+      </div>
+    </div>
+
+    <!-- QUICK BATCH SALES & EXPENSE CALCULATOR FOR OWNER -->
+    <div class="pnl-table-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div>
+          <h3 style="margin:0;font-size:17px;color:#fff">Batch Sales & Offer Cost Settings</h3>
+          <div class="sub">Enter your packet batch numbers — collected gifts from counter check-in are added automatically</div>
+        </div>
+        <span class="status">● AUTO-SYNCED WITH PRIZE CHECK-IN</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end">
+        <div>
+          <label>Total Popcorn Packets in Batch</label>
+          <input type="number" class="input" id="cfgPackets" value="100" min="1" onchange="savePnlConfig()">
+        </div>
+        <div>
+          <label>Selling Price per Packet (₹)</label>
+          <input type="number" class="input" id="cfgSellPrice" value="50" min="1" onchange="savePnlConfig()">
+        </div>
+        <div>
+          <label>Making Cost per Packet (₹)</label>
+          <input type="number" class="input" id="cfgMakeCost" value="18" min="0" onchange="savePnlConfig()">
+        </div>
+        <div>
+          <label>QR Paper & Extra Expense (₹)</label>
+          <input type="number" class="input" id="cfgPaperCost" value="120" min="0" onchange="savePnlConfig()">
+        </div>
+      </div>
+    </div>
+
+    <!-- GIFT & OFFER WISE BREAKDOWN TABLE -->
+    <div class="pnl-table-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+        <div>
+          <h3 style="margin:0;font-size:17px;color:#fff">Gift & Offer-Wise Profit / Cost Breakdown</h3>
+          <div class="sub">Tracks every offer type including ₹10 & ₹20 Water Bottles, Free Popcorn, and Coupons</div>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="pnl-table">
+          <thead>
+            <tr>
+              <th>Offer / Gift Item</th>
+              <th>Unit Cost (₹)</th>
+              <th>QR Slips Generated</th>
+              <th>Customer Scanned</th>
+              <th>Waiting at Counter</th>
+              <th>Collected (Redeemed)</th>
+              <th>Total Gift Cost (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="pnlOfferBreakdownRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: GENERATE QR CODES FOR PAPER INSERTS (10-50 QR SLIPS IN 100 PACKETS) -->
+  <div id="subTabQr" style="display:none">
+    <div class="panel" id="qrConfigPanel">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3>Generate Random Paper QR Slips for Popcorn Packets</h3>
+          <div class="sub">Generate 10 to 50 QR codes, print & cut into small paper slips, and drop randomly inside 100 popcorn packets.</div>
+        </div>
+        <span class="status">● PAPER INSERT GENERATOR</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px">
+        <div>
+          <label>Batch Name</label>
+          <input class="input" id="qrBatchName" value="Batch #1 (100 Popcorn Packets)">
+        </div>
+        <div>
+          <label>Total Popcorn Packets Made</label>
+          <input type="number" class="input" id="qrTotalPackets" value="100" min="10" max="1000">
+        </div>
+        <div>
+          <label>Quick Preset (Slips to put inside)</label>
+          <div style="display:flex;gap:6px;margin-top:9px">
+            <button type="button" class="btn" onclick="applyQrPreset(12)" style="padding:10px 12px;font-size:11px;background:rgba(255,118,43,0.18);border:1px solid #ff762b">12 QR Slips</button>
+            <button type="button" class="btn" onclick="applyQrPreset(25)" style="padding:10px 12px;font-size:11px;background:rgba(255,118,43,0.18);border:1px solid #ff762b">25 QR Slips</button>
+            <button type="button" class="btn" onclick="applyQrPreset(50)" style="padding:10px 12px;font-size:11px;background:rgba(255,118,43,0.18);border:1px solid #ff762b">50 QR Slips</button>
+          </div>
+        </div>
+      </div>
+
+      <label style="margin-top:16px">Choose how many QR slips to allocate for each gift / offer:</label>
+      <div class="qr-alloc-grid" id="qrOfferInputs">
+        <div class="qr-offer-item">
+          <div class="qr-offer-info"><b>💧 Free ₹10 Water Bottle</b><small>Cost to you: ₹10 each</small></div>
+          <input type="number" class="input qr-qty-input" data-offer-idx="5" value="4" min="0" max="100">
+        </div>
+        <div class="qr-offer-item">
+          <div class="qr-offer-info"><b>💧 Free ₹20 Water Bottle</b><small>Cost to you: ₹20 each</small></div>
+          <input type="number" class="input qr-qty-input" data-offer-idx="6" value="3" min="0" max="100">
+        </div>
+        <div class="qr-offer-item">
+          <div class="qr-offer-info"><b>🍿 Free Popcorn!</b><small>Cost to you: ₹20 each</small></div>
+          <input type="number" class="input qr-qty-input" data-offer-idx="0" value="3" min="0" max="100">
+        </div>
+        <div class="qr-offer-item">
+          <div class="qr-offer-info"><b>🏷️ 50% Off Next Bag</b><small>Cost to you: ₹15 each</small></div>
+          <input type="number" class="input qr-qty-input" data-offer-idx="1" value="2" min="0" max="100">
+        </div>
+        <div class="qr-offer-item">
+          <div class="qr-offer-info"><b>✨ Free Topping Upgrade</b><small>Cost to you: ₹10 each</small></div>
+          <input type="number" class="input qr-qty-input" data-offer-idx="2" value="2" min="0" max="100">
+        </div>
+        <div class="qr-offer-item">
+          <div class="qr-offer-info"><b>🍿 Bonus Mini Pack</b><small>Cost to you: ₹15 each</small></div>
+          <input type="number" class="input qr-qty-input" data-offer-idx="4" value="1" min="0" max="100">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:14px">
+        <div id="qrSummaryNote" style="font-size:13px;color:#ff9d63;font-weight:700">
+          Total: 15 QR paper slips for 100 packets (85 packets have no slip)
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button type="button" class="btn orange" onclick="generatePaperQrSlips()">⚡ Generate Paper QR Slips</button>
+          <button type="button" class="btn" id="printQrBtn" onclick="window.print()" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2)">🖨️ Print / Save PDF to Cut & Put in Packets</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINTABLE QR SLIPS SHEET -->
+    <div id="qrSlipsContainer" class="qr-slips-sheet"></div>
+  </div>
 </section>
 </main><div class="foot">Made for good snacks and small surprises · POPCORN CLUB</div><div class="toast" id="toast"></div>
 <script>
-const storageKey='popcorn-club-demo-v1',prizes=[['Free popcorn!','🍿','One fresh popcorn, on us.'],['50% off your next bag','🏷️','A little something for your next visit.'],['Free topping upgrade','✨','Make your next popcorn extra special.'],['Buy one, get one','🎉','Bring a friend for your next snack.'],['A bonus mini pack','🍿','A mini pack for your next movie moment.']];let customer='',prize=null,prizeCode='';
+const storageKey='popcorn-club-demo-v1',prizes=[['Free popcorn!','🍿','One fresh popcorn, on us.',20],['50% off your next bag','🏷️','A little something for your next visit.',15],['Free topping upgrade','✨','Make your next popcorn extra special.',10],['Buy one, get one','🎉','Bring a friend for your next snack.',25],['A bonus mini pack','🍿','A mini pack for your next movie moment.',15],['Free ₹10 Water Bottle','💧','A chilled ₹10 water bottle, on us.',10],['Free ₹20 Water Bottle','💧','A chilled ₹20 water bottle, on us.',20]];let customer='',prize=null,prizeCode='';
 function list(){try{return JSON.parse(localStorage.getItem(storageKey)||'[]')}catch{return []}}function save(a){localStorage.setItem(storageKey,JSON.stringify(a));render()}function code(){return 'PC-'+Math.random().toString(36).slice(2,8).toUpperCase()}function show(id,updateUrl=true){if(id==='shop'&&!hasAccess())id='owner';if(id==='owner')syncOwnerGate();if(id==='partner')syncPartnerPage();if(updateUrl){if(id==='welcome')routeUrl('customer');else if(id==='owner'||id==='shop')routeUrl('owner');else if(id==='partner')routeUrl('partner')}document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.view===id||(id==='scratch'&&x.dataset.view==='welcome')||((id==='shop'||id==='owner')&&x.dataset.view==='owner')));if(id==='shop'){render();renderPartnerRequests()}window.scrollTo({top:0,behavior:'smooth'})}function routeUrl(page){let u=new URL(location.href);if(page==='customer')u.searchParams.delete('page');else u.searchParams.set('page',page);history.replaceState({},'',u)}function toast(s){let x=document.getElementById('toast');x.textContent=s;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2300)}document.querySelectorAll('.nav').forEach(x=>x.onclick=()=>show(x.dataset.view));
 function prizeIllustration(index=0){const scenes=[
 '<path d="M79 48h82l-10 51H89z" fill="url(#tub)"/><path d="M99 50l4 47m18-49v49m18-47-5 47" stroke="#fff5df" stroke-width="8"/><path d="M77 51c-3-11 7-18 16-12 1-12 17-15 23-5 7-12 23-8 24 3 13-6 22 4 18 15z" fill="#fffdf7" stroke="#f4c17c" stroke-width="3"/><circle cx="94" cy="37" r="9" fill="#fffdf7"/><circle cx="119" cy="30" r="10" fill="#fffdf7"/><circle cx="145" cy="37" r="9" fill="#fffdf7"/>',
 '<path d="M75 39h90v58H75z" rx="12" fill="url(#tub)"/><path d="M92 52h56M92 64h35" stroke="#fff4e6" stroke-width="5" stroke-linecap="round"/><text x="120" y="88" text-anchor="middle" font-family="sans-serif" font-size="21" font-weight="800" fill="white">50%</text><circle cx="75" cy="68" r="8" fill="#ffe0bd"/><circle cx="165" cy="68" r="8" fill="#ffe0bd"/>',
 '<path d="M120 27l11 24 26 3-19 17 5 26-23-13-23 13 5-26-19-17 26-3z" fill="url(#tub)"/><path d="M120 43v35m-15-17h30" stroke="#fff8ee" stroke-width="7" stroke-linecap="round"/><circle cx="72" cy="45" r="5" fill="#ff9a4d"/><circle cx="172" cy="85" r="5" fill="#ff9a4d"/>',
 '<path d="M64 49h112v49H64z" rx="12" fill="url(#tub)"/><path d="M120 49v49" stroke="#fff3e3" stroke-width="4" stroke-dasharray="5 5"/><text x="91" y="81" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="800" fill="white">1</text><text x="149" y="81" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="800" fill="white">2</text><path d="M64 58c11 0 11 15 0 15m112-15c-11 0-11 15 0 15" fill="none" stroke="#fff0df" stroke-width="3"/>',
-'<path d="M83 57h74l-8 43H91z" fill="url(#tub)"/><path d="M100 59l4 39m17-40v41m18-39-4 38" stroke="#fff5df" stroke-width="7"/><path d="M84 60c-2-9 6-14 14-10 2-9 15-11 20-3 6-9 18-6 19 3 10-4 17 3 14 11z" fill="#fffdf7" stroke="#f4c17c" stroke-width="3"/><circle cx="96" cy="47" r="7" fill="#fffdf7"/><circle cx="119" cy="42" r="8" fill="#fffdf7"/><circle cx="140" cy="47" r="7" fill="#fffdf7"/>'];return '<svg class="prize-art" viewBox="0 0 240 120" role="img" aria-label="'+['Free popcorn','50 percent off coupon','Free topping upgrade','Buy one get one ticket','Bonus mini popcorn'][index]+' prize illustration"><defs><linearGradient id="treatBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff1dc"/><stop offset="1" stop-color="#ffd19f"/></linearGradient><linearGradient id="tub" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff974d"/><stop offset="1" stop-color="#ed4b14"/></linearGradient></defs><rect x="3" y="3" width="234" height="114" rx="24" fill="url(#treatBg)"/><circle cx="34" cy="32" r="3" fill="#fff"/><circle cx="205" cy="83" r="4" fill="#fff"/>'+scenes[index]+'<path d="M48 77l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1zM187 24l3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#ff8a39"/><text x="120" y="111" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="700" letter-spacing="2" fill="#9b4a20">A LITTLE POPCORN CLUB JOY</text></svg>'};document.getElementById('themeToggle').onclick=()=>setTheme(document.body.classList.contains('dark')?'light':'dark');function setTheme(mode){document.body.classList.toggle('dark',mode==='dark');let hero=document.getElementById('heroImage');if(hero)hero.src=mode==='dark'?hero.dataset.darkSrc:hero.dataset.lightSrc;localStorage.setItem('popcorn-club-theme',mode);let b=document.getElementById('themeToggle');b.innerHTML=mode==='dark'?'☀ <span>Light mode</span>':'☾ <span>Dark mode</span>';document.querySelector('meta[name=theme-color]').content=mode==='dark'?'#090a0b':'#ff6b24'}setTheme(localStorage.getItem('popcorn-club-theme')||'light');document.getElementById('nameForm').onsubmit=e=>{e.preventDefault();customer=document.getElementById('name').value.trim();if(!customer)return;document.getElementById('hello').textContent=customer;prize=prizes[Math.floor(Math.random()*prizes.length)];prizeCode=code();document.getElementById('giftName').textContent=prize[0];document.getElementById('giftArt').innerHTML=prizeIllustration(prizes.indexOf(prize));document.getElementById('giftDesc').textContent=prize[2];document.getElementById('giftCode').textContent=prizeCode;let c=document.getElementById('cover');c.classList.remove('done');c.dataset.saved='false';show('scratch');requestAnimationFrame(()=>requestAnimationFrame(resetScratch))};function reveal(){let c=document.getElementById('cover');if(c.classList.contains('done'))return;c.classList.add('done');if(c.dataset.saved==='true')return;c.dataset.saved='true';let a=list();a.unshift({name:customer,code:prizeCode,prize:prize[0],icon:prize[1],status:'Waiting'});save(a);toast('Surprise revealed! Show your code in the shop.')}const scratchCard=document.getElementById('cover'),scratchCanvas=document.getElementById('scratchLayer');let scratchContext,scratchDrawing=false,scratchMoves=0;function resetScratch(){if(!scratchCard||!scratchCanvas)return;let rect=scratchCard.getBoundingClientRect();if(!rect.width||!rect.height)return;let ratio=Math.min(window.devicePixelRatio||1,2);scratchCanvas.width=Math.round(rect.width*ratio);scratchCanvas.height=Math.round(rect.height*ratio);scratchContext=scratchCanvas.getContext('2d',{willReadFrequently:true});scratchContext.setTransform(ratio,0,0,ratio,0,0);let grad=scratchContext.createLinearGradient(0,0,rect.width,rect.height);grad.addColorStop(0,'#ffad55');grad.addColorStop(.48,'#ff762b');grad.addColorStop(1,'#e9531b');scratchContext.fillStyle=grad;scratchContext.fillRect(0,0,rect.width,rect.height);for(let i=0;i<90;i++){let x=Math.random()*rect.width,y=Math.random()*rect.height,r=Math.random()*1.5+.4;scratchContext.beginPath();scratchContext.arc(x,y,r,0,Math.PI*2);scratchContext.fillStyle='rgba(255,245,226,.4)';scratchContext.fill()}scratchContext.globalCompositeOperation='destination-out';scratchContext.lineCap='round';scratchContext.lineJoin='round';scratchContext.lineWidth=34;scratchMoves=0}
+'<path d="M83 57h74l-8 43H91z" fill="url(#tub)"/><path d="M100 59l4 39m17-40v41m18-39-4 38" stroke="#fff5df" stroke-width="7"/><path d="M84 60c-2-9 6-14 14-10 2-9 15-11 20-3 6-9 18-6 19 3 10-4 17 3 14 11z" fill="#fffdf7" stroke="#f4c17c" stroke-width="3"/><circle cx="96" cy="47" r="7" fill="#fffdf7"/><circle cx="119" cy="42" r="8" fill="#fffdf7"/><circle cx="140" cy="47" r="7" fill="#fffdf7"/>'];return '<svg class="prize-art" viewBox="0 0 240 120" role="img" aria-label="'+['Free popcorn','50 percent off coupon','Free topping upgrade','Buy one get one ticket','Bonus mini popcorn','Free 10 rupee water bottle','Free 20 rupee water bottle'][index]||''+' prize illustration"><defs><linearGradient id="treatBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff1dc"/><stop offset="1" stop-color="#ffd19f"/></linearGradient><linearGradient id="tub" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff974d"/><stop offset="1" stop-color="#ed4b14"/></linearGradient></defs><rect x="3" y="3" width="234" height="114" rx="24" fill="url(#treatBg)"/><circle cx="34" cy="32" r="3" fill="#fff"/><circle cx="205" cy="83" r="4" fill="#fff"/>'+(scenes[index]||scenes[0])+'<path d="M48 77l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1zM187 24l3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#ff8a39"/><text x="120" y="111" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="700" letter-spacing="2" fill="#9b4a20">A LITTLE POPCORN CLUB JOY</text></svg>'};document.getElementById('themeToggle').onclick=()=>setTheme(document.body.classList.contains('dark')?'light':'dark');function setTheme(mode){document.body.classList.toggle('dark',mode==='dark');let hero=document.getElementById('heroImage');if(hero)hero.src=mode==='dark'?hero.dataset.darkSrc:hero.dataset.lightSrc;localStorage.setItem('popcorn-club-theme',mode);let b=document.getElementById('themeToggle');b.innerHTML=mode==='dark'?'☀ <span>Light mode</span>':'☾ <span>Dark mode</span>';document.querySelector('meta[name=theme-color]').content=mode==='dark'?'#090a0b':'#ff6b24'}setTheme(localStorage.getItem('popcorn-club-theme')||'light');document.getElementById('nameForm').onsubmit=e=>{e.preventDefault();customer=document.getElementById('name').value.trim();if(!customer)return;document.getElementById('hello').textContent=customer;let urlCode=new URLSearchParams(location.search).get('code');let existingSlip=urlCode?list().find(x=>x.code.toUpperCase()===urlCode.toUpperCase()):null;if(existingSlip){prize=prizes.find(p=>p[0]===existingSlip.prize)||prizes[0];prizeCode=existingSlip.code}else{prize=prizes[Math.floor(Math.random()*prizes.length)];prizeCode=code()}document.getElementById('giftName').textContent=prize[0];document.getElementById('giftArt').innerHTML=prizeIllustration(prizes.indexOf(prize));document.getElementById('giftDesc').textContent=prize[2];document.getElementById('giftCode').textContent=prizeCode;let c=document.getElementById('cover');c.classList.remove('done');c.dataset.saved='false';show('scratch');requestAnimationFrame(()=>requestAnimationFrame(resetScratch))};function reveal(){let c=document.getElementById('cover');if(c.classList.contains('done'))return;c.classList.add('done');if(c.dataset.saved==='true')return;c.dataset.saved='true';let a=list();let ex=a.find(x=>x.code===prizeCode);if(ex){ex.name=customer;if(ex.status==='Generated')ex.status='Waiting'}else{a.unshift({name:customer,code:prizeCode,prize:prize[0],icon:prize[1],cost:prize[3]||15,status:'Waiting'})}save(a);toast('Surprise revealed! Show your code in the shop.')}const scratchCard=document.getElementById('cover'),scratchCanvas=document.getElementById('scratchLayer');let scratchContext,scratchDrawing=false,scratchMoves=0;function resetScratch(){if(!scratchCard||!scratchCanvas)return;let rect=scratchCard.getBoundingClientRect();if(!rect.width||!rect.height)return;let ratio=Math.min(window.devicePixelRatio||1,2);scratchCanvas.width=Math.round(rect.width*ratio);scratchCanvas.height=Math.round(rect.height*ratio);scratchContext=scratchCanvas.getContext('2d',{willReadFrequently:true});scratchContext.setTransform(ratio,0,0,ratio,0,0);let grad=scratchContext.createLinearGradient(0,0,rect.width,rect.height);grad.addColorStop(0,'#ffad55');grad.addColorStop(.48,'#ff762b');grad.addColorStop(1,'#e9531b');scratchContext.fillStyle=grad;scratchContext.fillRect(0,0,rect.width,rect.height);for(let i=0;i<90;i++){let x=Math.random()*rect.width,y=Math.random()*rect.height,r=Math.random()*1.5+.4;scratchContext.beginPath();scratchContext.arc(x,y,r,0,Math.PI*2);scratchContext.fillStyle='rgba(255,245,226,.4)';scratchContext.fill()}scratchContext.globalCompositeOperation='destination-out';scratchContext.lineCap='round';scratchContext.lineJoin='round';scratchContext.lineWidth=34;scratchMoves=0}
 scratchCanvas.addEventListener('pointerdown',e=>{if(scratchCard.classList.contains('done'))return;scratchDrawing=true;scratchCanvas.setPointerCapture(e.pointerId);let r=scratchCanvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;scratchContext.beginPath();scratchContext.arc(x,y,17,0,Math.PI*2);scratchContext.fill();scratchContext.beginPath();scratchContext.moveTo(x,y);scratchMoves++});scratchCanvas.addEventListener('pointermove',e=>{if(!scratchDrawing||scratchCard.classList.contains('done'))return;let r=scratchCanvas.getBoundingClientRect();scratchContext.lineTo(e.clientX-r.left,e.clientY-r.top);scratchContext.stroke();scratchContext.beginPath();scratchContext.moveTo(e.clientX-r.left,e.clientY-r.top);if(++scratchMoves%6===0){let d=scratchContext.getImageData(0,0,scratchCanvas.width,scratchCanvas.height).data,clear=0,total=0;for(let i=3;i<d.length;i+=64){total++;if(d[i]<35)clear++}if(total&&clear/total>.52){scratchDrawing=false;reveal()}}});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>scratchCanvas.addEventListener(ev,()=>{scratchDrawing=false}));scratchCard.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();reveal()}};window.addEventListener('resize',()=>{if(!scratchCard.classList.contains('done')&&document.getElementById('scratch').classList.contains('active'))resetScratch()});document.getElementById('back').onclick=()=>show('welcome');
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function render(){let a=list();document.getElementById('plays').textContent=a.length+' plays';document.getElementById('pending').textContent=a.filter(x=>x.status==='Waiting').length+' waiting';document.getElementById('rows').innerHTML=a.slice(0,8).map(x=>'<tr><td>'+esc(x.name)+'</td><td><b>'+esc(x.code)+'</b></td><td>'+esc(x.icon)+' '+esc(x.prize)+'</td><td class="'+(x.status==='Collected'?'collected':'waiting')+'">'+esc(x.status)+'</td></tr>').join('')||'<tr><td colspan="4" style="color:#988d82;padding:16px 5px">No entries yet. Add a demo winner to preview.</td></tr>'}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function render(){let a=list();let playsEl=document.getElementById('plays');if(playsEl)playsEl.textContent=a.filter(x=>x.status!=='Generated').length+' plays';let pendEl=document.getElementById('pending');if(pendEl)pendEl.textContent=a.filter(x=>x.status==='Waiting').length+' waiting';let colEl=document.getElementById('collectedStat');if(colEl)colEl.textContent=a.filter(x=>x.status==='Collected').length+' collected';if(typeof updatePnlView==='function')updatePnlView()}
 document.getElementById('check').onsubmit=e=>{e.preventDefault();let q=document.getElementById('query').value.trim().toUpperCase(),box=document.getElementById('result'),a=list(),x=a.find(v=>v.code.toUpperCase()===q);box.className='result show';if(!x){box.classList.add('error');box.innerHTML='<b>Code not found</b><br>Check the letters and numbers, then try again.';return}if(x.status==='Collected'){box.classList.add('error');box.innerHTML='<b>Already collected</b><br>'+esc(x.name)+' · '+esc(x.prize)+' · This code was already redeemed.';return}box.innerHTML='<b>Valid prize code ✓</b><br>'+esc(x.name)+' can collect <b>'+esc(x.prize)+'</b><br><button id="redeem" class="btn orange" style="margin-top:12px;padding:10px 14px">Mark as collected</button>';document.getElementById('redeem').onclick=()=>{x.status='Collected';save(a);box.innerHTML='<b>Prize collected ✓</b><br>'+esc(x.name)+' · '+esc(x.prize)+' · '+esc(x.code)+' redeemed.'}};document.getElementById('demo').onclick=()=>{let names=['Maya','Arjun','Kavya','Rohan','Asha'],p=prizes[Math.floor(Math.random()*prizes.length)],a=list();a.unshift({name:names[Math.floor(Math.random()*names.length)],code:code(),prize:p[0],icon:p[1],status:'Waiting'});save(a);toast('Demo winner added to the counter screen.')};const partnerKey='popcorn-partner-requests-v1';
 function isOwner(){return sessionStorage.getItem('popcorn-owner-session')==='yes'}function hasAccess(){return isOwner()||sessionStorage.getItem('popcorn-partner-session')==='yes'}
 function route(page){let u=new URL(location.href);if(page==='customer')u.searchParams.delete('page');else u.searchParams.set('page',page);history.pushState({},'',u);show(page==='customer'?'welcome':page)}
@@ -242,95 +673,328 @@ document.getElementById('partnerLoginForm').onsubmit=e=>{e.preventDefault();let 
 function renderPartnerRequests(){let panel=document.getElementById('partnerRequests');if(!panel)return;panel.style.display=isOwner()?'block':'none';if(!isOwner())return;let a=JSON.parse(localStorage.getItem(partnerKey)||'[]'),rows=document.getElementById('partnerRows');rows.innerHTML=a.map((x,i)=>'<div class="partner-row"><div class="partner-info"><b>'+esc(x.name)+'</b> · '+esc(x.contact)+'<br>'+esc(x.reason)+'<br><span class="'+(x.status==='Approved'?'partner-code':'waiting')+'">'+esc(x.status)+(x.code?' · Share access code: '+esc(x.code):'')+'</span></div><div class="partner-actions">'+(x.status==='Pending'?'<button class="btn orange" data-partner-action="approve" data-index="'+i+'">Approve</button><button class="btn" data-partner-action="reject" data-index="'+i+'">Reject</button>':'')+'</div></div>').join('')||'<div class="sub">No partner requests yet.</div>';rows.querySelectorAll('[data-partner-action]').forEach(b=>b.onclick=()=>{if(!isOwner())return;let list=JSON.parse(localStorage.getItem(partnerKey)||'[]'),x=list[Number(b.dataset.index)];if(!x||x.status!=='Pending')return;if(b.dataset.partnerAction==='approve'){x.status='Approved';x.code='PARTNER-'+Math.random().toString(36).slice(2,7).toUpperCase()}else{x.status='Rejected';x.code=''}localStorage.setItem(partnerKey,JSON.stringify(list));renderPartnerRequests()})}
 async function passwordHash(value){let data=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return Array.from(new Uint8Array(data)).map(x=>x.toString(16).padStart(2,'0')).join('')}function syncOwnerGate(){let first=!localStorage.getItem('popcorn-owner-hash');document.getElementById('ownerTitle').textContent=first?'Set up owner access':'Owner login';document.getElementById('ownerName').value=localStorage.getItem('popcorn-owner-name')||'';document.getElementById('ownerName').readOnly=!first;document.getElementById('ownerNote').textContent=first?'Create a password for the owner dashboard. Your mom will use it to view winners and verify codes.':'Sign in to review lucky-card winners and verify prize codes.';document.getElementById('confirmGroup').style.display=first?'block':'none';document.getElementById('ownerSubmit').textContent=first?'Save password & continue':'Sign in';document.getElementById('ownerError').classList.remove('show')}document.getElementById('ownerForm').onsubmit=async e=>{e.preventDefault();let pw=document.getElementById('ownerPassword').value,name=document.getElementById('ownerName').value.trim(),first=!localStorage.getItem('popcorn-owner-hash'),err=document.getElementById('ownerError');if(pw.length<6){err.textContent='Please use at least 6 characters.';err.classList.add('show');return}if(first&&pw!==document.getElementById('ownerConfirm').value){err.textContent='The passwords do not match.';err.classList.add('show');return}try{let hash=await passwordHash(pw);if(first){localStorage.setItem('popcorn-owner-hash',hash);localStorage.setItem('popcorn-owner-name',name)}else if(name.toLowerCase()!==String(localStorage.getItem('popcorn-owner-name')||'').toLowerCase()||hash!==localStorage.getItem('popcorn-owner-hash')){err.textContent='Owner name or password did not match.';err.classList.add('show');return}sessionStorage.setItem('popcorn-owner-session','yes');e.target.reset();show('shop')}catch{err.textContent='Secure password setup is not available in this browser.';err.classList.add('show')}};render();let routePage=new URLSearchParams(location.search).get('page');if(routePage==='owner')show('owner',false);else if(routePage==='partner')show('partner',false);else{let link=document.getElementById('ownerLink');if(link)link.style.display='none'}renderPartnerRequests();
 
-function switchOwnerSubTab(tab) {
-  const counterTab = document.getElementById('subTabCounter');
-  const pnlTab = document.getElementById('subTabPnl');
-  const btnCounter = document.getElementById('tabCounter');
-  const btnPnl = document.getElementById('tabPnl');
-  if (!counterTab || !pnlTab) return;
-  if (tab === 'pnl') {
-    counterTab.style.display = 'none';
-    pnlTab.style.display = 'grid';
-    btnCounter.classList.remove('active');
-    btnPnl.classList.add('active');
-    updatePnlView();
+// Toggle dark glassmorphism body class strictly on owner pages
+const _origShow = show;
+show = function(id, updateUrl=true) {
+  document.body.classList.toggle('owner-mode-active', id === 'owner' || id === 'partner' || id === 'shop');
+  _origShow(id, updateUrl);
+};
+// Apply immediately if opened on ?page=owner
+if (new URLSearchParams(location.search).get('page') === 'owner' || new URLSearchParams(location.search).get('page') === 'partner') {
+  document.body.classList.add('owner-mode-active');
+}
+
+// AUTHENTICATION: SIGN UP + LOGIN + SOCIAL LOGIN
+let currentAuthMode = localStorage.getItem('popcorn-owner-hash') ? 'login' : 'signup';
+
+function setAuthMode(mode) {
+  currentAuthMode = mode;
+  const isSignup = mode === 'signup';
+  document.getElementById('authTabLogin')?.classList.toggle('active', !isSignup);
+  document.getElementById('authTabSignup')?.classList.toggle('active', isSignup);
+  const title = document.getElementById('ownerTitle');
+  const note = document.getElementById('ownerNote');
+  const emailGrp = document.getElementById('signupEmailGroup');
+  const confGrp = document.getElementById('confirmGroup');
+  const submitBtn = document.getElementById('ownerSubmit');
+  const nameInput = document.getElementById('ownerName');
+  const err = document.getElementById('ownerError');
+  if (err) err.classList.remove('show');
+
+  if (isSignup) {
+    if (title) title.textContent = 'Create Owner Account';
+    if (note) note.textContent = 'Sign up once — after signing up you can log in anytime from this device.';
+    if (emailGrp) emailGrp.style.display = 'block';
+    if (confGrp) confGrp.style.display = 'block';
+    if (submitBtn) submitBtn.textContent = 'Create Account & Enter Dashboard →';
+    if (nameInput) { nameInput.readOnly = false; nameInput.value = ''; }
   } else {
-    counterTab.style.display = 'block';
-    pnlTab.style.display = 'none';
-    btnCounter.classList.add('active');
-    btnPnl.classList.remove('active');
+    if (title) title.textContent = 'Owner Sign In';
+    if (note) note.textContent = 'Welcome back! Enter your registered name and password to open the dashboard.';
+    if (emailGrp) emailGrp.style.display = 'none';
+    if (confGrp) confGrp.style.display = 'none';
+    if (submitBtn) submitBtn.textContent = 'Sign In →';
+    if (nameInput) {
+      nameInput.readOnly = false;
+      nameInput.value = localStorage.getItem('popcorn-owner-name') || '';
+    }
   }
 }
 
-const campaignsData = [
-  { id: 'diwali', name: 'Diwali Golden Batch', dates: 'Oct 15 - Oct 28', issued: 500, scanned: 342, redeemed: 198, sales: 32000, prodCost: 12800, unitGiftCost: 20, packCost: 1200, otherCost: 400, status: 'Active' },
-  { id: 'weekend', name: 'Weekend Crunch Special', dates: 'Oct 21 - Oct 23', issued: 250, scanned: 180, redeemed: 92, sales: 16500, prodCost: 6600, unitGiftCost: 20, packCost: 600, otherCost: 300, status: 'Completed' },
-  { id: 'launch', name: 'Launch Gift Cards', dates: 'Sep 01 - Sep 15', issued: 300, scanned: 210, redeemed: 130, sales: 21000, prodCost: 8400, unitGiftCost: 20, packCost: 800, otherCost: 200, status: 'Completed' }
-];
+syncOwnerGate = function() {
+  const hasAccount = !!localStorage.getItem('popcorn-owner-hash');
+  setAuthMode(hasAccount ? 'login' : 'signup');
+};
+
+document.getElementById('ownerForm').onsubmit = async function(e) {
+  e.preventDefault();
+  const pw = document.getElementById('ownerPassword').value;
+  const name = document.getElementById('ownerName').value.trim();
+  const email = (document.getElementById('ownerEmail')?.value || '').trim();
+  const err = document.getElementById('ownerError');
+  err.classList.remove('show');
+
+  if (pw.length < 6) {
+    err.textContent = 'Password must be at least 6 characters.';
+    err.classList.add('show');
+    return;
+  }
+
+  let accounts = [];
+  try { accounts = JSON.parse(localStorage.getItem('popcorn-owner-accounts') || '[]'); } catch {}
+
+  const hash = await passwordHash(pw);
+
+  if (currentAuthMode === 'signup') {
+    if (pw !== document.getElementById('ownerConfirm').value) {
+      err.textContent = 'Passwords do not match.';
+      err.classList.add('show');
+      return;
+    }
+    accounts.push({ name, email, hash, createdAt: new Date().toISOString() });
+    localStorage.setItem('popcorn-owner-accounts', JSON.stringify(accounts));
+    localStorage.setItem('popcorn-owner-hash', hash);
+    localStorage.setItem('popcorn-owner-name', name);
+    sessionStorage.setItem('popcorn-owner-session', 'yes');
+    toast('Account created! Welcome, ' + name);
+    show('shop');
+  } else {
+    // Check in multi-accounts list or primary owner hash
+    const matched = accounts.find(a => (a.name.toLowerCase() === name.toLowerCase() || (a.email && a.email.toLowerCase() === name.toLowerCase())) && a.hash === hash);
+    const legacyMatch = name.toLowerCase() === String(localStorage.getItem('popcorn-owner-name') || '').toLowerCase() && hash === localStorage.getItem('popcorn-owner-hash');
+    if (!matched && !legacyMatch) {
+      err.textContent = 'Name or password did not match. Need an account? Tap "Sign Up (New)" above.';
+      err.classList.add('show');
+      return;
+    }
+    sessionStorage.setItem('popcorn-owner-session', 'yes');
+    toast('Signed in as ' + name);
+    show('shop');
+  }
+};
+
+function socialLogin(provider) {
+  const user = prompt('Sign in with ' + provider + ' — Enter your Name or Gmail to continue:', localStorage.getItem('popcorn-owner-name') || 'Owner');
+  if (!user || !user.trim()) return;
+  localStorage.setItem('popcorn-owner-name', user.trim());
+  if (!localStorage.getItem('popcorn-owner-hash')) {
+    localStorage.setItem('popcorn-owner-hash', 'social-auth-' + Date.now());
+  }
+  sessionStorage.setItem('popcorn-owner-session', 'yes');
+  toast('Signed in with ' + provider + ' as ' + user.trim());
+  show('shop');
+}
+
+function logoutOwner() {
+  sessionStorage.removeItem('popcorn-owner-session');
+  sessionStorage.removeItem('popcorn-partner-session');
+  toast('Logged out of Owner Dashboard');
+  show('owner');
+}
+
+// 3-PAGE OWNER NAVIGATION (Counter, P&L, QR Generator)
+function switchOwnerSubTab(tab) {
+  const tabs = ['counter', 'pnl', 'qr'];
+  tabs.forEach(t => {
+    const el = document.getElementById('subTab' + t.charAt(0).toUpperCase() + t.slice(1));
+    const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (el) el.style.display = (t === tab) ? 'block' : 'none';
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  if (tab === 'pnl') updatePnlView();
+  if (tab === 'qr') renderQrSlipsSheet();
+}
+
+// REAL-TIME OFFERS PROFIT & LOSS (Connected to Counter Redemptions & QR Slips)
+function loadPnlConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('popcorn-pnl-cfg') || 'null');
+    if (cfg) {
+      if (document.getElementById('cfgPackets')) document.getElementById('cfgPackets').value = cfg.packets ?? 100;
+      if (document.getElementById('cfgSellPrice')) document.getElementById('cfgSellPrice').value = cfg.sellPrice ?? 50;
+      if (document.getElementById('cfgMakeCost')) document.getElementById('cfgMakeCost').value = cfg.makeCost ?? 18;
+      if (document.getElementById('cfgPaperCost')) document.getElementById('cfgPaperCost').value = cfg.paperCost ?? 120;
+    }
+  } catch {}
+}
+
+function savePnlConfig() {
+  const cfg = {
+    packets: Number(document.getElementById('cfgPackets')?.value || 100),
+    sellPrice: Number(document.getElementById('cfgSellPrice')?.value || 50),
+    makeCost: Number(document.getElementById('cfgMakeCost')?.value || 18),
+    paperCost: Number(document.getElementById('cfgPaperCost')?.value || 120)
+  };
+  localStorage.setItem('popcorn-pnl-cfg', JSON.stringify(cfg));
+  updatePnlView();
+}
+
+function getPrizeCost(prizeName) {
+  const found = prizes.find(p => p[0] === prizeName);
+  return found && found[3] ? Number(found[3]) : 15;
+}
 
 function updatePnlView() {
-  const campFilter = document.getElementById('pnlCampaignFilter') ? document.getElementById('pnlCampaignFilter').value : 'all';
-  const statusFilter = document.getElementById('pnlStatusFilter') ? document.getElementById('pnlStatusFilter').value : 'all';
-  
-  const filtered = campaignsData.filter(function(c) {
-    if (campFilter !== 'all' && c.id !== campFilter) return false;
-    if (statusFilter !== 'all' && c.status.toLowerCase() !== statusFilter.toLowerCase()) return false;
-    return true;
-  });
+  loadPnlConfig();
+  const packets = Number(document.getElementById('cfgPackets')?.value || 100);
+  const sellPrice = Number(document.getElementById('cfgSellPrice')?.value || 50);
+  const makeCost = Number(document.getElementById('cfgMakeCost')?.value || 18);
+  const paperCost = Number(document.getElementById('cfgPaperCost')?.value || 120);
 
-  let totSales = 0, totProdCost = 0, totGiftCost = 0, totOtherCost = 0;
-  const tbody = document.getElementById('pnlTableRows');
-  if (!tbody) return;
+  const allEntries = list();
+  let totalGiftCost = 0;
+  let totalCollectedCount = 0;
 
-  tbody.innerHTML = filtered.map(function(c) {
-    const giftCost = c.redeemed * c.unitGiftCost;
-    const totalCost = c.prodCost + giftCost + c.packCost + c.otherCost;
-    const netProfit = c.sales - totalCost;
-    const roi = totalCost > 0 ? ((netProfit / totalCost) * 100).toFixed(1) : '0.0';
-    
-    totSales += c.sales;
-    totProdCost += c.prodCost;
-    totGiftCost += giftCost;
-    totOtherCost += (c.packCost + c.otherCost);
+  // Build breakdown per offer type
+  const breakdownRows = prizes.map(p => {
+    const offerName = p[0];
+    const icon = p[1];
+    const unitCost = p[3] || 15;
+    const matching = allEntries.filter(x => x.prize === offerName);
+    const generated = matching.length;
+    const scanned = matching.filter(x => x.status === 'Waiting' || x.status === 'Collected').length;
+    const waiting = matching.filter(x => x.status === 'Waiting').length;
+    const collected = matching.filter(x => x.status === 'Collected').length;
+    const costIncurred = collected * unitCost;
+
+    totalGiftCost += costIncurred;
+    totalCollectedCount += collected;
 
     return '<tr>' +
-      '<td><b>' + esc(c.name) + '</b></td>' +
-      '<td>' + esc(c.dates) + '</td>' +
-      '<td>' + c.issued + '</td>' +
-      '<td>' + c.scanned + '</td>' +
-      '<td><span style="color:#4ade80;font-weight:700;">' + c.redeemed + '</span></td>' +
-      '<td>₹' + c.sales.toLocaleString('en-IN') + '</td>' +
-      '<td>₹' + totalCost.toLocaleString('en-IN') + '</td>' +
-      '<td class="' + (netProfit >= 0 ? 'pnl-profit' : 'pnl-loss') + '"><b>' + (netProfit >= 0 ? '+₹' : '-₹') + Math.abs(netProfit).toLocaleString('en-IN') + '</b></td>' +
-      '<td><span class="roi-badge ' + (netProfit >= 0 ? 'pos' : 'neg') + '">' + (netProfit >= 0 ? '+' : '') + roi + '%</span></td>' +
-      '<td><span style="font-size:11px;font-weight:700;color:' + (c.status === 'Active' ? '#ff914d' : '#a89a8e') + ';">' + c.status + '</span></td>' +
+      '<td><b>' + icon + ' ' + esc(offerName) + '</b></td>' +
+      '<td>₹' + unitCost + '</td>' +
+      '<td>' + generated + ' slips</td>' +
+      '<td>' + scanned + '</td>' +
+      '<td style="color:#ff9d63;font-weight:700">' + waiting + '</td>' +
+      '<td style="color:#4ade80;font-weight:700">' + collected + '</td>' +
+      '<td><b>₹' + costIncurred.toLocaleString('en-IN') + '</b></td>' +
       '</tr>';
-  }).join('') || '<tr><td colspan="10" style="text-align:center;padding:18px;color:#8a7c70;">No campaigns match filters.</td></tr>';
+  }).join('');
 
-  const totInv = totProdCost + totGiftCost + totOtherCost;
-  const netProf = totSales - totInv;
-  const margin = totSales > 0 ? ((netProf / totSales) * 100).toFixed(1) : '0.0';
-  const totRoi = totInv > 0 ? ((netProf / totInv) * 100).toFixed(1) : '0.0';
+  const tbody = document.getElementById('pnlOfferBreakdownRows');
+  if (tbody) tbody.innerHTML = breakdownRows;
 
-  if (document.getElementById('pnlSales')) document.getElementById('pnlSales').textContent = '₹' + totSales.toLocaleString('en-IN');
-  if (document.getElementById('pnlProdCost')) document.getElementById('pnlProdCost').textContent = '₹' + totProdCost.toLocaleString('en-IN');
-  if (document.getElementById('pnlGiftCost')) document.getElementById('pnlGiftCost').textContent = '₹' + totGiftCost.toLocaleString('en-IN');
-  if (document.getElementById('pnlPackCost')) document.getElementById('pnlPackCost').textContent = '₹' + totOtherCost.toLocaleString('en-IN');
-  if (document.getElementById('pnlNetProfit')) {
-    const el = document.getElementById('pnlNetProfit');
-    el.textContent = (netProf >= 0 ? '+₹' : '-₹') + Math.abs(netProf).toLocaleString('en-IN');
-    el.className = 'pnl-card-val ' + (netProf >= 0 ? 'pnl-profit' : 'pnl-loss');
+  const totalSales = packets * sellPrice;
+  const totalProdCost = packets * makeCost;
+  const totalInvestment = totalProdCost + totalGiftCost + paperCost;
+  const netProfit = totalSales - totalInvestment;
+  const margin = totalSales > 0 ? ((netProfit / totalSales) * 100).toFixed(1) : '0.0';
+
+  if (document.getElementById('pnlSales')) document.getElementById('pnlSales').textContent = '₹' + totalSales.toLocaleString('en-IN');
+  if (document.getElementById('pnlSalesSub')) document.getElementById('pnlSalesSub').textContent = packets + ' packets × ₹' + sellPrice;
+  if (document.getElementById('pnlProdCost')) document.getElementById('pnlProdCost').textContent = '₹' + totalProdCost.toLocaleString('en-IN');
+  if (document.getElementById('pnlGiftCost')) document.getElementById('pnlGiftCost').textContent = '₹' + totalGiftCost.toLocaleString('en-IN');
+  if (document.getElementById('pnlGiftSub')) document.getElementById('pnlGiftSub').textContent = totalCollectedCount + ' gifts collected at counter';
+  if (document.getElementById('pnlPackCost')) document.getElementById('pnlPackCost').textContent = '₹' + paperCost.toLocaleString('en-IN');
+
+  const netEl = document.getElementById('pnlNetProfit');
+  if (netEl) {
+    netEl.textContent = (netProfit >= 0 ? '+₹' : '-₹') + Math.abs(netProfit).toLocaleString('en-IN');
+    netEl.className = 'pnl-card-val ' + (netProfit >= 0 ? 'pnl-profit' : 'pnl-loss');
   }
-  if (document.getElementById('pnlMargin')) {
-    const el = document.getElementById('pnlMargin');
-    el.textContent = margin + '%';
-    el.className = 'pnl-card-val ' + (netProf >= 0 ? 'pnl-profit' : 'pnl-loss');
+  const margEl = document.getElementById('pnlMargin');
+  if (margEl) {
+    margEl.textContent = margin + '%';
+    margEl.className = 'pnl-card-val ' + (netProfit >= 0 ? 'pnl-profit' : 'pnl-loss');
   }
-  if (document.getElementById('pnlRoi')) {
-    const el = document.getElementById('pnlRoi');
-    el.textContent = totRoi + '%';
-    el.className = 'pnl-card-val ' + (netProf >= 0 ? 'pnl-profit' : 'pnl-loss');
+}
+
+// PAPER QR SLIP GENERATOR (10-50 QR Slips for 100 Popcorn Packets)
+function updateQrSummaryNote() {
+  const inputs = document.querySelectorAll('.qr-qty-input');
+  let totalSlips = 0;
+  inputs.forEach(inp => { totalSlips += Math.max(0, Number(inp.value || 0)); });
+  const totalPacks = Number(document.getElementById('qrTotalPackets')?.value || 100);
+  const note = document.getElementById('qrSummaryNote');
+  if (note) {
+    note.textContent = 'Total: ' + totalSlips + ' QR paper slips to drop randomly inside ' + totalPacks + ' popcorn packets (' + Math.max(0, totalPacks - totalSlips) + ' packets without slip)';
   }
+}
+
+document.querySelectorAll('.qr-qty-input, #qrTotalPackets').forEach(el => {
+  el.addEventListener('input', updateQrSummaryNote);
+});
+
+function applyQrPreset(targetCount) {
+  // Distribute targetCount across the 6 offers (including ₹10 & ₹20 water bottles)
+  const weights = [0.28, 0.20, 0.20, 0.12, 0.10, 0.10];
+  const inputs = document.querySelectorAll('.qr-qty-input');
+  let assigned = 0;
+  inputs.forEach((inp, i) => {
+    if (i === inputs.length - 1) {
+      inp.value = Math.max(0, targetCount - assigned);
+    } else {
+      const val = Math.round(targetCount * weights[i]);
+      inp.value = val;
+      assigned += val;
+    }
+  });
+  updateQrSummaryNote();
+}
+
+function generatePaperQrSlips() {
+  const inputs = document.querySelectorAll('.qr-qty-input');
+  const batchName = (document.getElementById('qrBatchName')?.value || 'Batch').trim();
+  const a = list();
+  const newSlips = [];
+
+  inputs.forEach(inp => {
+    const idx = Number(inp.dataset.offerIdx);
+    const qty = Math.max(0, Math.min(100, Number(inp.value || 0)));
+    const p = prizes[idx] || prizes[0];
+    for (let i = 0; i < qty; i++) {
+      const slipCode = code();
+      const entry = {
+        name: 'Paper Slip (' + batchName + ')',
+        code: slipCode,
+        prize: p[0],
+        icon: p[1],
+        cost: p[3] || 15,
+        batch: batchName,
+        status: 'Generated'
+      };
+      a.unshift(entry);
+      newSlips.push(entry);
+    }
+  });
+
+  if (!newSlips.length) {
+    toast('Please enter at least 1 QR slip quantity.');
+    return;
+  }
+
+  localStorage.setItem('popcorn-last-qr-batch', JSON.stringify(newSlips));
+  save(a);
+  renderQrSlipsSheet();
+  toast('Generated ' + newSlips.length + ' paper QR slips! Ready to print & cut.');
+}
+
+function renderQrSlipsSheet() {
+  const container = document.getElementById('qrSlipsContainer');
+  if (!container) return;
+  let slips = [];
+  try { slips = JSON.parse(localStorage.getItem('popcorn-last-qr-batch') || '[]'); } catch {}
+  if (!slips.length) {
+    // Show any Generated slips from storage
+    slips = list().filter(x => x.status === 'Generated').slice(0, 50);
+  }
+  if (!slips.length) {
+    container.innerHTML = '<div class="panel" style="grid-column:1/-1;text-align:center;color:#a89a8e">Tap <b>"⚡ Generate Paper QR Slips"</b> above to create printable QR slips for your popcorn packets.</div>';
+    return;
+  }
+
+  const baseUrl = location.origin + location.pathname;
+  container.innerHTML = slips.map((s, idx) => {
+    const scanUrl = baseUrl + '?code=' + encodeURIComponent(s.code);
+    const qrImgUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=4&data=' + encodeURIComponent(scanUrl);
+    return '<div class="qr-paper-slip">' +
+      '<div class="slip-head">✦ LR POPCORN CLUB ✦</div>' +
+      '<img src="' + qrImgUrl + '" alt="QR ' + esc(s.code) + '" loading="lazy">' +
+      '<div class="slip-code">' + esc(s.code) + '</div>' +
+      '<div class="slip-prize">' + esc(s.icon) + ' ' + esc(s.prize) + '</div>' +
+      '<div class="slip-cut">✂ Cut & drop inside popcorn packet #' + (idx + 1) + '</div>' +
+    '</div>';
+  }).join('');
 }
 
 </script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="popcorn-backend.js"></script><script src="popcorn-preview.js"></script></body></html>
