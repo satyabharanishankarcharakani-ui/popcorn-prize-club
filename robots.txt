@@ -4,6 +4,9 @@ Allow: /popcorn-light-hero.jpg
 Allow: /popcorn-dark-hero.jpg
 Allow: /sitemap.xml
 Disallow: /api/
+Disallow: /owner
+Disallow: /owner.html
+Disallow: /partner
 Disallow: /*?page=owner*
 Disallow: /*?page=partner*
 Disallow: /*?page=shop*

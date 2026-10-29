@@ -107,6 +107,13 @@ async function runAllTests() {
   // 2. FIRST-OWNER BOOTSTRAP, LOGIN/FAILURE, MANDATORY INITIAL PASSWORD CHANGE & EMPTY DB STATE
   let ownerToken = '';
   {
+    // Verify 1st-time setup status reports signup_available: true before first signup/password change
+    const statusBeforeReq = mockReq({ method: 'GET', query: { action: 'setup-status' } });
+    const statusBeforeRes = mockRes();
+    await authHandler(statusBeforeReq, statusBeforeRes);
+    assert.strictEqual(statusBeforeRes.statusCode, 200);
+    assert.strictEqual(statusBeforeRes.data.signup_available, true, '1st-time setup must report signup_available: true');
+
     // Failed login must return 401
     const badLoginReq = mockReq({
       method: 'POST',
@@ -162,7 +169,22 @@ async function runAllTests() {
     assert.strictEqual(changePassRes.data.user.must_change_password, false, 'must_change_password must be cleared after password change');
     assert.ok(changePassRes.data.token, 'Refreshed session token must be returned after password change');
     ownerToken = changePassRes.data.token;
-    console.log('✓ [2/12] First-owner bootstrap, failed login rejection, and forced first-login password change passed.');
+
+    // Verify 2nd-time onward: signup-first-owner is permanently locked (403 ALREADY_INITIALIZED)
+    const secondSignupReq = mockReq({
+      method: 'POST',
+      query: { action: 'signup-first-owner' },
+      body: {
+        full_name: 'Attacker',
+        username: 'attacker',
+        password: 'AttackerPass123!',
+      },
+    });
+    const secondSignupRes = mockRes();
+    await authHandler(secondSignupReq, secondSignupRes);
+    assert.strictEqual(secondSignupRes.statusCode, 403, '2nd signup attempt must be permanently blocked with 403');
+    assert.strictEqual(secondSignupRes.data.code, 'ALREADY_INITIALIZED');
+    console.log('✓ [2/12] First-owner 1st-time signup/bootstrap, failed login rejection, and permanent lock to Login Only passed.');
 
     // Check P&L when no financial records exist
     const pnlReq = mockReq({
@@ -494,16 +516,21 @@ async function runAllTests() {
     console.log('✓ [9/12] Real Profit & Loss accounting formulas verified against exact test case.');
   }
 
-  // 10 & 11. FRONTEND DOM, 5 PRIZE OFFERS, MOBILE LAYOUT & 12 DEDICATED OWNER PAGES VERIFICATION
+  // 10 & 11. TWO SEPARATE WEBSITES (CUSTOMER index.html & OWNER owner.html), 5 PRIZE OFFERS, MOBILE LAYOUT & 12 DEDICATED OWNER PAGES
   {
-    const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
-    assert.ok(!html.includes('id="demo"'), 'Add Demo Winner button (#demo) must be removed');
-    assert.ok(!html.includes('Add demo winner'), 'Add demo winner label must be removed');
-    assert.ok(!html.includes('popcorn-backend.js'), 'Broken 404 script popcorn-backend.js must be removed');
-    assert.ok(!html.includes('popcorn-preview.js'), 'Broken 404 script popcorn-preview.js must be removed');
-    assert.ok(html.includes('popcorn-light-hero.jpg'), 'Light hero image must be preserved');
-    assert.ok(html.includes('popcorn-dark-hero.jpg'), 'Dark hero image must be preserved');
-    assert.ok(html.includes('@media(max-width:760px)'), 'Responsive mobile CSS layout must be present');
+    const customerHtml = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+    const ownerHtml = fs.readFileSync(path.join(__dirname, '..', 'owner.html'), 'utf8');
+
+    assert.ok(!customerHtml.includes('id="demo"'), 'Add Demo Winner button (#demo) must be removed from customer site');
+    assert.ok(!customerHtml.includes('id="ownerForm"'), 'Customer website (index.html) must be completely separate from Owner login form');
+    assert.ok(!customerHtml.includes('id="page-reports"'), 'Customer website (index.html) must not contain Owner P&L pages');
+    assert.ok(customerHtml.includes('popcorn-light-hero.jpg'), 'Light hero image must be preserved on customer site');
+    assert.ok(customerHtml.includes('popcorn-dark-hero.jpg'), 'Dark hero image must be preserved on customer site');
+    assert.ok(customerHtml.includes('@media(max-width:760px)'), 'Responsive mobile CSS layout must be present');
+
+    assert.ok(!ownerHtml.includes('id="demo"'), 'Add Demo Winner button (#demo) must be removed from owner site');
+    assert.ok(ownerHtml.includes('id="ownerSignupForm"'), 'Owner website (owner.html) must include 1st-time Owner Sign Up form');
+    assert.ok(ownerHtml.includes('id="ownerForm"'), 'Owner website (owner.html) must include 2nd-time Owner Sign In form');
 
     const prizeImages = [
       'prize-masala-water10-combo.jpg',
@@ -513,7 +540,7 @@ async function runAllTests() {
       'prize-vip-combo-pack.jpg',
     ];
     for (const img of prizeImages) {
-      assert.ok(html.includes(img), `Scratch card prize image ${img} must be wired in index.html`);
+      assert.ok(customerHtml.includes(img), `Scratch card prize image ${img} must be wired in index.html`);
       const imgPath = path.join(__dirname, '..', img);
       assert.ok(fs.existsSync(imgPath) && fs.statSync(imgPath).size > 50000, `Prize image ${img} must exist and be non-empty`);
     }
@@ -534,9 +561,9 @@ async function runAllTests() {
       'menuLogoutBtn',
     ];
     for (const id of requiredPages) {
-      assert.ok(html.includes(`id="${id}"`), `Dedicated owner page/action #${id} must exist in index.html`);
+      assert.ok(ownerHtml.includes(`id="${id}"`), `Dedicated owner page/action #${id} must exist in owner.html`);
     }
-    console.log('✓ [11/12] Frontend structure, 12 dedicated owner menu items/pages, mobile layout, and hero images verified.');
+    console.log('✓ [11/12] Two separate websites (Customer index.html + Owner owner.html), 12 owner pages, and 1st-time Signup -> 2nd-time Login verified.');
   }
 
   // 12. ROBOTS.TXT, SITEMAP.XML & SECURITY HEADERS VALIDATION

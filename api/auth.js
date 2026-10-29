@@ -23,6 +23,8 @@ const {
   revokeUserSessionByJti,
   addAuditLog,
   bootstrapOwnerIfEmpty,
+  isFirstOwnerSignupAvailable,
+  registerFirstOwner,
 } = require('./_db');
 
 module.exports = async function handler(req, res) {
@@ -47,15 +49,99 @@ module.exports = async function handler(req, res) {
   try {
     await bootstrapOwnerIfEmpty();
 
+    // 0. GET /api/auth?action=setup-status (Check whether 1st-time Owner Sign-Up is available)
+    if (action === 'setup-status') {
+      const signupAvailable = await isFirstOwnerSignupAvailable();
+      return res.status(200).json({
+        success: true,
+        signup_available: signupAvailable,
+        initialized: !signupAvailable,
+      });
+    }
+
+    // 0b. POST /api/auth?action=signup-first-owner (One-time First Owner Sign-Up -> Permanently locks to Login after 1st use)
+    if (req.method === 'POST' && action === 'signup-first-owner') {
+      const isAllowed = await checkRateLimit(`signup-owner-${ip}`, 8, 60000);
+      if (!isAllowed) {
+        return res.status(429).json({ error: 'Too many attempts. Please wait 60 seconds.' });
+      }
+
+      const available = await isFirstOwnerSignupAvailable();
+      if (!available) {
+        return res.status(403).json({
+          error: 'Primary Owner account is already registered. Sign-up is permanently disabled; please sign in on the Login page.',
+          code: 'ALREADY_INITIALIZED',
+        });
+      }
+
+      const fullName = sanitizeString(body.full_name || '', 80);
+      const username = sanitizeString(body.username || '', 40).toLowerCase();
+      const email = sanitizeString(body.email || '', 120);
+      const phone = sanitizeString(body.phone || '', 32);
+      const password = String(body.password || '');
+
+      if (!fullName || fullName.length < 2) {
+        return res.status(400).json({ error: 'Full name is required (at least 2 characters).' });
+      }
+      if (!username || username.length < 3) {
+        return res.status(400).json({ error: 'Username is required (at least 3 characters).' });
+      }
+      if (password.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+      }
+
+      const ownerUser = await registerFirstOwner({
+        username,
+        full_name: fullName,
+        email,
+        phone,
+        password,
+      });
+
+      const token = createSessionToken(ownerUser);
+      const decoded = verifySessionToken(token);
+      if (decoded && decoded.jti) {
+        await recordUserSession({
+          jti: decoded.jti,
+          user: ownerUser,
+          ip_address: ip,
+          user_agent: userAgent,
+          expires_at: new Date(decoded.exp * 1000).toISOString(),
+        });
+      }
+
+      const isProduction = process.env.NODE_ENV === 'production';
+      const cookieHeader = `popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
+      res.setHeader('Set-Cookie', cookieHeader);
+
+      await addAuditLog({
+        actor_id: ownerUser.id,
+        actor_name: ownerUser.full_name,
+        actor_role: 'OWNER',
+        action: 'FIRST_OWNER_SIGNUP',
+        target_type: 'USER',
+        target_id: ownerUser.id,
+        details: { username: ownerUser.username, ip },
+      });
+
+      return res.status(201).json({
+        success: true,
+        message: 'Primary Owner account created! Sign-up is now permanently locked to Login only.',
+        token,
+        user: ownerUser,
+      });
+    }
+
     // 1. GET /api/auth?action=me
     if ((req.method === 'GET' && (!action || action === 'me')) || action === 'me') {
+      const signupAvailable = await isFirstOwnerSignupAvailable();
       const session = getSessionFromRequest(req);
       if (!session) {
-        return res.status(401).json({ authenticated: false });
+        return res.status(401).json({ authenticated: false, signup_available: signupAvailable });
       }
       const dbUser = await getUserById(session.id);
       if (!dbUser || dbUser.status !== 'ACTIVE') {
-        return res.status(401).json({ authenticated: false });
+        return res.status(401).json({ authenticated: false, signup_available: signupAvailable });
       }
       return res.status(200).json({
         authenticated: true,

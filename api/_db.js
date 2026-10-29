@@ -105,7 +105,108 @@ function resetMemoryFinancialsAndData() {
   memoryStore.rewards.clear();
   memoryStore.notifications.length = 0;
   memoryStore.auditLogs.length = 0;
+  memoryStore.firstSignupClaimed = false;
   seedStructuralDefaults();
+}
+
+async function isFirstOwnerSignupAvailable() {
+  const { isConfigured } = getSupabaseConfig();
+  if (isConfigured) {
+    const owners = await supabaseRequest('users?role=eq.OWNER&select=id,last_login_at,must_change_password&limit=1');
+    if (!owners || owners.length === 0) return true;
+    const primary = owners[0];
+    return Boolean(!primary.last_login_at && primary.must_change_password);
+  }
+  if (isProd()) assertDatabaseConfigured();
+  if (memoryStore.users.size === 0) return true;
+  for (const u of memoryStore.users.values()) {
+    if (u.role === 'OWNER') {
+      return Boolean(!u.last_login_at && u.must_change_password && !memoryStore.firstSignupClaimed);
+    }
+  }
+  return true;
+}
+
+async function registerFirstOwner({ username, full_name, email, phone, password }) {
+  const available = await isFirstOwnerSignupAvailable();
+  if (!available) {
+    const err = new Error('Primary Owner account is already registered. Sign-up is permanently disabled; please sign in.');
+    err.statusCode = 403;
+    err.code = 'ALREADY_INITIALIZED';
+    throw err;
+  }
+
+  const cleanUsername = String(username || 'owner').toLowerCase().trim();
+  const cleanName = String(full_name || 'Owner').trim();
+  const cleanEmail = email ? String(email).trim() : null;
+  const cleanPhone = phone ? String(phone).trim() : null;
+  const { hash, salt } = hashPassword(password);
+  const now = new Date().toISOString();
+
+  const { isConfigured } = getSupabaseConfig();
+  if (isConfigured) {
+    const existingOwners = await supabaseRequest('users?role=eq.OWNER&select=id&limit=1');
+    if (existingOwners && existingOwners.length > 0) {
+      const res = await supabaseRequest(`users?id=eq.${encodeURIComponent(existingOwners[0].id)}`, {
+        method: 'PATCH',
+        body: {
+          username: cleanUsername,
+          full_name: cleanName,
+          email: cleanEmail,
+          phone: cleanPhone,
+          password_hash: hash,
+          salt,
+          must_change_password: false,
+          status: 'ACTIVE',
+          updated_at: now,
+          last_login_at: now,
+        },
+      });
+      if (res && res.length > 0) return sanitizeUserRecord(res[0]);
+    }
+    const created = await supabaseRequest('users', {
+      method: 'POST',
+      body: {
+        username: cleanUsername,
+        full_name: cleanName,
+        email: cleanEmail,
+        phone: cleanPhone,
+        role: 'OWNER',
+        password_hash: hash,
+        salt,
+        must_change_password: false,
+        status: 'ACTIVE',
+        created_at: now,
+        updated_at: now,
+        last_login_at: now,
+      },
+    });
+    if (created && created.length > 0) return sanitizeUserRecord(created[0]);
+    throw new Error('Failed to create first owner account.');
+  }
+
+  if (isProd()) assertDatabaseConfigured();
+  memoryStore.users.clear();
+  const ownerRec = {
+    id: 'usr-owner-primary',
+    username: cleanUsername,
+    email: cleanEmail || '',
+    phone: cleanPhone || '',
+    full_name: cleanName,
+    avatar_url: '',
+    role: 'OWNER',
+    password_hash: hash,
+    salt,
+    must_change_password: false,
+    status: 'ACTIVE',
+    created_at: now,
+    updated_at: now,
+    last_login_at: now,
+  };
+  memoryStore.users.set(cleanUsername, ownerRec);
+  memoryStore.bootstrapCompleted = true;
+  memoryStore.firstSignupClaimed = true;
+  return sanitizeUserRecord(ownerRec);
 }
 
 async function supabaseRequest(path, options = {}) {
@@ -1727,6 +1828,8 @@ module.exports = {
   getSupabaseConfig,
   assertDatabaseConfigured,
   bootstrapOwnerIfEmpty,
+  isFirstOwnerSignupAvailable,
+  registerFirstOwner,
   resetMemoryFinancialsAndData,
   getUserByUsername,
   getUserById,
