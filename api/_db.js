@@ -1785,10 +1785,13 @@ async function updateBusinessSettings(newValues, updatedBy = 'Owner') {
 
 async function getDashboardStats() {
   await bootstrapOwnerIfEmpty();
-  const [allRewards, products, pnl] = await Promise.all([
+  const [allRewards, products, pnl, sales, expenses, refunds] = await Promise.all([
     listRewards({ includeDemo: false, limit: 2000 }),
     listProducts(),
     getRealProfitAndLoss(),
+    listSales({ limit: 500 }),
+    listExpenses({ limit: 500 }),
+    listRefunds({ limit: 500 }),
   ]);
 
   const totalGenerated = allRewards.length;
@@ -1797,10 +1800,88 @@ async function getDashboardStats() {
   const totalRedeemed = allRewards.filter(r => r.status === 'COLLECTED').length;
 
   const todayStr = new Date().toISOString().split('T')[0];
+  const weekKey = getIsoWeekKey(todayStr);
+  const monthKey = todayStr.slice(0, 7);
+
   const playsToday = allRewards.filter(r => (r.scratched_at || r.created_at || '').startsWith(todayStr)).length;
   const redemptionsToday = allRewards.filter(r => (r.redeemed_at || '').startsWith(todayStr)).length;
   const lowStockCount = products.filter(p => p.stock_qty <= p.reorder_level).length;
   const { isConfigured } = getSupabaseConfig();
+
+  const calcBucket = matchFn => {
+    const mSales = sales.filter(s => matchFn(s.sale_date || (s.created_at || '').slice(0, 10)));
+    const mRefunds = refunds.filter(r => matchFn(r.refund_date || (r.created_at || '').slice(0, 10)));
+    const mExpenses = expenses.filter(e => matchFn(e.expense_date || (e.created_at || '').slice(0, 10)));
+    const mRewards = allRewards.filter(
+      r => r.status === 'COLLECTED' && !r.is_demo && matchFn((r.redeemed_at || r.created_at || '').slice(0, 10))
+    );
+
+    const gross = mSales.reduce((a, s) => a + Number(s.gross_amount || 0), 0);
+    const disc = mSales.reduce((a, s) => a + Number(s.discount_amount || 0), 0);
+    const ref = mRefunds.reduce((a, r) => a + Number(r.refund_amount || 0), 0);
+    const netSalesVal = Number((gross - disc - ref).toFixed(2));
+    const prodCogs = Math.max(
+      0,
+      mSales.reduce((a, s) => a + Number(s.cogs_amount || 0), 0) -
+        mRefunds.reduce((a, r) => a + Number(r.cogs_reversed || 0), 0)
+    );
+    const giftCost = mRewards.reduce((a, r) => a + Number(r.unit_cost || 0), 0);
+    const totalCogsVal = Number((prodCogs + giftCost).toFixed(2));
+    const expVal = Number(mExpenses.reduce((a, e) => a + Number(e.amount || 0), 0).toFixed(2));
+    const netProfitVal = Number((netSalesVal - totalCogsVal - expVal).toFixed(2));
+
+    return {
+      gross_sales: Number(gross.toFixed(2)),
+      net_sales: netSalesVal,
+      expenses: expVal,
+      total_cogs: totalCogsVal,
+      net_profit: netProfitVal,
+      sales_count: mSales.length,
+      expenses_count: mExpenses.length,
+    };
+  };
+
+  const today = calcBucket(d => d === todayStr);
+  const weekly = calcBucket(d => d && getIsoWeekKey(d) === weekKey);
+  const monthly = calcBucket(d => d && d.slice(0, 7) === monthKey);
+
+  const recentTransactions = [
+    ...sales.slice(0, 15).map(s => ({
+      id: s.id || s.sale_number,
+      type: 'SALE',
+      date: s.sale_date,
+      created_at: s.created_at,
+      title: s.sale_number + (s.notes ? ' · ' + s.notes : ''),
+      category: 'Counter Sale',
+      method: s.payment_method || 'CASH',
+      amount: Number(s.net_amount || 0),
+      shop_name: s.shop_name || 'Main Counter',
+    })),
+    ...expenses.slice(0, 15).map(e => ({
+      id: e.id,
+      type: 'EXPENSE',
+      date: e.expense_date,
+      created_at: e.created_at,
+      title: e.category + (e.vendor ? ' · ' + e.vendor : ''),
+      category: e.category,
+      method: e.payment_method || 'CASH',
+      amount: -Number(e.amount || 0),
+      shop_name: e.shop_name || 'Main Counter',
+    })),
+    ...refunds.slice(0, 10).map(r => ({
+      id: r.id,
+      type: 'REFUND',
+      date: r.refund_date,
+      created_at: r.created_at,
+      title: 'Refund' + (r.reason ? ' · ' + r.reason : ''),
+      category: 'Customer Refund',
+      method: 'REFUND',
+      amount: -Number(r.refund_amount || 0),
+      shop_name: r.shop_name || 'Main Counter',
+    })),
+  ]
+    .sort((a, b) => (b.date || '').localeCompare(a.date || '') || new Date(b.created_at || 0) - new Date(a.created_at || 0))
+    .slice(0, 12);
 
   return {
     totalGenerated,
@@ -1813,7 +1894,12 @@ async function getDashboardStats() {
     totalProducts: products.length,
     hasFinancialData: pnl.hasData,
     netSales: pnl.summary.net_sales,
+    operatingExpenses: pnl.summary.operating_expenses,
     netProfit: pnl.summary.net_profit,
+    today,
+    weekly,
+    monthly,
+    recentTransactions,
     dbMode: isConfigured ? 'SUPABASE_POSTGRES' : 'DEV_MEMORY_STORE',
   };
 }

@@ -551,6 +551,7 @@ async function runAllTests() {
     console.log('✓ [10/12] All 5 QR prize & combo offers and realistic images verified.');
 
     const requiredPages = [
+      'page-overview',
       'page-profile',
       'page-edit-profile',
       'page-reports',
@@ -563,11 +564,15 @@ async function runAllTests() {
       'page-settings',
       'page-security',
       'menuLogoutBtn',
+      'pnlVisualChart',
+      'quickFlavorChips',
+      'seedStandardFlavorsBtn',
     ];
     for (const id of requiredPages) {
       assert.ok(ownerHtml.includes(`id="${id}"`), `Dedicated owner page/action #${id} must exist in owner.html`);
     }
-    console.log('✓ [11/12] Two separate websites (Customer index.html + Owner owner.html), 12 owner pages, and 1st-time Signup -> 2nd-time Login verified.');
+    assert.ok(!customerHtml.includes('Owner Portal'), 'Customer website must not show Owner Portal link');
+    console.log('✓ [11/12] Two separate websites (Customer index.html + Owner owner.html), Business Overview, P&L Chart, Flavor Chips, and 1st-time Signup -> 2nd-time Login verified.');
   }
 
   // 12. ROBOTS.TXT, SITEMAP.XML & SECURITY HEADERS VALIDATION

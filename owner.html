@@ -14,24 +14,113 @@
 <meta property="og:image" content="https://popcorn-prize-club.vercel.app/popcorn-light-hero.jpg">
 <title>LR Popcorn Partner | Owner &amp; Counter Portal</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-:root{--orange:#ff6b24;--ink:#191613;--cream:#fff8ef;--line:#ecdfd1;--muted:#83796f;--green:#4c7e4b;--danger:#c23b22}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 90% 0,#ffdfc4,transparent 32%),var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}header{height:74px;padding:0 max(24px,calc((100vw - 1100px)/2));display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #35231312;position:sticky;top:0;z-index:80;backdrop-filter:blur(12px);background:rgba(255,248,239,.88)}body.dark header{background:rgba(9,10,11,.88)}.brand{display:flex;align-items:center;gap:10px;font:700 17px 'Space Grotesk';letter-spacing:-.5px;cursor:pointer}.mark{background:var(--orange);color:#fff;border-radius:12px;width:38px;height:38px;display:grid;place-items:center;font-size:20px}.nav{border:0;background:transparent;padding:10px 14px;border-radius:10px;font-weight:700;color:#71675e;cursor:pointer}.nav.active{background:white;color:var(--ink);box-shadow:0 3px 12px #24190d12}main{max-width:1100px;margin:auto;padding:48px 24px 65px}.view{display:none}.view.active{display:block}.eyebrow{text-transform:uppercase;letter-spacing:2px;color:var(--orange);font-size:11px;font-weight:700}h1,h2,h3{font-family:'Space Grotesk';margin-top:0;letter-spacing:-1.5px}h1{font-size:clamp(44px,6vw,68px);line-height:.97;margin:15px 0}h2{font-size:clamp(30px,4vw,44px);line-height:1.05;margin:10px 0}.lead{color:#746b62;line-height:1.7;max-width:540px}.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;min-height:520px}.input,select.input,textarea.input{height:48px;width:100%;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:13px;padding:0 14px;margin:7px 0 11px;outline:0;font-family:inherit;font-size:13px}textarea.input{height:82px;padding:12px 14px;resize:vertical}.input:focus{border-color:var(--orange);box-shadow:0 0 0 4px #ff6b2418}label{font-size:12px;font-weight:700;display:block;margin-top:4px}.btn{border:0;border-radius:13px;padding:13px 18px;background:var(--ink);color:#fff;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none}.btn:hover{transform:translateY(-1px)}.btn.orange{background:var(--orange);color:#fff}.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn.danger{background:var(--danger);color:#fff}.full{width:100%}.note{font-size:11px;color:#9d9287;margin-top:12px}.steps{display:flex;gap:9px;margin-top:30px}.step{flex:1;padding:12px;background:#fff9;border:1px solid var(--line);border-radius:13px;font-size:10px;color:var(--muted)}.step b{display:block;color:var(--ink);margin:7px 0 3px}.num{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;background:#fff0e5;color:var(--orange);font-weight:700}.art{min-height:410px;display:grid;place-items:center;position:relative}.scratch-layout{display:grid;grid-template-columns:1fr 1fr;gap:44px;max-width:930px;margin:30px auto;align-items:center}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:21px;padding:20px;box-shadow:0 18px 55px #36201210}.card-head{display:flex;justify-content:space-between;font:700 14px 'Space Grotesk';margin-bottom:15px}.tag{border-radius:99px;background:#fff0e5;color:#df5919;padding:5px 10px;font:700 10px 'DM Sans';display:inline-block}.tag.green{background:#e8f5e8;color:#2f6b2e}.tag.red{background:#fdecea;color:#b42318}.scratch{min-height:292px;padding:12px 14px;background:linear-gradient(140deg,#fff0df,#ffdfbf);border-radius:17px;display:grid;place-items:center;position:relative;overflow:hidden;text-align:center}.prize h3{margin:6px 0 4px;font-size:21px;line-height:1.15}.prize p{font-size:12px;color:var(--muted);margin:4px 0 8px}.code{background:white;border:1px dashed #d2b49a;border-radius:9px;padding:9px 12px;font:700 12px 'Space Grotesk';letter-spacing:1px;display:inline-block}.cover{position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,#ffb556,#ff712b 70%);color:white;display:grid;place-items:center;cursor:pointer;transition:.5s}.cover:after{content:'';position:absolute;inset:10px;border:1px solid #ffffff90;border-radius:12px;pointer-events:none;z-index:3}.cover strong{font:700 23px 'Space Grotesk'}.cover small{display:block;margin-top:8px}.cover.done{opacity:0;transform:scale(1.08);pointer-events:none}.hint{text-align:center;color:#a19385;font-size:11px;margin:12px 0 0}.tip{margin-top:16px;background:#fff8;border-left:3px solid var(--orange);padding:14px;border-radius:0 12px 12px 0;color:#786d61;font-size:12px;line-height:1.6}.dash-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-bottom:22px}.dash-head .lead{font-size:14px;margin-bottom:0}.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px}.panel h3{font-size:17px;margin:0;letter-spacing:-.4px}.sub{font-size:12px;color:var(--muted);margin-top:4px}.status{font-size:10px;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.8px}.search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:14px;align-items:center}.search .input{height:46px;margin:0}.result{display:none;margin-top:14px;padding:14px;border:1px solid #d9e6d4;background:#f5f8f1;border-radius:13px;font-size:12px;line-height:1.6}.result.show{display:block}.result.error{border-color:#ffd5c0;background:#fff3ec;color:#9a2c13}.table-wrap{margin-top:16px;overflow-x:auto}.table-title{font-size:13px;font-weight:700;margin-bottom:8px}table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;color:#8c8277;font-size:10px;letter-spacing:.7px;text-transform:uppercase;padding:10px 8px;border-bottom:1px solid var(--line)}td{padding:11px 8px;border-bottom:1px solid #f2ece5;vertical-align:middle}tr:last-child td{border:0}.collected{color:var(--green);font-weight:700}.waiting{color:#d8872f;font-weight:700}.stat{padding:13px 0;border-bottom:1px solid #f1ebe5;color:var(--muted);font-size:12px}.stat:last-child{border-bottom:0}.stat b{display:block;color:var(--ink);font:700 28px 'Space Grotesk';margin-top:4px}.foot{text-align:center;color:#a89d92;font-size:11px;padding:24px}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.2s;background:#1b1815;color:white;padding:12px 18px;border-radius:12px;font-size:12px;z-index:200;box-shadow:0 10px 30px #0004}.toast.show{opacity:1;transform:translate(-50%,0)}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root{--orange:#ff6b24;--orange-glow:#ff8748;--ink:#191613;--cream:#fff8ef;--line:#ecdfd1;--muted:#83796f;--green:#4c7e4b;--danger:#c23b22}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 90% 0,#ffdfc4,transparent 32%),var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh;transition:background .25s,color .25s}
+header{height:74px;padding:0 max(24px,calc((100vw - 1180px)/2));display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #35231312;position:sticky;top:0;z-index:80;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);background:rgba(255,248,239,.88)}
+body.dark header{background:rgba(10,11,14,.82);border-bottom:1px solid rgba(255,145,66,.16)}
+.brand{display:flex;align-items:center;gap:10px;font:700 17px 'Space Grotesk';letter-spacing:-.5px;cursor:pointer}
+.mark{background:linear-gradient(135deg,#ff7e38,#e6530f);color:#fff;border-radius:12px;width:38px;height:38px;display:grid;place-items:center;font-size:20px;box-shadow:0 6px 18px rgba(255,107,36,.35)}
+.nav{border:0;background:transparent;padding:10px 14px;border-radius:10px;font-weight:700;color:#71675e;cursor:pointer;transition:.18s}
+.nav.active{background:white;color:var(--ink);box-shadow:0 3px 12px #24190d12}
+main{max-width:1180px;margin:auto;padding:36px 24px 65px}
+.view{display:none}
+.view.active{display:block;animation:fadeSlideIn .28s ease-out}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{text-transform:uppercase;letter-spacing:2px;color:var(--orange);font-size:11px;font-weight:700}
+h1,h2,h3{font-family:'Space Grotesk';margin-top:0;letter-spacing:-1.2px}
+h1{font-size:clamp(38px,5vw,56px);line-height:.98;margin:12px 0}
+h2{font-size:clamp(26px,3.6vw,38px);line-height:1.08;margin:8px 0}
+.lead{color:#746b62;line-height:1.65;max-width:620px}
+.input,select.input,textarea.input{height:48px;width:100%;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:13px;padding:0 14px;margin:7px 0 11px;outline:0;font-family:inherit;font-size:13px;transition:border-color .18s,box-shadow .18s}
+textarea.input{height:82px;padding:12px 14px;resize:vertical}
+.input:focus{border-color:var(--orange);box-shadow:0 0 0 4px #ff6b2422}
+label{font-size:12px;font-weight:700;display:block;margin-top:4px}
+.btn{border:0;border-radius:13px;padding:13px 18px;background:var(--ink);color:#fff;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none}
+.btn:hover{transform:translateY(-1px)}
+.btn.orange{background:linear-gradient(135deg,#ff7b36,#f05915);color:#fff;box-shadow:0 8px 22px rgba(255,107,36,.28)}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:var(--danger);color:#fff}
+.full{width:100%}
+.note{font-size:11px;color:#9d9287;margin-top:12px}
+.card,.panel{background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:21px;padding:22px;box-shadow:0 18px 55px #36201210;transition:border-color .2s,box-shadow .2s}
+.tag{border-radius:99px;background:#fff0e5;color:#df5919;padding:5px 10px;font:700 10px 'DM Sans';display:inline-block}
+.tag.green{background:#e8f5e8;color:#2f6b2e}
+.tag.red{background:#fdecea;color:#b42318}
+.code{background:white;border:1px dashed #d2b49a;border-radius:9px;padding:9px 12px;font:700 12px 'Space Grotesk';letter-spacing:1px;display:inline-block}
+.tip{margin-top:16px;background:#fff8;border-left:3px solid var(--orange);padding:14px;border-radius:0 12px 12px 0;color:#786d61;font-size:12px;line-height:1.6}
+.dash-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-bottom:22px}
+.dash-head .lead{font-size:14px;margin-bottom:0}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px}
+.panel h3{font-size:17px;margin:0;letter-spacing:-.4px}
+.sub{font-size:12px;color:var(--muted);margin-top:4px}
+.status{font-size:10px;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+.search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:14px;align-items:center}
+.search .input{height:46px;margin:0}
+.result{display:none;margin-top:14px;padding:14px;border:1px solid #d9e6d4;background:#f5f8f1;border-radius:13px;font-size:12px;line-height:1.6}
+.result.show{display:block}
+.result.error{border-color:#ffd5c0;background:#fff3ec;color:#9a2c13}
+.table-wrap{margin-top:16px;overflow-x:auto}
+.table-title{font-size:13px;font-weight:700;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;color:#8c8277;font-size:10px;letter-spacing:.7px;text-transform:uppercase;padding:10px 8px;border-bottom:1px solid var(--line)}
+td{padding:11px 8px;border-bottom:1px solid #f2ece5;vertical-align:middle}
+tr:last-child td{border:0}
+.collected{color:var(--green);font-weight:700}
+.waiting{color:#ff9340;font-weight:700}
+.stat{padding:13px 0;border-bottom:1px solid #f1ebe5;color:var(--muted);font-size:12px}
+.stat:last-child{border-bottom:0}
+.stat b{display:block;color:var(--ink);font:700 28px 'Space Grotesk';margin-top:4px}
+.foot{text-align:center;color:#a89d92;font-size:11px;padding:24px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.2s;background:#1b1815;color:white;padding:12px 18px;border-radius:12px;font-size:12px;z-index:200;box-shadow:0 10px 30px #0004}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 .theme-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 13px;font-size:11px;font-weight:700;cursor:pointer}
-body.dark{--ink:#f5f0e8;--cream:#090a0b;--line:#2d2722;--muted:#afa49a;--green:#7ee081;background:radial-gradient(ellipse at 90% 0,#35190d 0,transparent 34%),#090a0b;color:var(--ink)}
-body.dark .lead,body.dark .note{color:#c3b7ac}body.dark header{border-color:#ffffff12}body.dark .nav{color:#c4b8ad}body.dark .nav.active,body.dark .card,body.dark .panel,body.dark .input,body.dark select.input,body.dark textarea.input,body.dark .code,body.dark .btn.secondary{background:#141414;color:var(--ink);border-color:#332d28}body.dark .theme-toggle{background:#191512;color:#ffe4ce;border-color:#49301f}body.dark .step,body.dark .tip{background:#151311;border-color:#30251e;color:#c0b2a4}body.dark .scratch{background:linear-gradient(140deg,#211913,#17120f)}body.dark .prize p,body.dark .hint{color:#c2b4a7}body.dark td{border-color:#24201c}body.dark th{color:#ab9e92;border-color:#2d2722}body.dark .stat{border-color:#2a2520}body.dark .foot{color:#958a80}body.dark .result{background:#172016;color:#eff5e9;border-color:#384532}body.dark .result.error{background:#261610;border-color:#5d3524;color:#ffb49a}
-.prize-art{display:block;width:min(236px,84%);height:118px;object-fit:cover;object-position:center;border-radius:14px;border:1px solid rgba(255,145,66,.42);margin:0 auto 7px;filter:drop-shadow(0 9px 16px #9d481b28)}body.dark .prize-art{border-color:rgba(255,140,66,.35);filter:drop-shadow(0 12px 22px #000b)}.art:before{content:"";position:absolute;z-index:0;width:92%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#ff762b35 0,transparent 69%);pointer-events:none}.hero-promo{display:block;position:relative;z-index:1;width:min(100%,430px);height:auto;aspect-ratio:1;object-fit:cover;object-position:center 48%;border:1px solid #ffbd7855;border-radius:50%;box-shadow:0 0 0 9px #ff762b12,0 0 58px #ff762b55;filter:saturate(1.08);-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 76%,rgba(0,0,0,.95) 84%,rgba(0,0,0,.62) 93%,transparent 100%);mask-image:radial-gradient(circle at 50% 50%,#000 76%,rgba(0,0,0,.95) 84%,rgba(0,0,0,.62) 93%,transparent 100%)}.scratch-layer{position:absolute;inset:0;width:100%;height:100%;border-radius:17px;touch-action:none;cursor:crosshair;z-index:1}.cover-copy{position:relative;z-index:2;pointer-events:none}.back-btn{background:#241b16!important;color:#fff!important;border:1px solid #4b3828}
-.owner-box{max-width:460px;margin:38px auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(22px,5vw,36px);box-shadow:0 18px 55px #36201212}body.dark .owner-box{background:#141414;border-color:#332d28}.owner-box h2{font-size:32px;margin:10px 0}.owner-note{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 18px}.owner-error{display:none;color:#b42318;background:#fdecea;border:1px solid #f8c9c4;padding:10px 12px;border-radius:10px;font-size:12px;margin:8px 0 12px}body.dark .owner-error{background:#2a1412;border-color:#5c2620;color:#fca5a5}.owner-error.show{display:block}.owner-success{display:none;color:#1e6027;background:#e8f5e9;border:1px solid #b7dfb9;padding:10px 12px;border-radius:10px;font-size:12px;margin:8px 0 12px}body.dark .owner-success{background:#132616;border-color:#2a5230;color:#86efac}.owner-success.show{display:block}
 
-/* Owner Header Avatar & Accessible 12-Item Profile Menu */
+/* Premium Black & Deep Charcoal Frosted Glass Theme (Default on Owner Dashboard) */
+body.dark{--ink:#f7f3ed;--cream:#08090c;--line:#26221e;--muted:#a99e93;--green:#6ee777;--danger:#f87171;background:radial-gradient(ellipse at 85% 0,rgba(255,107,36,.16) 0,transparent 42%),radial-gradient(ellipse at 12% 90%,rgba(255,107,36,.08) 0,transparent 38%),#08090c;color:var(--ink)}
+body.dark .lead,body.dark .note{color:#c5b9ad}
+body.dark .nav{color:#c4b8ad}
+body.dark .nav.active{background:rgba(255,107,36,.16);color:#ff9157;border:1px solid rgba(255,107,36,.32)}
+body.dark .card,body.dark .panel{background:rgba(20,19,18,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:var(--ink);border-color:rgba(255,145,66,.16);box-shadow:0 20px 55px rgba(0,0,0,.55)}
+body.dark .input,body.dark select.input,body.dark textarea.input,body.dark .code,body.dark .btn.secondary{background:rgba(12,12,14,.85);color:var(--ink);border-color:#322a24}
+body.dark .btn.secondary:hover{border-color:var(--orange);color:#ff9a62}
+body.dark .theme-toggle{background:#181411;color:#ffe4ce;border-color:#49301f}
+body.dark .tip{background:rgba(25,20,16,.85);border-color:var(--orange);color:#cbbba9}
+body.dark td{border-color:#221e1b}
+body.dark th{color:#b0a396;border-color:#2d2722}
+body.dark .stat{border-color:#26211d}
+body.dark .foot{color:#8a7f75}
+body.dark .result{background:#132215;color:#eff5e9;border-color:#2f4e32}
+body.dark .result.error{background:#281410;border-color:#5d3524;color:#ffb49a}
+body.dark .tag{background:rgba(255,107,36,.16);color:#ff9b66}
+body.dark .tag.green{background:rgba(74,222,128,.14);color:#7ee081}
+body.dark .tag.red{background:rgba(248,113,113,.15);color:#fca5a5}
+
+.owner-box{max-width:470px;margin:38px auto;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid var(--line);border-radius:24px;padding:clamp(24px,5vw,38px);box-shadow:0 22px 60px #36201214}
+body.dark .owner-box{background:rgba(20,19,18,.84);border-color:rgba(255,145,66,.22);box-shadow:0 26px 70px rgba(0,0,0,.68)}
+.owner-box h2{font-size:32px;margin:10px 0}
+.owner-note{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 18px}
+.owner-error{display:none;color:#b42318;background:#fdecea;border:1px solid #f8c9c4;padding:10px 12px;border-radius:10px;font-size:12px;margin:8px 0 12px}
+body.dark .owner-error{background:#2a1412;border-color:#5c2620;color:#fca5a5}
+.owner-error.show{display:block}
+.owner-success{display:none;color:#1e6027;background:#e8f5e9;border:1px solid #b7dfb9;padding:10px 12px;border-radius:10px;font-size:12px;margin:8px 0 12px}
+body.dark .owner-success{background:#132616;border-color:#2a5230;color:#86efac}
+.owner-success.show{display:block}
+
+/* Owner Header Avatar & Accessible Profile Menu */
 #siteNav{display:flex;align-items:center;gap:10px}
-#mainNavItems{display:flex;align-items:center;gap:4px}
+#mainNavItems{display:flex;align-items:center;gap:6px}
 .owner-menu{position:relative;display:inline-flex;align-items:center}
 .owner-menu[hidden],.owner-dropdown[hidden]{display:none!important}
-.owner-avatar-btn{display:inline-flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;font:700 12px 'DM Sans',sans-serif;box-shadow:0 4px 14px #00000010;transition:.15s}
+.owner-avatar-btn{display:inline-flex;align-items:center;gap:8px;padding:4px 11px 4px 4px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;font:700 12px 'DM Sans',sans-serif;box-shadow:0 4px 14px #00000010;transition:.15s}
 body.dark .owner-avatar-btn{background:#181512;border-color:#3a3028;color:#fff}
 .owner-avatar-btn:hover,.owner-avatar-btn:focus-visible{border-color:var(--orange);outline:none;box-shadow:0 0 0 3px #ff6b2425}
 .owner-avatar-circle{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#ff7e38,#e05212);color:#fff;font:700 14px 'Space Grotesk',sans-serif;display:grid;place-items:center;flex-shrink:0}
-.owner-dropdown{position:absolute;right:0;top:calc(100% + 10px);z-index:160;width:255px;max-height:calc(100vh - 96px);overflow-y:auto;padding:8px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.22)}
+.owner-dropdown{position:absolute;right:0;top:calc(100% + 10px);z-index:160;width:265px;max-height:calc(100vh - 96px);overflow-y:auto;padding:8px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.22)}
 body.dark .owner-dropdown{background:#151311;border-color:#332b24;box-shadow:0 22px 55px rgba(0,0,0,.65)}
 .owner-dropdown-header{padding:8px 11px 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
 .owner-dropdown-header b{display:block;font-size:13px;color:var(--ink)}
@@ -43,17 +132,28 @@ body.dark .owner-dropdown{background:#151311;border-color:#332b24;box-shadow:0 2
 .owner-menu-item.logout-item:hover{background:#c23b2218;color:var(--danger)}
 
 /* Dedicated Owner Pages Navigation Bar */
-.owner-subnav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;padding:6px;background:#fff;border:1px solid var(--line);border-radius:15px}
-body.dark .owner-subnav{background:#141414;border-color:#2f2924}
-.owner-subnav-link{border:0;background:transparent;color:var(--muted);font:700 11px 'DM Sans',sans-serif;padding:8px 12px;border-radius:10px;cursor:pointer}
-.owner-subnav-link.active{background:var(--orange);color:#fff}
+.owner-subnav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px;padding:7px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(14px)}
+body.dark .owner-subnav{background:rgba(20,18,17,.85);border-color:rgba(255,145,66,.18)}
+.owner-subnav-link{border:0;background:transparent;color:var(--muted);font:700 12px 'DM Sans',sans-serif;padding:9px 13px;border-radius:11px;cursor:pointer;transition:.18s}
+.owner-subnav-link:hover{color:var(--ink);background:rgba(255,107,36,.08)}
+.owner-subnav-link.active{background:linear-gradient(135deg,#ff7b36,#ed5714);color:#fff;box-shadow:0 4px 14px rgba(255,107,36,.3)}
 .owner-page{display:none}
-.owner-page.active{display:block}
-.kpi-card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:16px}
-body.dark .kpi-card{background:#141414;border-color:#2f2924}
-.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px}
-.kpi-val{font:700 24px 'Space Grotesk',sans-serif;color:var(--ink)}
-.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.owner-page.active{display:block;animation:fadeSlideIn .22s ease-out}
+.kpi-card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:18px;padding:18px;position:relative;overflow:hidden;transition:transform .18s,border-color .18s}
+.kpi-card:hover{transform:translateY(-2px);border-color:rgba(255,107,36,.4)}
+body.dark .kpi-card{background:rgba(22,20,19,.82);border-color:rgba(255,145,66,.16);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px;font-weight:700}
+.kpi-val{font:700 26px 'Space Grotesk',sans-serif;color:var(--ink)}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px}
+.quick-chip-bar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.quick-chip{border:1px solid var(--line);background:rgba(255,107,36,.08);color:var(--ink);border-radius:999px;padding:7px 13px;font:700 11px 'DM Sans',sans-serif;cursor:pointer;transition:.16s}
+body.dark .quick-chip{border-color:rgba(255,145,66,.26);background:rgba(255,107,36,.1);color:#ffd8be}
+.quick-chip:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+.chart-bar-row{display:grid;grid-template-columns:110px 1fr 190px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}
+body.dark .chart-bar-row{border-color:#25201c}
+.chart-track{height:10px;background:rgba(140,130,119,.18);border-radius:99px;overflow:hidden;display:flex;gap:2px}
+.chart-fill-sales{height:100%;background:linear-gradient(90deg,#ff833e,#ff5e14);border-radius:99px}
+.chart-fill-exp{height:100%;background:#ef4444;border-radius:99px}
 .empty-state{text-align:center;padding:34px 20px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);font-size:13px;margin:14px 0}
 .empty-state b{display:block;color:var(--ink);font-size:15px;margin-bottom:6px}
 .qr-slips-sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px;margin-top:16px}
@@ -68,23 +168,23 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
 @media(max-width:760px){
   header{height:64px;padding:0 14px}
   .brand{font-size:14px}
-  main{padding:24px 15px 45px}
-  .hero,.scratch-layout,.grid,.grid-2{grid-template-columns:1fr;gap:18px}
-  .art{grid-row:1;min-height:310px}
+  main{padding:22px 14px 45px}
+  .grid,.grid-2{grid-template-columns:1fr;gap:16px}
+  .chart-bar-row{grid-template-columns:1fr;gap:6px}
   .owner-avatar-label{display:none}
 }
-</style></head><body>
+</style></head><body class="dark">
 <header>
   <div class="brand" id="brandHome" role="button" tabindex="0" aria-label="LR Popcorn Partner Portal">
-    <span class="mark">✦</span> POPCORN <span style="color:var(--orange)">PARTNER</span>
+    <span class="mark">✦</span> LR POPCORN <span style="color:var(--orange)">OWNER</span>
   </div>
   <nav id="siteNav" aria-label="Partner navigation">
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme">☾ <span>Dark mode</span></button>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme">☀ <span>Light mode</span></button>
     <div id="mainNavItems">
-      <a class="nav" href="/" target="_blank" rel="noopener" style="text-decoration:none">↗ Customer Website</a>
-      <button class="nav active" data-view="owner" id="ownerLink" type="button">Owner Portal</button>
+      <a class="nav" href="/" target="_blank" rel="noopener" style="text-decoration:none">↗ Customer Site</a>
+      <button class="nav active" data-view="owner" id="ownerLink" type="button">Owner Dashboard</button>
     </div>
-    <!-- Circular Owner Profile Avatar & Accessible 12-Route Menu -->
+    <!-- Circular Owner Profile Avatar & Accessible Menu -->
     <div id="ownerMenu" class="owner-menu" hidden>
       <button id="ownerAvatar" class="owner-avatar-btn" type="button" aria-label="Owner profile menu" aria-haspopup="true" aria-expanded="false" aria-controls="ownerDropdown">
         <span class="owner-avatar-circle" id="ownerAvatarInitial">M</span>
@@ -96,91 +196,36 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
           <b id="dropdownOwnerName">Owner</b>
           <small id="dropdownOwnerRole">OWNER</small>
         </div>
+        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="overview"><span>0. Business Overview</span><span>🏠</span></button>
         <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="profile"><span>1. Owner Profile</span><span>👤</span></button>
         <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="edit-profile"><span>2. Edit Profile</span><span>✏️</span></button>
-        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="reports"><span>3. Business Reports (P&amp;L)</span><span>📊</span></button>
-        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="sales"><span>4. Sales &amp; Transactions</span><span>💳</span></button>
+        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="reports"><span>3. Profit &amp; Loss Reports</span><span>📊</span></button>
+        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="sales"><span>4. Daily Sales</span><span>💳</span></button>
         <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="expenses"><span>5. Expenses</span><span>🧾</span></button>
-        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="inventory"><span>6. Inventory &amp; Products</span><span>📦</span></button>
-        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="rewards"><span>7. QR Rewards &amp; Winners</span><span>🎟️</span></button>
-        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="staff"><span>8. Staff &amp; Permissions</span><span>🛡️</span></button>
+        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="inventory"><span>6. Products &amp; Stock</span><span>🍿</span></button>
+        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="rewards"><span>7. QR Rewards</span><span>🎟️</span></button>
+        <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="staff"><span>8. Staff &amp; Accounts</span><span>🛡️</span></button>
         <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="notifications"><span>9. Notifications</span><span>🔔</span></button>
         <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="settings"><span>10. Settings</span><span>⚙️</span></button>
         <button class="owner-menu-item" role="menuitem" type="button" data-owner-route="security"><span>11. Security &amp; Sessions</span><span>🔐</span></button>
         <div class="owner-menu-divider" role="separator"></div>
-        <button class="owner-menu-item logout-item" role="menuitem" type="button" id="menuLogoutBtn"><span>12. Logout</span><span>↪</span></button>
+        <button class="owner-menu-item logout-item" role="menuitem" type="button" id="menuLogoutBtn"><span>12. Sign Out</span><span>↪</span></button>
       </div>
     </div>
   </nav>
 </header>
 
 <main>
-  <!-- PUBLIC CUSTOMER VIEW 1: WELCOME / PLAY -->
-  <section class="view" id="welcome">
-    <div class="hero">
-      <div>
-        <div class="eyebrow">A little surprise inside</div>
-        <h1>Pop. Scan.<br><span style="color:var(--orange)">Win.</span></h1>
-        <p class="lead">Found one of our lucky cards in your popcorn? You're one quick scan away from a tasty little surprise.</p>
-        <form id="nameForm">
-          <label for="name">First, what should we call you?</label>
-          <input class="input" id="name" maxlength="24" placeholder="Your name" required>
-          <button class="btn orange full" id="playSubmitBtn" type="submit">Let's play →</button>
-          <div class="note">Your name helps us keep your prize attached to you.</div>
-        </form>
-        <div class="steps">
-          <div class="step"><i class="num">1</i><b>Find a lucky card</b>Only in selected packs</div>
-          <div class="step"><i class="num">2</i><b>Scratch to reveal</b>A surprise is waiting</div>
-          <div class="step"><i class="num">3</i><b>Show your code</b>Pick up in the shop</div>
-        </div>
-      </div>
-      <div class="art">
-        <img class="hero-promo" id="heroImage" src="popcorn-light-hero.jpg" data-dark-src="popcorn-dark-hero.jpg" data-light-src="popcorn-light-hero.jpg" alt="Popcorn Paradise popcorn flavors">
-      </div>
-    </div>
-  </section>
-
-  <!-- PUBLIC CUSTOMER VIEW 2: SCRATCH CARD -->
-  <section class="view" id="scratch">
-    <div class="eyebrow">Hey, <span id="hello">friend</span> · Your lucky card</div>
-    <div class="scratch-layout">
-      <div class="card">
-        <div class="card-head"><span>Scratch to reveal</span><span class="tag">ONE SURPRISE</span></div>
-        <div class="scratch">
-          <div class="prize">
-            <div id="giftArt" aria-label="Prize illustration"><img class="prize-art" src="prize-masala-water10-combo.jpg" alt="Mini Masala Pack + ₹10 Water Bottle"></div>
-            <h3 id="giftName">Mini Masala Pack + ₹10 Water Bottle</h3>
-            <p id="giftDesc">One spicy mini masala popcorn pack + chilled ₹10 water bottle combo!</p>
-            <span class="code" id="giftCode">PC-000000</span>
-            <p style="color:var(--green);font-weight:700">● Ready to claim</p>
-          </div>
-          <div class="cover" id="cover" role="button" tabindex="0" aria-label="Scratch the card to reveal your prize">
-            <canvas class="scratch-layer" id="scratchLayer" aria-hidden="true"></canvas>
-            <div class="cover-copy"><strong>YOUR SURPRISE<br>IS INSIDE</strong><small>Rub to scratch &amp; reveal ↗</small></div>
-          </div>
-        </div>
-        <p class="hint">Rub your finger across the card to reveal your prize.</p>
-      </div>
-      <div>
-        <div class="eyebrow">You found a lucky card</div>
-        <h2>Good things<br>are popping.</h2>
-        <p class="lead">Scratch your card to reveal your surprise. Keep the code handy and show it to our team in the shop.</p>
-        <div class="tip">Your prize is linked to a one-time code. Our shop screen verifies it before we hand over your treat.</div>
-        <button class="btn back-btn" id="back" type="button" style="margin-top:20px">← Back to home</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- PRIVATE VIEW 3: OWNER / STAFF AUTHENTICATION GATE (1st-Time Sign Up -> 2nd-Time Login Only) -->
+  <!-- PRIVATE VIEW 1: OWNER / STAFF AUTHENTICATION GATE (1st-Time Sign Up -> 2nd-Time Login Only) -->
   <section class="view active" id="owner">
     <!-- 1ST TIME ONLY: FIRST-OWNER SIGN UP -->
     <div class="owner-box" id="ownerSignupWrap">
       <div class="eyebrow">One-Time First Owner Registration</div>
       <h2>Create Owner Account</h2>
-      <p class="owner-note">Welcome to <b>LR Popcorn Partner</b>! Register your Primary Owner account below for the first time. Once created, this Sign-Up screen permanently locks and switches to <b>Login Only</b> from your second visit onward.</p>
+      <p class="owner-note">Welcome to <b>LR Popcorn Prize Club Owner Portal</b>! Register your Primary Owner account below for the first time. Once created, this Sign-Up screen permanently locks and switches to <b>Login Only</b> from your second visit onward.</p>
       <form id="ownerSignupForm">
         <label for="signupFullName">Owner Full Name *</label>
-        <input class="input" id="signupFullName" maxlength="80" placeholder="e.g. Shankar" required>
+        <input class="input" id="signupFullName" maxlength="80" placeholder="e.g. Shankar / Mom" required>
         <div class="grid-2">
           <div>
             <label for="signupUsername">Username *</label>
@@ -210,7 +255,7 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
         <span class="tag green" id="loginLockedBadge">● Login Only</span>
       </div>
       <h2 id="ownerTitle">Owner &amp; Staff Sign In</h2>
-      <p class="owner-note" id="ownerNote">Sign in to your connected LR Popcorn Partner dashboard to verify customer scratch-card codes, record sales &amp; expenses, and view real-time Profit &amp; Loss reports.</p>
+      <p class="owner-note" id="ownerNote">Sign in to your LR Popcorn Owner Dashboard to view today's sales &amp; profit, record daily sales and expenses, manage popcorn flavors, and verify customer QR reward codes.</p>
       <form id="ownerForm">
         <label for="ownerUsername">Username</label>
         <input class="input" id="ownerUsername" maxlength="48" autocomplete="username" placeholder="e.g. Shankar" required>
@@ -226,24 +271,124 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
     </div>
   </section>
 
-  <!-- PRIVATE VIEW 4: AUTHENTICATED OWNER WORKSPACE (11 DEDICATED ROUTE PAGES + LOGOUT) -->
+  <!-- PRIVATE VIEW 2: AUTHENTICATED OWNER WORKSPACE -->
   <section class="view" id="shop">
     <div id="dbConfigBanner" class="owner-error" style="margin-bottom:18px" role="alert"></div>
 
-    <!-- Quick horizontal bar synced with the 12-item Avatar Menu -->
+    <!-- Simple, Clear Navigation Bar for Mom & Shop Staff -->
     <nav class="owner-subnav no-print" aria-label="Owner workspace sections">
-      <button type="button" class="owner-subnav-link" data-owner-route="profile">Profile</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="edit-profile">Edit Profile</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="reports">Business Reports</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="sales">Sales &amp; Transactions</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="expenses">Expenses</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="inventory">Inventory &amp; Products</button>
-      <button type="button" class="owner-subnav-link active" data-owner-route="rewards">QR Rewards &amp; Winners</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="staff">Staff &amp; Permissions</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="notifications">Notifications</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="settings">Settings</button>
-      <button type="button" class="owner-subnav-link" data-owner-route="security">Security &amp; Sessions</button>
+      <button type="button" class="owner-subnav-link active" data-owner-route="overview">🏠 Overview</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="sales">💳 Daily Sales</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="expenses">🧾 Expenses</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="reports">📊 Profit &amp; Loss</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="inventory">🍿 Products</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="rewards">🎟️ QR Rewards</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="settings">⚙️ Settings</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="profile">👤 Profile</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="staff">🛡️ Staff</button>
+      <button type="button" class="owner-subnav-link" data-owner-route="security">🔐 Security</button>
     </nav>
+
+    <!-- DEDICATED PAGE A: BUSINESS OVERVIEW (HOME DASHBOARD) -->
+    <div class="owner-page active" id="page-overview">
+      <div class="dash-head">
+        <div>
+          <div class="eyebrow">A. Business Overview · Live Shop Summary</div>
+          <h2>Today's Shop Overview</h2>
+          <p class="lead">Simple, real-time view of today's sales, expenses, profit or loss, and customer QR reward redemptions.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn orange" data-owner-route="sales">＋ Record Sale</button>
+          <button type="button" class="btn secondary" data-owner-route="expenses">＋ Record Expense</button>
+          <button type="button" class="btn secondary" data-owner-route="rewards">✓ Verify QR Code</button>
+        </div>
+      </div>
+
+      <!-- Top 5 Key Metrics Requested in Section 3.A -->
+      <div class="grid-4" style="margin-bottom:18px">
+        <div class="kpi-card">
+          <div class="kpi-label">Today's Total Sales</div>
+          <div class="kpi-val" id="ovTodaySales">₹0.00</div>
+          <div class="kpi-sub" id="ovTodaySalesSub">0 sales recorded today</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Today's Expenses</div>
+          <div class="kpi-val" id="ovTodayExpenses">₹0.00</div>
+          <div class="kpi-sub" id="ovTodayExpSub">0 expenses recorded today</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Today's Net Profit / Loss</div>
+          <div class="kpi-val" id="ovTodayNetProfit">₹0.00</div>
+          <div class="kpi-sub">Today's Sales − COGS − Expenses</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Customer QR Rewards</div>
+          <div class="kpi-val"><span id="ovTotalRedemptions" style="color:var(--green)">0</span> <small style="font-size:13px;color:var(--muted)">redeemed</small></div>
+          <div class="kpi-sub"><b id="ovPendingClaims" style="color:var(--orange)">0</b> pending reward claims waiting</div>
+        </div>
+      </div>
+
+      <!-- Weekly and Monthly Business Summaries -->
+      <div class="grid-2" style="margin-bottom:18px">
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h3>This Week's Summary</h3>
+              <div class="sub" id="ovWeekLabel">Current ISO Week</div>
+            </div>
+            <span class="tag">WEEKLY</span>
+          </div>
+          <div class="grid-3" style="margin-top:14px">
+            <div><div class="kpi-label">Weekly Sales</div><div class="kpi-val" id="ovWeekSales" style="font-size:20px">₹0.00</div></div>
+            <div><div class="kpi-label">Weekly Expenses</div><div class="kpi-val" id="ovWeekExpenses" style="font-size:20px">₹0.00</div></div>
+            <div><div class="kpi-label">Weekly Net Profit</div><div class="kpi-val" id="ovWeekProfit" style="font-size:20px">₹0.00</div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h3>This Month's Summary</h3>
+              <div class="sub" id="ovMonthLabel">Current Month</div>
+            </div>
+            <span class="tag">MONTHLY</span>
+          </div>
+          <div class="grid-3" style="margin-top:14px">
+            <div><div class="kpi-label">Monthly Sales</div><div class="kpi-val" id="ovMonthSales" style="font-size:20px">₹0.00</div></div>
+            <div><div class="kpi-label">Monthly Expenses</div><div class="kpi-val" id="ovMonthExpenses" style="font-size:20px">₹0.00</div></div>
+            <div><div class="kpi-label">Monthly Net Profit</div><div class="kpi-val" id="ovMonthProfit" style="font-size:20px">₹0.00</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <div>
+            <h3>Recent Transactions (Sales &amp; Expenses)</h3>
+            <div class="sub">Latest genuine transactions recorded at the shop counter</div>
+          </div>
+          <button type="button" class="btn secondary" id="refreshOverviewBtn" style="padding:9px 14px">↻ Refresh Overview</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Details / Item</th>
+                <th>Shop</th>
+                <th>Payment Method</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody id="ovRecentTxRows">
+              <tr><td colspan="6" style="text-align:center;color:var(--muted)">No transactions recorded yet. Use "+ Record Sale" or "+ Record Expense" to begin.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <!-- DEDICATED PAGE 1: OWNER PROFILE -->
     <div class="owner-page" id="page-profile">
@@ -333,13 +478,13 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
       </div>
     </div>
 
-    <!-- DEDICATED PAGE 3: BUSINESS REPORTS (REAL PROFIT & LOSS) -->
+    <!-- DEDICATED PAGE 3: BUSINESS REPORTS (REAL PROFIT & LOSS + VISUAL CHARTS) -->
     <div class="owner-page" id="page-reports">
       <div class="dash-head">
         <div>
-          <div class="eyebrow">Financial Analytics</div>
-          <h2>Business Reports (Profit &amp; Loss)</h2>
-          <p class="lead">Calculated strictly from persisted sales, discounts, refunds, product COGS, redeemed gift costs, and operating expenses.</p>
+          <div class="eyebrow">D &amp; G. Profit &amp; Loss + Reports</div>
+          <h2>Profit &amp; Loss &amp; Business Reports</h2>
+          <p class="lead">Calculated strictly from persisted sales revenue minus recorded expenses and COGS. Revenue is never labeled as profit.</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" class="btn secondary" id="exportPnlCsvBtn">⬇ Export CSV</button>
@@ -378,14 +523,14 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
 
       <div id="pnlEmptyState" class="empty-state" style="display:none">
         <b>No financial data recorded yet.</b>
-        Record genuine sales in <em>Sales &amp; Transactions</em> or expenses in <em>Expenses</em> to generate your Profit &amp; Loss statement. No fabricated or placeholder figures are shown.
+        Record genuine sales in <em>Daily Sales</em> or expenses in <em>Expenses</em> to generate your Profit &amp; Loss statement. No fabricated or placeholder figures are shown.
       </div>
 
       <div id="pnlReportContent">
         <div class="grid-4" style="margin-bottom:18px">
-          <div class="kpi-card"><div class="kpi-label">Gross Sales</div><div class="kpi-val" id="kpiGrossSales">₹0.00</div><div class="kpi-sub" id="kpiSalesCount">0 sales recorded</div></div>
+          <div class="kpi-card"><div class="kpi-label">Gross Sales Revenue</div><div class="kpi-val" id="kpiGrossSales">₹0.00</div><div class="kpi-sub" id="kpiSalesCount">0 sales recorded</div></div>
           <div class="kpi-card"><div class="kpi-label">Discounts &amp; Refunds</div><div class="kpi-val" id="kpiDeductions">₹0.00</div><div class="kpi-sub" id="kpiRefundsSub">Discounts ₹0 · Refunds ₹0</div></div>
-          <div class="kpi-card"><div class="kpi-label">Net Sales</div><div class="kpi-val" id="kpiNetSales">₹0.00</div><div class="kpi-sub">Gross − Discounts − Refunds</div></div>
+          <div class="kpi-card"><div class="kpi-label">Net Sales Revenue</div><div class="kpi-val" id="kpiNetSales">₹0.00</div><div class="kpi-sub">Gross − Discounts − Refunds</div></div>
           <div class="kpi-card"><div class="kpi-label">Total COGS</div><div class="kpi-val" id="kpiTotalCogs">₹0.00</div><div class="kpi-sub" id="kpiCogsSub">Products ₹0 · Redeemed Gifts ₹0</div></div>
           <div class="kpi-card"><div class="kpi-label">Gross Profit</div><div class="kpi-val" id="kpiGrossProfit">₹0.00</div><div class="kpi-sub" id="kpiGrossMargin">Gross Margin: 0.0%</div></div>
           <div class="kpi-card"><div class="kpi-label">Operating Expenses</div><div class="kpi-val" id="kpiOpExpenses">₹0.00</div><div class="kpi-sub" id="kpiExpensesCount">0 expense records</div></div>
@@ -393,9 +538,22 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
           <div class="kpi-card"><div class="kpi-label">Recorded Payments</div><div class="kpi-val" id="kpiPaymentSplit" style="font-size:15px">Cash ₹0 · UPI ₹0</div><div class="kpi-sub">Net sales by tender (not profit)</div></div>
         </div>
 
+        <!-- Visual Revenue vs Expenses Chart -->
         <div class="panel" style="margin-bottom:18px">
-          <h3>Period Summary Breakdown</h3>
-          <div class="sub">Grouped by selected time period (Daily, Weekly, or Monthly)</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+            <div>
+              <h3>Visual Profit &amp; Loss Chart (Sales Revenue vs. Costs &amp; Expenses)</h3>
+              <div class="sub">Orange = Net Sales Revenue · Red = Total Costs (COGS + Operating Expenses)</div>
+            </div>
+          </div>
+          <div id="pnlVisualChart">
+            <div style="color:var(--muted);font-size:12px;padding:12px 0">No period bars to plot yet.</div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:18px">
+          <h3>Period Summary Breakdown (Daily / Weekly / Monthly)</h3>
+          <div class="sub">Grouped by selected time period — zero double-counting of sales or expenses</div>
           <div class="table-wrap">
             <table>
               <thead>
@@ -432,30 +590,39 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
           <div class="panel">
             <h3>Accounting Formulas &amp; Data Integrity</h3>
             <div class="tip" style="margin-top:8px">
-              <b>1. Net Sales</b> = Gross Sales − Discounts − Refunds<br>
+              <b>1. Net Sales Revenue</b> = Gross Sales − Discounts − Refunds<br>
               <b>2. Total COGS</b> = Recorded Product COGS − Reversed Refund COGS + Redeemed QR Gift Costs<br>
-              <b>3. Gross Profit</b> = Net Sales − Total COGS<br>
+              <b>3. Gross Profit</b> = Net Sales Revenue − Total COGS<br>
               <b>4. Net Profit / Loss</b> = Gross Profit − Operating Expenses<br>
-              <small style="display:block;margin-top:6px">Note: Money received via UPI or Cash is gross tender, never counted directly as profit. Unredeemed QR slips incur ₹0 gift cost until verified as Collected.</small>
+              <small style="display:block;margin-top:6px">Note: Sales revenue received via UPI or Cash is gross tender, never labeled as profit. Unredeemed QR slips incur ₹0 gift cost until verified as Collected.</small>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- DEDICATED PAGE 4: SALES AND TRANSACTIONS -->
+    <!-- DEDICATED PAGE 4: DAILY SALES MANAGEMENT -->
     <div class="owner-page" id="page-sales">
       <div class="dash-head">
         <div>
-          <div class="eyebrow">Revenue &amp; Register</div>
-          <h2>Sales &amp; Transactions</h2>
-          <p class="lead">Record counter sales, issue customer refunds, or import settlement rows with automatic duplicate transaction detection.</p>
+          <div class="eyebrow">B. Daily Sales Management</div>
+          <h2>Daily Sales &amp; Transactions</h2>
+          <p class="lead">Select a popcorn flavor or category, enter quantity and unit price, choose payment method, and view or search previous sales.</p>
         </div>
       </div>
 
       <div class="grid-2" style="margin-bottom:18px">
         <div class="panel">
-          <h3>Record a Sale</h3>
+          <h3>Record a Daily Sale</h3>
+          <div class="sub">Tap a popular flavor below to quick-fill or choose from your product catalog:</div>
+          <div class="quick-chip-bar" id="quickFlavorChips">
+            <button type="button" class="quick-chip" data-flavor="Salt Popcorn" data-price="30" data-cost="10">🍿 Salt (₹30)</button>
+            <button type="button" class="quick-chip" data-flavor="Tomato Popcorn" data-price="40" data-cost="14">🍅 Tomato (₹40)</button>
+            <button type="button" class="quick-chip" data-flavor="Masala Popcorn" data-price="40" data-cost="14">🌶️ Masala (₹40)</button>
+            <button type="button" class="quick-chip" data-flavor="Cheese Popcorn" data-price="50" data-cost="18">🧀 Cheese (₹50)</button>
+            <button type="button" class="quick-chip" data-flavor="Water Bottle" data-price="20" data-cost="12">💧 Water (₹20)</button>
+            <button type="button" class="quick-chip" data-flavor="Popcorn + Water Combo" data-price="60" data-cost="24">🎁 Combo (₹60)</button>
+          </div>
           <form id="saleForm">
             <div class="grid-2">
               <div>
@@ -469,9 +636,9 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
             </div>
             <div class="grid-2">
               <div>
-                <label for="saleProductSelect">Product (Optional)</label>
+                <label for="saleProductSelect">Product / Flavor Category</label>
                 <select class="input" id="saleProductSelect">
-                  <option value="">-- Custom / Direct Amount --</option>
+                  <option value="">-- Custom / Direct Entry --</option>
                 </select>
               </div>
               <div>
@@ -479,9 +646,13 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
                 <input type="number" class="input" id="saleQty" value="1" min="1" required>
               </div>
             </div>
-            <div class="grid-3">
+            <div class="grid-4">
               <div>
-                <label for="saleGross">Gross Amount (₹) *</label>
+                <label for="saleUnitPrice">Unit Price (₹)</label>
+                <input type="number" step="0.01" min="0" class="input" id="saleUnitPrice" placeholder="e.g. 40">
+              </div>
+              <div>
+                <label for="saleGross">Total Amount (₹) *</label>
                 <input type="number" step="0.01" min="0.01" class="input" id="saleGross" placeholder="e.g. 100" required>
               </div>
               <div>
@@ -489,7 +660,7 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
                 <input type="number" step="0.01" min="0" class="input" id="saleDiscount" value="0">
               </div>
               <div>
-                <label for="saleCogs">Cost of Goods (₹)</label>
+                <label for="saleCogs">Cost / COGS (₹)</label>
                 <input type="number" step="0.01" min="0" class="input" id="saleCogs" value="0">
               </div>
             </div>
@@ -498,21 +669,21 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
                 <label for="salePaymentMethod">Payment Method *</label>
                 <select class="input" id="salePaymentMethod">
                   <option value="CASH">Cash</option>
-                  <option value="UPI">UPI (UTR / Reference)</option>
+                  <option value="UPI">UPI (PhonePe / GPay / Paytm)</option>
                   <option value="CARD">Card</option>
                   <option value="OTHER">Other</option>
                 </select>
               </div>
               <div>
-                <label for="saleReference">Payment Reference / UTR (Unique)</label>
+                <label for="saleReference">Payment Reference / UTR (Optional)</label>
                 <input class="input" id="saleReference" maxlength="80" placeholder="e.g. UTR-412983192">
               </div>
             </div>
-            <label for="saleNotes">Notes</label>
-            <input class="input" id="saleNotes" maxlength="200" placeholder="Optional counter note">
+            <label for="saleNotes">Flavor / Item Note (Optional)</label>
+            <input class="input" id="saleNotes" maxlength="200" placeholder="e.g. Salt Popcorn 2 packs">
             <div class="owner-error" id="saleFormError" role="alert"></div>
             <div class="owner-success" id="saleFormSuccess" role="status"></div>
-            <button type="submit" class="btn orange full">Record Sale</button>
+            <button type="submit" class="btn orange full">Save Sale Transaction</button>
           </form>
         </div>
 
@@ -555,18 +726,31 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
       <div class="panel">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
           <div>
-            <h3>Transaction &amp; Refund History</h3>
-            <div class="sub">Every recorded sale and refund with source and reference tracking</div>
+            <h3>Previous Sales &amp; Refund History</h3>
+            <div class="sub">Search and filter recorded sales by keyword, payment method, or date</div>
           </div>
           <button type="button" class="btn secondary" id="exportSalesCsvBtn">⬇ Export Sales CSV</button>
         </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="grid-3" style="margin-top:14px">
+          <input class="input" id="salesSearchInput" placeholder="🔍 Search sale #, flavor, note, or UTR..." style="margin:0">
+          <select class="input" id="salesFilterMethod" style="margin:0">
+            <option value="">All Payment Methods</option>
+            <option value="CASH">Cash Only</option>
+            <option value="UPI">UPI Only</option>
+            <option value="CARD">Card Only</option>
+          </select>
+          <input type="date" class="input" id="salesFilterDate" style="margin:0" title="Filter by sale date">
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Date</th>
+                <th>Date &amp; Time</th>
                 <th>Sale # / Type</th>
-                <th>Shop</th>
+                <th>Shop / Item</th>
                 <th>Gross</th>
                 <th>Discount</th>
                 <th>Net</th>
@@ -581,15 +765,34 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
       </div>
     </div>
 
-    <!-- DEDICATED PAGE 5: EXPENSES -->
+    <!-- DEDICATED PAGE 5: EXPENSE MANAGEMENT -->
     <div class="owner-page" id="page-expenses">
       <div class="dash-head">
         <div>
-          <div class="eyebrow">Cost Control</div>
+          <div class="eyebrow">C. Expense Management</div>
           <h2>Operating Expenses</h2>
-          <p class="lead">Record raw corn, oil, seasoning, packaging, rent, utilities, and other operating expenses.</p>
+          <p class="lead">Record raw materials, packing covers, staff wages, rent, transport, and miscellaneous costs. View daily, weekly, and monthly expense totals.</p>
         </div>
         <button type="button" class="btn secondary" id="exportExpensesCsvBtn">⬇ Export Expenses CSV</button>
+      </div>
+
+      <!-- Daily, Weekly, and Monthly Expense Summary Cards -->
+      <div class="grid-3" style="margin-bottom:18px">
+        <div class="kpi-card">
+          <div class="kpi-label">Today's Expenses (Daily)</div>
+          <div class="kpi-val" id="expDailyTotal">₹0.00</div>
+          <div class="kpi-sub" id="expDailySub">Recorded for today</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">This Week's Expenses (Weekly)</div>
+          <div class="kpi-val" id="expWeeklyTotal">₹0.00</div>
+          <div class="kpi-sub">Current ISO week total</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">This Month's Expenses (Monthly)</div>
+          <div class="kpi-val" id="expMonthlyTotal">₹0.00</div>
+          <div class="kpi-sub">Current calendar month total</div>
+        </div>
       </div>
 
       <div class="grid">
@@ -604,13 +807,14 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
               <div>
                 <label for="expCategory">Category *</label>
                 <select class="input" id="expCategory" required>
-                  <option value="Raw Materials">Raw Materials (Corn, Oil, Salt)</option>
-                  <option value="Packaging & QR Slips">Packaging &amp; QR Slips</option>
-                  <option value="Rent & Stall">Rent &amp; Stall Fee</option>
-                  <option value="Utilities & Gas">Utilities &amp; Gas</option>
+                  <option value="Raw Materials">Raw Materials (Corn, Oil, Salt, Tomato Seasoning)</option>
+                  <option value="Packing Covers & QR Slips">Packing Covers &amp; QR Slips</option>
                   <option value="Staff Wages">Staff Wages</option>
+                  <option value="Rent & Stall">Rent &amp; Stall Fee</option>
+                  <option value="Transport">Transport &amp; Delivery</option>
+                  <option value="Utilities & Gas">Utilities &amp; Gas</option>
                   <option value="Marketing">Marketing</option>
-                  <option value="Other">Other Operating Expense</option>
+                  <option value="Miscellaneous">Miscellaneous Costs</option>
                 </select>
               </div>
             </div>
@@ -626,7 +830,7 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
             </div>
             <div class="grid-2">
               <div>
-                <label for="expVendor">Vendor / Payee</label>
+                <label for="expVendor">Vendor / Payee (Optional)</label>
                 <input class="input" id="expVendor" maxlength="80" placeholder="e.g. Wholesale Mart">
               </div>
               <div>
@@ -644,8 +848,8 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
                 <input class="input" id="expRef" maxlength="80" placeholder="Optional bill/invoice #">
               </div>
               <div>
-                <label for="expNotes">Notes</label>
-                <input class="input" id="expNotes" maxlength="200" placeholder="Details">
+                <label for="expNotes">Optional Notes</label>
+                <input class="input" id="expNotes" maxlength="200" placeholder="e.g. 10kg corn + packing covers">
               </div>
             </div>
             <div class="owner-error" id="expFormError" role="alert"></div>
@@ -656,10 +860,23 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
 
         <div class="panel">
           <h3>Expense History</h3>
+          <div class="grid-2" style="margin-top:10px">
+            <input class="input" id="expSearchInput" placeholder="🔍 Search category, vendor, or notes..." style="margin:0">
+            <select class="input" id="expFilterCategory" style="margin:0">
+              <option value="">All Categories</option>
+              <option value="Raw Materials">Raw Materials</option>
+              <option value="Packing Covers & QR Slips">Packing Covers &amp; QR Slips</option>
+              <option value="Staff Wages">Staff Wages</option>
+              <option value="Rent & Stall">Rent &amp; Stall</option>
+              <option value="Transport">Transport</option>
+              <option value="Utilities & Gas">Utilities &amp; Gas</option>
+              <option value="Miscellaneous">Miscellaneous</option>
+            </select>
+          </div>
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>Date</th><th>Category</th><th>Shop</th><th>Vendor</th><th>Method</th><th>Amount</th></tr>
+                <tr><th>Date</th><th>Category</th><th>Notes / Vendor</th><th>Method</th><th>Amount</th></tr>
               </thead>
               <tbody id="expensesTableRows"></tbody>
             </table>
@@ -668,47 +885,59 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
       </div>
     </div>
 
-    <!-- DEDICATED PAGE 6: INVENTORY AND PRODUCTS -->
+    <!-- DEDICATED PAGE 6: PRODUCT MANAGEMENT & INVENTORY -->
     <div class="owner-page" id="page-inventory">
       <div class="dash-head">
         <div>
-          <div class="eyebrow">Catalog &amp; Stock</div>
-          <h2>Inventory &amp; Products</h2>
-          <p class="lead">Manage product SKUs, selling prices, unit costs (COGS), and stock movements.</p>
+          <div class="eyebrow">E. Product Management &amp; Flavors</div>
+          <h2>Popcorn Products, Flavors &amp; Stock</h2>
+          <p class="lead">Manage existing popcorn products and prices — supporting Salt, Tomato, Masala, Cheese, and future flavors without breaking customer offers.</p>
         </div>
+        <button type="button" class="btn secondary" id="seedStandardFlavorsBtn">🍿 Load Standard Flavors (Salt, Tomato, Masala, Cheese)</button>
       </div>
 
       <div class="grid-2" style="margin-bottom:18px">
         <div class="panel">
-          <h3>Add New Product</h3>
+          <h3>Add New Popcorn Flavor or Product</h3>
           <form id="productForm">
             <div class="grid-2">
               <div>
-                <label for="prodSku">SKU *</label>
-                <input class="input" id="prodSku" maxlength="32" placeholder="e.g. POP-CLASSIC-50" required>
+                <label for="prodSku">SKU / Code *</label>
+                <input class="input" id="prodSku" maxlength="32" placeholder="e.g. POP-TOMATO-40" required>
               </div>
               <div>
-                <label for="prodName">Product Name *</label>
-                <input class="input" id="prodName" maxlength="80" placeholder="e.g. Classic Salted Popcorn" required>
+                <label for="prodCategory">Flavor / Category *</label>
+                <select class="input" id="prodCategory">
+                  <option value="Salt Popcorn">Salt Flavor</option>
+                  <option value="Tomato Popcorn">Tomato Flavor</option>
+                  <option value="Masala Popcorn">Masala Flavor</option>
+                  <option value="Cheese Popcorn">Cheese Flavor</option>
+                  <option value="Caramel Popcorn">Caramel / Sweet Flavor</option>
+                  <option value="Combo Pack">Combo Pack</option>
+                  <option value="Beverage">Beverage / Water</option>
+                  <option value="Custom Flavor">Future / Custom Flavor</option>
+                </select>
               </div>
             </div>
+            <label for="prodName">Product Name *</label>
+            <input class="input" id="prodName" maxlength="80" placeholder="e.g. Tangy Tomato Popcorn Pack" required>
             <div class="grid-3">
               <div>
                 <label for="prodPrice">Selling Price (₹) *</label>
-                <input type="number" step="0.01" min="0" class="input" id="prodPrice" placeholder="50" required>
+                <input type="number" step="0.01" min="0" class="input" id="prodPrice" placeholder="40" required>
               </div>
               <div>
                 <label for="prodCost">Unit Cost / COGS (₹) *</label>
-                <input type="number" step="0.01" min="0" class="input" id="prodCost" placeholder="18" required>
+                <input type="number" step="0.01" min="0" class="input" id="prodCost" placeholder="14" required>
               </div>
               <div>
                 <label for="prodStock">Opening Stock *</label>
-                <input type="number" min="0" class="input" id="prodStock" value="0" required>
+                <input type="number" min="0" class="input" id="prodStock" value="50" required>
               </div>
             </div>
             <div class="owner-error" id="prodFormError" role="alert"></div>
             <div class="owner-success" id="prodFormSuccess" role="status"></div>
-            <button type="submit" class="btn orange full">Create Product</button>
+            <button type="submit" class="btn orange full">Add Product to Catalog</button>
           </form>
         </div>
 
@@ -743,11 +972,12 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
       </div>
 
       <div class="panel" style="margin-bottom:18px">
-        <h3>Product Catalog &amp; Current Stock</h3>
+        <h3>Product Catalog, Prices &amp; Current Stock</h3>
+        <div class="sub">Click "Edit Price" on any product to update its selling price or unit cost</div>
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>SKU</th><th>Product Name</th><th>Selling Price</th><th>Unit Cost (COGS)</th><th>In Stock</th><th>Status</th></tr>
+              <tr><th>SKU</th><th>Product / Flavor</th><th>Category</th><th>Selling Price</th><th>Unit Cost (COGS)</th><th>In Stock</th><th>Status</th><th>Action</th></tr>
             </thead>
             <tbody id="productsTableRows"></tbody>
           </table>
@@ -767,13 +997,13 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
       </div>
     </div>
 
-    <!-- DEDICATED PAGE 7: QR REWARDS AND WINNERS (NO DEMO WINNER BUTTON) -->
-    <div class="owner-page active" id="page-rewards">
+    <!-- DEDICATED PAGE 7: QR REWARD MANAGEMENT (NO DEMO WINNER BUTTON) -->
+    <div class="owner-page" id="page-rewards">
       <div class="dash-head">
         <div>
-          <div class="eyebrow">Counter Verification &amp; QR Campaign</div>
-          <h2>QR Rewards &amp; Winners</h2>
-          <p class="lead">Verify customer prize codes with atomic single-use redemption and generate printable QR insert slips.</p>
+          <div class="eyebrow">F. QR Reward Management</div>
+          <h2>QR Rewards &amp; Code Verification</h2>
+          <p class="lead">Verify customer prize codes with atomic single-use redemption, view claimed/redeemed/pending status, and print QR insert slips.</p>
         </div>
       </div>
 
@@ -781,8 +1011,8 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
         <div class="panel">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
-              <h3>Verify &amp; Redeem a Prize Code</h3>
-              <div class="sub">Enter the one-time code shown by the customer</div>
+              <h3>Verify &amp; Redeem a Customer Prize Code</h3>
+              <div class="sub">Enter the one-time code shown by the customer at the counter</div>
             </div>
             <span class="status">● ATOMIC SINGLE-USE</span>
           </div>
@@ -793,7 +1023,18 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
           <div class="result" id="result"></div>
 
           <div class="table-wrap">
-            <div class="table-title">Genuine Lucky-Card Entries</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+              <div class="table-title" style="margin:0">Issued Reward Codes &amp; Redemption Status</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <input class="input" id="rewardSearchInput" placeholder="Search code or customer..." style="height:36px;width:190px;margin:0;font-size:12px">
+                <select class="input" id="rewardStatusFilter" style="height:36px;width:155px;margin:0;font-size:12px">
+                  <option value="">All Statuses</option>
+                  <option value="WAITING">Pending / Claimed</option>
+                  <option value="COLLECTED">Redeemed (Collected)</option>
+                  <option value="GENERATED">Unclaimed QR Slips</option>
+                </select>
+              </div>
+            </div>
             <table>
               <thead>
                 <tr><th>Customer</th><th>Code</th><th>Prize</th><th>Gift Cost</th><th>Status</th></tr>
@@ -808,9 +1049,9 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
             <h3>Live Reward Snapshot</h3>
             <div class="sub">Strictly genuine customer plays (zero demo records)</div>
           </div>
-          <div class="stat">Cards scratched / played<b id="plays">0 plays</b></div>
-          <div class="stat">Prizes waiting to collect<b id="pending">0 waiting</b></div>
-          <div class="stat">Prizes redeemed at counter<b id="collectedStat">0 collected</b></div>
+          <div class="stat">Cards scratched / claimed<b id="plays">0 plays</b></div>
+          <div class="stat">Pending reward claims<b id="pending">0 waiting</b></div>
+          <div class="stat">Redeemed at counter<b id="collectedStat">0 collected</b></div>
           <div class="tip">
             <b>Batch Generate Paper QR Slips</b><br>
             Create unique single-use QR codes to print and drop inside popcorn packets.
@@ -989,15 +1230,8 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-const prizes = [
-  ['Mini Masala Pack + ₹10 Water Bottle', '🍿💧', 'One spicy mini masala popcorn pack + chilled ₹10 water bottle combo!', 22, 'prize-masala-water10-combo.jpg'],
-  ['Popcorn Tub + ₹20 Water Bottle Combo', '🍿💧', 'Fresh gourmet popcorn tub paired with a chilled ₹20 water bottle!', 35, 'prize-tub-water20-combo.jpg'],
-  ['Free Fresh Popcorn Tub!', '🍿', 'One fresh hot gourmet popcorn tub, on us.', 20, 'prize-free-popcorn-tub.jpg'],
-  ['Buy 1 Get 1 Free Masala & Cheese Duo', '🎉', 'Two overflowing tubs of masala and cheese popcorn for your next visit.', 25, 'prize-bogo-popcorn.jpg'],
-  ['Mini Masala Pack + 50% Off VIP Token', '🏷️', 'Complimentary mini masala pack plus 50% off your next bag.', 18, 'prize-vip-combo-pack.jpg']
-];
-
 const OWNER_ROUTES = [
+  'overview',
   'profile',
   'edit-profile',
   'reports',
@@ -1011,15 +1245,14 @@ const OWNER_ROUTES = [
   'security'
 ];
 
-let customer = '';
-let prize = null;
-let prizeCode = '';
 let authToken = sessionStorage.getItem('popcorn-auth-token') || '';
 let currentUser = null;
-let currentOwnerRoute = 'rewards';
+let currentOwnerRoute = 'overview';
 let lastPnlReport = null;
 let cachedSales = [];
+let cachedRefunds = [];
 let cachedExpenses = [];
+let cachedRewards = [];
 
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1060,35 +1293,24 @@ async function apiFetch(url, options = {}) {
   return { ok: res.ok, status: res.status, data };
 }
 
-function updateSeoMeta(viewId) {
+function updateSeoMeta() {
   const robots = document.getElementById('robotsMeta');
-  const hasCode = new URLSearchParams(location.search).has('code');
   if (robots) {
-    robots.setAttribute('content', (viewId === 'welcome' && !hasCode) ? 'index, follow' : 'noindex, nofollow');
+    robots.setAttribute('content', 'noindex, nofollow');
   }
 }
 
-// Theme toggle (Preserves exact Light & Dark hero images)
+// Theme toggle (Defaults to Black & Deep Charcoal Frosted Glass on Owner Dashboard)
 function setTheme(mode) {
   document.body.classList.toggle('dark', mode === 'dark');
-  const hero = document.getElementById('heroImage');
-  if (hero) hero.src = mode === 'dark' ? hero.dataset.darkSrc : hero.dataset.lightSrc;
-  localStorage.setItem('popcorn-club-theme', mode);
+  localStorage.setItem('popcorn-owner-theme', mode);
   const b = document.getElementById('themeToggle');
   if (b) b.innerHTML = mode === 'dark' ? '☀ <span>Light mode</span>' : '☾ <span>Dark mode</span>';
   const metaTheme = document.querySelector('meta[name=theme-color]');
-  if (metaTheme) metaTheme.content = mode === 'dark' ? '#090a0b' : '#ff6b24';
+  if (metaTheme) metaTheme.content = mode === 'dark' ? '#08090c' : '#ff6b24';
 }
 document.getElementById('themeToggle').onclick = () => setTheme(document.body.classList.contains('dark') ? 'light' : 'dark');
-setTheme(localStorage.getItem('popcorn-club-theme') || 'light');
-
-// Prize realistic & cinematic offer photography
-function prizeIllustration(index = 0) {
-  const item = prizes[index] || prizes[0];
-  const label = esc(item[0] || 'Lucky Popcorn Offer');
-  const imgSrc = esc(item[4] || 'prize-masala-water10-combo.jpg');
-  return '<img class="prize-art" src="' + imgSrc + '" alt="' + label + ' offer photo" loading="eager">';
-}
+setTheme(localStorage.getItem('popcorn-owner-theme') || 'dark');
 
 // Navigation & Route Protection
 function show(viewId, updateUrl = true) {
@@ -1097,32 +1319,27 @@ function show(viewId, updateUrl = true) {
   }
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === viewId));
   document.querySelectorAll('#mainNavItems .nav').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.view === viewId || (viewId === 'scratch' && btn.dataset.view === 'welcome') || (viewId === 'shop' && btn.dataset.view === 'owner'));
+    btn.classList.toggle('active', btn.dataset.view === viewId || (viewId === 'shop' && btn.dataset.view === 'owner'));
   });
   const ownerMenu = document.getElementById('ownerMenu');
   if (ownerMenu) ownerMenu.hidden = !currentUser;
 
   if (updateUrl) {
     const u = new URL(location.href);
-    if (viewId === 'welcome') {
-      u.searchParams.delete('page');
-      u.searchParams.delete('section');
-    } else if (viewId === 'owner') {
-      u.searchParams.set('page', 'owner');
+    if (viewId === 'owner') {
       u.searchParams.delete('section');
     } else if (viewId === 'shop') {
-      u.searchParams.set('page', 'owner');
       u.searchParams.set('section', currentOwnerRoute);
     }
     history.replaceState({}, '', u);
   }
-  updateSeoMeta(viewId);
+  updateSeoMeta();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function navigateOwnerRoute(route, pushHistory = true) {
   if (!currentUser) {
-    toast('Please sign in to access owner pages.');
+    toast('Please sign in to access the Owner Dashboard.');
     show('owner', true);
     return;
   }
@@ -1130,7 +1347,7 @@ function navigateOwnerRoute(route, pushHistory = true) {
     route = 'edit-profile';
     toast('Please change your initial bootstrap password first.');
   }
-  const target = OWNER_ROUTES.includes(route) ? route : 'rewards';
+  const target = OWNER_ROUTES.includes(route) ? route : 'overview';
   currentOwnerRoute = target;
   show('shop', false);
 
@@ -1141,11 +1358,10 @@ function navigateOwnerRoute(route, pushHistory = true) {
 
   if (pushHistory) {
     const u = new URL(location.href);
-    u.searchParams.set('page', 'owner');
     u.searchParams.set('section', target);
     history.pushState({ page: 'owner', section: target }, '', u);
   }
-  updateSeoMeta('shop');
+  updateSeoMeta();
   loadOwnerSectionData(target);
 }
 
@@ -1187,13 +1403,16 @@ document.querySelectorAll('[data-owner-route]').forEach(btn => {
 document.querySelectorAll('#mainNavItems .nav').forEach(btn => {
   btn.addEventListener('click', () => {
     if (btn.dataset.view === 'owner' && currentUser) {
-      navigateOwnerRoute(currentOwnerRoute, true);
-    } else {
+      navigateOwnerRoute(currentOwnerRoute || 'overview', true);
+    } else if (btn.dataset.view) {
       show(btn.dataset.view, true);
     }
   });
 });
-document.getElementById('brandHome').onclick = () => show('welcome', true);
+document.getElementById('brandHome').onclick = () => {
+  if (currentUser) navigateOwnerRoute('overview', true);
+  else show('owner', true);
+};
 
 // Sync Owner Header Identity
 function syncOwnerIdentityUI() {
@@ -1212,154 +1431,6 @@ function syncOwnerIdentityUI() {
   document.getElementById('dropdownOwnerName').textContent = currentUser.full_name || currentUser.username;
   document.getElementById('dropdownOwnerRole').textContent = currentUser.role || 'OWNER';
 }
-
-// Customer Play & Scratch Card Flow
-document.getElementById('nameForm').onsubmit = async e => {
-  e.preventDefault();
-  customer = document.getElementById('name').value.trim();
-  if (!customer) return;
-
-  const submitBtn = document.getElementById('playSubmitBtn');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Preparing your card...';
-
-  document.getElementById('hello').textContent = customer;
-  const urlCode = new URLSearchParams(location.search).get('code');
-
-  try {
-    const res = await apiFetch('/api/rewards?action=issue', {
-      method: 'POST',
-      body: JSON.stringify({ customer_name: customer, code: urlCode || undefined })
-    });
-
-    if (res.ok && res.data && res.data.code) {
-      prizeCode = res.data.code;
-      const pIdx = res.data.prize?.index ?? 0;
-      prize = [
-        res.data.prize.name,
-        res.data.prize.icon,
-        res.data.prize.desc,
-        20
-      ];
-      document.getElementById('giftName').textContent = prize[0];
-      document.getElementById('giftArt').innerHTML = prizeIllustration(pIdx);
-      document.getElementById('giftDesc').textContent = prize[2];
-      document.getElementById('giftCode').textContent = prizeCode;
-    } else {
-      const pIdx = Math.floor(Math.random() * prizes.length);
-      prize = prizes[pIdx];
-      prizeCode = urlCode ? urlCode.toUpperCase() : ('PC-' + Math.random().toString(36).slice(2, 8).toUpperCase());
-      document.getElementById('giftName').textContent = prize[0];
-      document.getElementById('giftArt').innerHTML = prizeIllustration(pIdx);
-      document.getElementById('giftDesc').textContent = prize[2];
-      document.getElementById('giftCode').textContent = prizeCode;
-    }
-  } catch {
-    const pIdx = Math.floor(Math.random() * prizes.length);
-    prize = prizes[pIdx];
-    prizeCode = 'PC-' + Math.random().toString(36).slice(2, 8).toUpperCase();
-    document.getElementById('giftName').textContent = prize[0];
-    document.getElementById('giftArt').innerHTML = prizeIllustration(pIdx);
-    document.getElementById('giftDesc').textContent = prize[2];
-    document.getElementById('giftCode').textContent = prizeCode;
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Let's play →";
-  }
-
-  const c = document.getElementById('cover');
-  c.classList.remove('done');
-  c.dataset.saved = 'false';
-  show('scratch', false);
-  requestAnimationFrame(() => requestAnimationFrame(resetScratch));
-};
-
-function reveal() {
-  const c = document.getElementById('cover');
-  if (c.classList.contains('done')) return;
-  c.classList.add('done');
-  if (c.dataset.saved === 'true') return;
-  c.dataset.saved = 'true';
-  toast('Surprise revealed! Show your code in the shop.');
-}
-
-const scratchCard = document.getElementById('cover');
-const scratchCanvas = document.getElementById('scratchLayer');
-let scratchContext, scratchDrawing = false, scratchMoves = 0;
-
-function resetScratch() {
-  if (!scratchCard || !scratchCanvas) return;
-  const rect = scratchCard.getBoundingClientRect();
-  if (!rect.width || !rect.height) return;
-  const ratio = Math.min(window.devicePixelRatio || 1, 2);
-  scratchCanvas.width = Math.round(rect.width * ratio);
-  scratchCanvas.height = Math.round(rect.height * ratio);
-  scratchContext = scratchCanvas.getContext('2d', { willReadFrequently: true });
-  scratchContext.setTransform(ratio, 0, 0, ratio, 0, 0);
-  const grad = scratchContext.createLinearGradient(0, 0, rect.width, rect.height);
-  grad.addColorStop(0, '#ffad55');
-  grad.addColorStop(0.48, '#ff762b');
-  grad.addColorStop(1, '#e9531b');
-  scratchContext.fillStyle = grad;
-  scratchContext.fillRect(0, 0, rect.width, rect.height);
-  for (let i = 0; i < 90; i++) {
-    const x = Math.random() * rect.width, y = Math.random() * rect.height, r = Math.random() * 1.5 + 0.4;
-    scratchContext.beginPath();
-    scratchContext.arc(x, y, r, 0, Math.PI * 2);
-    scratchContext.fillStyle = 'rgba(255,245,226,.4)';
-    scratchContext.fill();
-  }
-  scratchContext.globalCompositeOperation = 'destination-out';
-  scratchContext.lineCap = 'round';
-  scratchContext.lineJoin = 'round';
-  scratchContext.lineWidth = 34;
-  scratchMoves = 0;
-}
-
-scratchCanvas.addEventListener('pointerdown', e => {
-  if (scratchCard.classList.contains('done')) return;
-  scratchDrawing = true;
-  scratchCanvas.setPointerCapture(e.pointerId);
-  const r = scratchCanvas.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-  scratchContext.beginPath();
-  scratchContext.arc(x, y, 17, 0, Math.PI * 2);
-  scratchContext.fill();
-  scratchContext.beginPath();
-  scratchContext.moveTo(x, y);
-  scratchMoves++;
-});
-
-scratchCanvas.addEventListener('pointermove', e => {
-  if (!scratchDrawing || scratchCard.classList.contains('done')) return;
-  const r = scratchCanvas.getBoundingClientRect();
-  scratchContext.lineTo(e.clientX - r.left, e.clientY - r.top);
-  scratchContext.stroke();
-  scratchContext.beginPath();
-  scratchContext.moveTo(e.clientX - r.left, e.clientY - r.top);
-  if (++scratchMoves % 6 === 0) {
-    const d = scratchContext.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height).data;
-    let clear = 0, total = 0;
-    for (let i = 3; i < d.length; i += 64) {
-      total++;
-      if (d[i] < 35) clear++;
-    }
-    if (total && clear / total > 0.52) {
-      scratchDrawing = false;
-      reveal();
-    }
-  }
-});
-['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => scratchCanvas.addEventListener(ev, () => { scratchDrawing = false; }));
-scratchCard.onkeydown = e => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    reveal();
-  }
-};
-window.addEventListener('resize', () => {
-  if (!scratchCard.classList.contains('done') && document.getElementById('scratch').classList.contains('active')) resetScratch();
-});
-document.getElementById('back').onclick = () => show('welcome', true);
 
 // Authentication: 1st-Time Sign Up -> 2nd-Time Login & Logout
 let isSignupStillAvailable = !localStorage.getItem('popcorn-owner-vault');
@@ -1432,7 +1503,7 @@ if (ownerSignupForm) {
       syncOwnerIdentityUI();
       e.target.reset();
       toast('Owner account created! Sign-up is now permanently locked to Login only.');
-      navigateOwnerRoute('rewards', true);
+      navigateOwnerRoute('overview', true);
     } catch {
       errEl.textContent = 'Unable to reach authentication server. Please try again.';
       errEl.classList.add('show');
@@ -1470,7 +1541,7 @@ document.getElementById('ownerForm').onsubmit = async e => {
     syncOwnerIdentityUI();
     e.target.reset();
     toast('Welcome back, ' + (currentUser.full_name || currentUser.username));
-    navigateOwnerRoute(currentOwnerRoute || 'rewards', true);
+    navigateOwnerRoute(currentOwnerRoute || 'overview', true);
   } catch (err) {
     errEl.textContent = 'Unable to reach authentication server. Please try again.';
     errEl.classList.add('show');
@@ -1498,7 +1569,9 @@ document.getElementById('logoutAllBtn').onclick = performLogout;
 // Section Data Loader
 async function loadOwnerSectionData(section) {
   if (!currentUser) return;
-  if (section === 'profile' || section === 'edit-profile') {
+  if (section === 'overview') {
+    await loadOverviewData();
+  } else if (section === 'profile' || section === 'edit-profile') {
     await loadProfileData();
   } else if (section === 'reports') {
     await loadPnlReport();
@@ -1520,6 +1593,52 @@ async function loadOwnerSectionData(section) {
     await loadSecurityData();
   }
 }
+
+// 0. Business Overview (Section A)
+async function loadOverviewData() {
+  const res = await apiFetch('/api/stats');
+  if (!res.ok || !res.data?.stats) return;
+  const st = res.data.stats;
+  const td = st.today || {};
+  const wk = st.weekly || {};
+  const mo = st.monthly || {};
+
+  document.getElementById('ovTodaySales').textContent = fmtMoney(td.net_sales || 0);
+  document.getElementById('ovTodaySalesSub').textContent = (td.sales_count || 0) + ' sales recorded today';
+  document.getElementById('ovTodayExpenses').textContent = fmtMoney(td.expenses || 0);
+  document.getElementById('ovTodayExpSub').textContent = (td.expenses_count || 0) + ' expenses recorded today';
+
+  const tdProfitEl = document.getElementById('ovTodayNetProfit');
+  tdProfitEl.textContent = fmtMoney(td.net_profit || 0);
+  tdProfitEl.style.color = (td.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
+
+  document.getElementById('ovTotalRedemptions').textContent = st.totalRedeemed || 0;
+  document.getElementById('ovPendingClaims').textContent = st.pendingCollection || 0;
+
+  document.getElementById('ovWeekSales').textContent = fmtMoney(wk.net_sales || 0);
+  document.getElementById('ovWeekExpenses').textContent = fmtMoney(wk.expenses || 0);
+  const wkProfitEl = document.getElementById('ovWeekProfit');
+  wkProfitEl.textContent = fmtMoney(wk.net_profit || 0);
+  wkProfitEl.style.color = (wk.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
+
+  document.getElementById('ovMonthSales').textContent = fmtMoney(mo.net_sales || 0);
+  document.getElementById('ovMonthExpenses').textContent = fmtMoney(mo.expenses || 0);
+  const moProfitEl = document.getElementById('ovMonthProfit');
+  moProfitEl.textContent = fmtMoney(mo.net_profit || 0);
+  moProfitEl.style.color = (mo.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
+
+  const txList = st.recentTransactions || [];
+  const txBody = document.getElementById('ovRecentTxRows');
+  txBody.innerHTML = txList.length
+    ? txList.map(tx => {
+        const isPos = tx.amount >= 0;
+        const badgeClass = tx.type === 'SALE' ? 'green' : 'red';
+        return '<tr><td>' + esc(tx.date || '—') + '</td><td><span class="tag ' + badgeClass + '">' + esc(tx.type) + '</span></td><td><b>' + esc(tx.title) + '</b></td><td>' + esc(tx.shop_name) + '</td><td>' + esc(tx.method) + '</td><td style="font-weight:700;color:' + (isPos ? 'var(--green)' : 'var(--danger)') + '">' + (isPos ? '+' : '-') + fmtMoney(Math.abs(tx.amount)) + '</td></tr>';
+      }).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No transactions recorded yet. Use "+ Record Sale" or "+ Record Expense" to begin.</td></tr>';
+}
+const refreshOverviewBtn = document.getElementById('refreshOverviewBtn');
+if (refreshOverviewBtn) refreshOverviewBtn.onclick = loadOverviewData;
 
 // 1 & 2. Owner Profile & Edit Profile
 async function loadProfileData() {
@@ -1607,7 +1726,7 @@ document.getElementById('editProfileForm').onsubmit = async e => {
   }
 };
 
-// 3. Business Reports (Real Profit & Loss)
+// 3. Business Reports (Real Profit & Loss + Visual Chart)
 async function loadPnlReport() {
   const startDate = document.getElementById('pnlStartDate').value;
   const endDate = document.getElementById('pnlEndDate').value;
@@ -1650,8 +1769,33 @@ async function loadPnlReport() {
   const pm = s.payment_method_totals || {};
   document.getElementById('kpiPaymentSplit').textContent = 'Cash ' + fmtMoney(pm.CASH) + ' · UPI ' + fmtMoney(pm.UPI);
 
-  const periodRows = document.getElementById('pnlPeriodRows');
   const periods = res.data.periodSummaries || [];
+
+  // Render Visual Revenue vs Costs Bar Chart
+  const chartEl = document.getElementById('pnlVisualChart');
+  if (chartEl) {
+    if (!periods.length) {
+      chartEl.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:12px 0">No financial records to chart for this date range yet.</div>';
+    } else {
+      const maxVal = Math.max(1, ...periods.map(p => Math.max(p.net_sales || 0, (p.total_cogs || 0) + (p.operating_expenses || 0))));
+      chartEl.innerHTML = periods.slice(0, 12).map(p => {
+        const salesPct = Math.min(100, Math.round(((p.net_sales || 0) / maxVal) * 100));
+        const costTotal = Number(((p.total_cogs || 0) + (p.operating_expenses || 0)).toFixed(2));
+        const costPct = Math.min(100, Math.round((costTotal / maxVal) * 100));
+        const npColor = p.net_profit >= 0 ? 'var(--green)' : 'var(--danger)';
+        return '<div class="chart-bar-row">' +
+          '<div><b>' + esc(p.period) + '</b></div>' +
+          '<div>' +
+            '<div class="chart-track" title="Net Sales: ' + fmtMoney(p.net_sales) + '"><div class="chart-fill-sales" style="width:' + salesPct + '%"></div></div>' +
+            '<div class="chart-track" style="margin-top:4px" title="Total Costs & Expenses: ' + fmtMoney(costTotal) + '"><div class="chart-fill-exp" style="width:' + costPct + '%"></div></div>' +
+          '</div>' +
+          '<div style="text-align:right;font-size:11px">Sales: <b>' + fmtMoney(p.net_sales) + '</b><br>Net: <b style="color:' + npColor + '">' + fmtMoney(p.net_profit) + '</b></div>' +
+        '</div>';
+      }).join('');
+    }
+  }
+
+  const periodRows = document.getElementById('pnlPeriodRows');
   periodRows.innerHTML = periods.length
     ? periods.map(p => '<tr><td><b>' + esc(p.period) + '</b></td><td>' + fmtMoney(p.gross_sales) + '</td><td>' + fmtMoney(p.discounts) + '</td><td>' + fmtMoney(p.refunds) + '</td><td><b>' + fmtMoney(p.net_sales) + '</b></td><td>' + fmtMoney(p.product_cogs) + '</td><td>' + fmtMoney(p.reward_gift_cost) + '</td><td>' + fmtMoney(p.gross_profit) + '</td><td>' + fmtMoney(p.operating_expenses) + '</td><td style="font-weight:700;color:' + (p.net_profit >= 0 ? 'var(--green)' : 'var(--danger)') + '">' + fmtMoney(p.net_profit) + '</td></tr>').join('')
     : '<tr><td colspan="10" style="text-align:center;color:var(--muted)">No financial records for this period.</td></tr>';
@@ -1689,7 +1833,7 @@ function downloadCsv(filename, content) {
   a.click();
 }
 
-// 4. Sales & Transactions
+// 4. Daily Sales Management (Section B)
 async function loadSalesAndProducts() {
   const today = new Date().toISOString().split('T')[0];
   if (!document.getElementById('saleDate').value) document.getElementById('saleDate').value = today;
@@ -1702,46 +1846,103 @@ async function loadSalesAndProducts() {
 
   if (prodRes.ok && prodRes.data.products) {
     const sel = document.getElementById('saleProductSelect');
-    sel.innerHTML = '<option value="">-- Custom / Direct Amount --</option>' +
+    sel.innerHTML = '<option value="">-- Custom / Direct Flavor Entry --</option>' +
       prodRes.data.products.map(p => '<option value="' + esc(p.id) + '" data-price="' + p.unit_price + '" data-cost="' + p.unit_cost + '" data-name="' + esc(p.name) + '">' + esc(p.name) + ' (₹' + p.unit_price + ' · Stock: ' + p.stock_qty + ')</option>').join('');
   }
 
   if (salesRes.ok) {
     cachedSales = salesRes.data.sales || [];
-    const refunds = salesRes.data.refunds || [];
-    const tbody = document.getElementById('salesTableRows');
-
-    const combined = [
-      ...cachedSales.map(s => ({ type: 'SALE', date: s.sale_date, rec: s })),
-      ...refunds.map(r => ({ type: 'REFUND', date: r.refund_date, rec: r }))
-    ].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-    tbody.innerHTML = combined.length
-      ? combined.map(item => {
-          if (item.type === 'SALE') {
-            const s = item.rec;
-            return '<tr><td>' + esc(s.sale_date) + '</td><td><b>' + esc(s.sale_number) + '</b></td><td>' + esc(s.shop_name) + '</td><td>' + fmtMoney(s.gross_amount) + '</td><td>' + fmtMoney(s.discount_amount) + '</td><td style="color:var(--green);font-weight:700">' + fmtMoney(s.net_amount) + '</td><td>' + fmtMoney(s.cogs_amount) + '</td><td>' + esc(s.payment_method) + (s.payment_reference ? ' · <small>' + esc(s.payment_reference) + '</small>' : '') + '</td><td><span class="tag">' + esc(s.source) + '</span></td></tr>';
-          } else {
-            const r = item.rec;
-            return '<tr><td>' + esc(r.refund_date) + '</td><td><span class="tag red">REFUND</span></td><td>' + esc(r.shop_name) + '</td><td>—</td><td>—</td><td style="color:var(--danger);font-weight:700">-' + fmtMoney(r.refund_amount) + '</td><td>-' + fmtMoney(r.cogs_reversed) + '</td><td>' + esc(r.reason) + '</td><td><span class="tag red">REFUND</span></td></tr>';
-          }
-        }).join('')
-      : '<tr><td colspan="9" style="text-align:center;color:var(--muted)">No sales or refunds recorded yet.</td></tr>';
+    cachedRefunds = salesRes.data.refunds || [];
+    renderFilteredSalesTable();
   }
 }
 
+function renderFilteredSalesTable() {
+  const tbody = document.getElementById('salesTableRows');
+  if (!tbody) return;
+  const q = (document.getElementById('salesSearchInput')?.value || '').trim().toLowerCase();
+  const methodFilter = document.getElementById('salesFilterMethod')?.value || '';
+  const dateFilter = document.getElementById('salesFilterDate')?.value || '';
+
+  const combined = [
+    ...cachedSales.map(s => ({ type: 'SALE', date: s.sale_date, rec: s })),
+    ...cachedRefunds.map(r => ({ type: 'REFUND', date: r.refund_date, rec: r }))
+  ].filter(item => {
+    if (dateFilter && item.date !== dateFilter) return false;
+    if (methodFilter) {
+      if (item.type !== 'SALE' || item.rec.payment_method !== methodFilter) return false;
+    }
+    if (q) {
+      const hay = JSON.stringify(item.rec).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  tbody.innerHTML = combined.length
+    ? combined.map(item => {
+        if (item.type === 'SALE') {
+          const s = item.rec;
+          const timeStr = s.created_at ? new Date(s.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+          return '<tr><td>' + esc(s.sale_date) + (timeStr ? ' <small style="color:var(--muted)">' + esc(timeStr) + '</small>' : '') + '</td><td><b>' + esc(s.sale_number) + '</b></td><td>' + esc(s.shop_name) + (s.notes ? '<br><small style="color:var(--muted)">' + esc(s.notes) + '</small>' : '') + '</td><td>' + fmtMoney(s.gross_amount) + '</td><td>' + fmtMoney(s.discount_amount) + '</td><td style="color:var(--green);font-weight:700">' + fmtMoney(s.net_amount) + '</td><td>' + fmtMoney(s.cogs_amount) + '</td><td>' + esc(s.payment_method) + (s.payment_reference ? ' · <small>' + esc(s.payment_reference) + '</small>' : '') + '</td><td><span class="tag">' + esc(s.source) + '</span></td></tr>';
+        } else {
+          const r = item.rec;
+          return '<tr><td>' + esc(r.refund_date) + '</td><td><span class="tag red">REFUND</span></td><td>' + esc(r.shop_name) + '</td><td>—</td><td>—</td><td style="color:var(--danger);font-weight:700">-' + fmtMoney(r.refund_amount) + '</td><td>-' + fmtMoney(r.cogs_reversed) + '</td><td>' + esc(r.reason) + '</td><td><span class="tag red">REFUND</span></td></tr>';
+        }
+      }).join('')
+    : '<tr><td colspan="9" style="text-align:center;color:var(--muted)">No matching sales or refunds found.</td></tr>';
+}
+
+['salesSearchInput', 'salesFilterMethod', 'salesFilterDate'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', renderFilteredSalesTable);
+    el.addEventListener('change', renderFilteredSalesTable);
+  }
+});
+
+// Quick-Tap Flavor Chips for Mom & Shop Staff
+document.querySelectorAll('#quickFlavorChips .quick-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const flavor = chip.dataset.flavor;
+    const price = parseFloat(chip.dataset.price || 0);
+    const cost = parseFloat(chip.dataset.cost || 0);
+    const qty = Math.max(1, parseInt(document.getElementById('saleQty').value || 1, 10));
+    document.getElementById('saleUnitPrice').value = price.toFixed(2);
+    document.getElementById('saleGross').value = (qty * price).toFixed(2);
+    document.getElementById('saleCogs').value = (qty * cost).toFixed(2);
+    document.getElementById('saleNotes').value = flavor + ' × ' + qty;
+    toast('Selected ' + flavor + ' (₹' + price + '/unit)');
+  });
+});
+
 document.getElementById('saleProductSelect').onchange = updateSaleCalculatedTotals;
 document.getElementById('saleQty').oninput = updateSaleCalculatedTotals;
+const saleUnitPriceEl = document.getElementById('saleUnitPrice');
+if (saleUnitPriceEl) {
+  saleUnitPriceEl.oninput = () => {
+    const qty = Math.max(1, parseInt(document.getElementById('saleQty').value || 1, 10));
+    const unitPrice = parseFloat(saleUnitPriceEl.value || 0);
+    if (unitPrice > 0) {
+      document.getElementById('saleGross').value = (qty * unitPrice).toFixed(2);
+    }
+  };
+}
 
 function updateSaleCalculatedTotals() {
   const sel = document.getElementById('saleProductSelect');
   const opt = sel.options[sel.selectedIndex];
-  if (!opt || !opt.value) return;
   const qty = Math.max(1, parseInt(document.getElementById('saleQty').value || 1, 10));
-  const price = parseFloat(opt.dataset.price || 0);
-  const cost = parseFloat(opt.dataset.cost || 0);
-  document.getElementById('saleGross').value = (qty * price).toFixed(2);
-  document.getElementById('saleCogs').value = (qty * cost).toFixed(2);
+  if (opt && opt.value) {
+    const price = parseFloat(opt.dataset.price || 0);
+    const cost = parseFloat(opt.dataset.cost || 0);
+    if (saleUnitPriceEl) saleUnitPriceEl.value = price.toFixed(2);
+    document.getElementById('saleGross').value = (qty * price).toFixed(2);
+    document.getElementById('saleCogs').value = (qty * cost).toFixed(2);
+  } else if (saleUnitPriceEl && parseFloat(saleUnitPriceEl.value || 0) > 0) {
+    const price = parseFloat(saleUnitPriceEl.value || 0);
+    document.getElementById('saleGross').value = (qty * price).toFixed(2);
+  }
 }
 
 document.getElementById('saleForm').onsubmit = async e => {
@@ -1828,14 +2029,24 @@ document.getElementById('exportSalesCsvBtn').onclick = () => {
     toast('No sales recorded yet.');
     return;
   }
-  const header = 'Sale Number,Date,Shop,Gross,Discount,Net,COGS,Payment Method,Reference,Source\n';
+  const header = 'Sale Number,Date,Shop,Gross,Discount,Net,COGS,Payment Method,Reference,Notes,Source\n';
   const rows = cachedSales.map(s =>
-    [s.sale_number, s.sale_date, s.shop_name, s.gross_amount, s.discount_amount, s.net_amount, s.cogs_amount, s.payment_method, s.payment_reference || '', s.source].join(',')
+    [s.sale_number, s.sale_date, s.shop_name, s.gross_amount, s.discount_amount, s.net_amount, s.cogs_amount, s.payment_method, s.payment_reference || '', (s.notes || '').replace(/,/g, ' '), s.source].join(',')
   ).join('\n');
   downloadCsv('lr-popcorn-sales.csv', header + rows);
 };
 
-// 5. Expenses
+// 5. Expense Management (Section C)
+function getIsoWeekStr(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00Z');
+  if (isNaN(d.getTime())) return '';
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+  return d.getUTCFullYear() + '-W' + String(weekNo).padStart(2, '0');
+}
+
 async function loadExpensesData() {
   const today = new Date().toISOString().split('T')[0];
   if (!document.getElementById('expDate').value) document.getElementById('expDate').value = today;
@@ -1843,11 +2054,55 @@ async function loadExpensesData() {
   const res = await apiFetch('/api/operations?action=list-expenses');
   if (!res.ok) return;
   cachedExpenses = res.data.expenses || [];
-  const tbody = document.getElementById('expensesTableRows');
-  tbody.innerHTML = cachedExpenses.length
-    ? cachedExpenses.map(x => '<tr><td>' + esc(x.expense_date) + '</td><td><b>' + esc(x.category) + '</b></td><td>' + esc(x.shop_name) + '</td><td>' + esc(x.vendor || '—') + '</td><td>' + esc(x.payment_method) + '</td><td style="font-weight:700">' + fmtMoney(x.amount) + '</td></tr>').join('')
-    : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No operating expenses recorded yet.</td></tr>';
+
+  // Calculate Daily, Weekly, and Monthly Expense Totals
+  const curWeek = getIsoWeekStr(today);
+  const curMonth = today.slice(0, 7);
+  let dailySum = 0, weeklySum = 0, monthlySum = 0;
+  for (const x of cachedExpenses) {
+    const amt = Number(x.amount || 0);
+    const d = x.expense_date || '';
+    if (d === today) dailySum += amt;
+    if (d && getIsoWeekStr(d) === curWeek) weeklySum += amt;
+    if (d && d.slice(0, 7) === curMonth) monthlySum += amt;
+  }
+  const dEl = document.getElementById('expDailyTotal');
+  const wEl = document.getElementById('expWeeklyTotal');
+  const mEl = document.getElementById('expMonthlyTotal');
+  if (dEl) dEl.textContent = fmtMoney(dailySum);
+  if (wEl) wEl.textContent = fmtMoney(weeklySum);
+  if (mEl) mEl.textContent = fmtMoney(monthlySum);
+
+  renderFilteredExpensesTable();
 }
+
+function renderFilteredExpensesTable() {
+  const tbody = document.getElementById('expensesTableRows');
+  if (!tbody) return;
+  const q = (document.getElementById('expSearchInput')?.value || '').trim().toLowerCase();
+  const cat = document.getElementById('expFilterCategory')?.value || '';
+
+  const filtered = cachedExpenses.filter(x => {
+    if (cat && x.category !== cat) return false;
+    if (q) {
+      const hay = ((x.category || '') + ' ' + (x.vendor || '') + ' ' + (x.notes || '') + ' ' + (x.expense_date || '')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  tbody.innerHTML = filtered.length
+    ? filtered.map(x => '<tr><td>' + esc(x.expense_date) + '</td><td><b>' + esc(x.category) + '</b></td><td>' + esc(x.notes || x.vendor || '—') + '</td><td>' + esc(x.payment_method) + '</td><td style="font-weight:700;color:var(--danger)">' + fmtMoney(x.amount) + '</td></tr>').join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--muted)">No operating expenses recorded yet.</td></tr>';
+}
+
+['expSearchInput', 'expFilterCategory'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', renderFilteredExpensesTable);
+    el.addEventListener('change', renderFilteredExpensesTable);
+  }
+});
 
 document.getElementById('expenseForm').onsubmit = async e => {
   e.preventDefault();
@@ -1889,14 +2144,14 @@ document.getElementById('exportExpensesCsvBtn').onclick = () => {
     toast('No expenses recorded yet.');
     return;
   }
-  const header = 'Date,Category,Shop,Vendor,Method,Reference,Amount\n';
+  const header = 'Date,Category,Shop,Vendor,Method,Reference,Notes,Amount\n';
   const rows = cachedExpenses.map(x =>
-    [x.expense_date, x.category, x.shop_name, x.vendor || '', x.payment_method, x.reference || '', x.amount].join(',')
+    [x.expense_date, x.category, x.shop_name, x.vendor || '', x.payment_method, x.reference || '', (x.notes || '').replace(/,/g, ' '), x.amount].join(',')
   ).join('\n');
   downloadCsv('lr-popcorn-expenses.csv', header + rows);
 };
 
-// 6. Inventory & Products
+// 6. Product Management & Inventory (Section E — Salt, Tomato, Masala, Cheese & Future Flavors)
 async function loadInventoryData() {
   const res = await apiFetch('/api/operations?action=list-products');
   if (!res.ok) return;
@@ -1908,12 +2163,65 @@ async function loadInventoryData() {
     products.map(p => '<option value="' + esc(p.id) + '">' + esc(p.name) + ' (' + esc(p.sku) + ' · Stock: ' + p.stock_qty + ')</option>').join('');
 
   document.getElementById('productsTableRows').innerHTML = products.length
-    ? products.map(p => '<tr><td><b>' + esc(p.sku) + '</b></td><td>' + esc(p.name) + '</td><td>' + fmtMoney(p.unit_price) + '</td><td>' + fmtMoney(p.unit_cost) + '</td><td><b>' + p.stock_qty + '</b></td><td>' + (p.stock_qty <= p.reorder_level ? '<span class="tag red">Low Stock</span>' : '<span class="tag green">In Stock</span>') + '</td></tr>').join('')
-    : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No products added yet.</td></tr>';
+    ? products.map(p => '<tr><td><b>' + esc(p.sku) + '</b></td><td>' + esc(p.name) + '</td><td><span class="tag">' + esc(p.category || 'Popcorn') + '</span></td><td><b>' + fmtMoney(p.unit_price) + '</b></td><td>' + fmtMoney(p.unit_cost) + '</td><td><b>' + p.stock_qty + '</b></td><td>' + (p.stock_qty <= p.reorder_level ? '<span class="tag red">Low Stock</span>' : '<span class="tag green">In Stock</span>') + '</td><td><button type="button" class="btn secondary" style="padding:5px 10px;font-size:11px" onclick="editProductPrice(\'' + esc(p.id) + '\',\'' + esc(p.name) + '\',' + Number(p.unit_price || 0) + ',' + Number(p.unit_cost || 0) + ')">Edit Price</button></td></tr>').join('')
+    : '<tr><td colspan="8" style="text-align:center;color:var(--muted)">No products in catalog yet. Click "🍿 Load Standard Flavors" above or add a product!</td></tr>';
 
   document.getElementById('movementsTableRows').innerHTML = movements.length
     ? movements.map(m => '<tr><td>' + new Date(m.created_at).toLocaleString() + '</td><td>' + esc(m.product_name || m.product_id) + '</td><td><span class="tag">' + esc(m.movement_type) + '</span></td><td><b>' + (m.quantity > 0 ? '+' + m.quantity : m.quantity) + '</b></td><td>' + fmtMoney(m.unit_cost) + '</td><td>' + esc(m.notes || m.reference_id || '—') + '</td></tr>').join('')
     : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No stock movements recorded yet.</td></tr>';
+}
+
+window.editProductPrice = async (id, name, currentPrice, currentCost) => {
+  const newPriceStr = prompt('Update selling price (₹) for ' + name + ':', String(currentPrice));
+  if (newPriceStr === null) return;
+  const newPrice = parseFloat(newPriceStr);
+  if (isNaN(newPrice) || newPrice < 0) {
+    toast('Invalid price entered.');
+    return;
+  }
+  const newCostStr = prompt('Update unit cost / COGS (₹) for ' + name + ':', String(currentCost));
+  if (newCostStr === null) return;
+  const newCost = parseFloat(newCostStr);
+  if (isNaN(newCost) || newCost < 0) {
+    toast('Invalid unit cost entered.');
+    return;
+  }
+  const res = await apiFetch('/api/operations?action=update-product', {
+    method: 'POST',
+    body: JSON.stringify({ id, unit_price: newPrice, unit_cost: newCost })
+  });
+  if (res.ok) {
+    toast('Updated ' + name + ' price to ₹' + newPrice.toFixed(2));
+    await loadInventoryData();
+  } else {
+    toast(res.data?.error || 'Could not update product.');
+  }
+};
+
+const seedFlavorsBtn = document.getElementById('seedStandardFlavorsBtn');
+if (seedFlavorsBtn) {
+  seedFlavorsBtn.onclick = async () => {
+    seedFlavorsBtn.disabled = true;
+    seedFlavorsBtn.textContent = 'Adding standard flavors...';
+    const standardFlavors = [
+      { sku: 'POP-SALT-30', name: 'Classic Salt Popcorn', category: 'Salt Popcorn', unit_price: 30, unit_cost: 10, stock_qty: 100 },
+      { sku: 'POP-TOMATO-40', name: 'Tangy Tomato Popcorn', category: 'Tomato Popcorn', unit_price: 40, unit_cost: 14, stock_qty: 100 },
+      { sku: 'POP-MASALA-40', name: 'Spicy Masala Popcorn', category: 'Masala Popcorn', unit_price: 40, unit_cost: 14, stock_qty: 100 },
+      { sku: 'POP-CHEESE-50', name: 'Gourmet Cheese Popcorn', category: 'Cheese Popcorn', unit_price: 50, unit_cost: 18, stock_qty: 80 }
+    ];
+    let added = 0;
+    for (const item of standardFlavors) {
+      const r = await apiFetch('/api/operations?action=create-product', {
+        method: 'POST',
+        body: JSON.stringify(item)
+      });
+      if (r.ok) added++;
+    }
+    seedFlavorsBtn.disabled = false;
+    seedFlavorsBtn.textContent = '🍿 Load Standard Flavors (Salt, Tomato, Masala, Cheese)';
+    toast(added > 0 ? 'Added ' + added + ' standard popcorn flavors!' : 'Standard flavors are already in your catalog.');
+    await loadInventoryData();
+  };
 }
 
 document.getElementById('productForm').onsubmit = async e => {
@@ -1928,6 +2236,7 @@ document.getElementById('productForm').onsubmit = async e => {
     body: JSON.stringify({
       sku: document.getElementById('prodSku').value.trim(),
       name: document.getElementById('prodName').value.trim(),
+      category: document.getElementById('prodCategory')?.value || 'Popcorn',
       unit_price: parseFloat(document.getElementById('prodPrice').value || 0),
       unit_cost: parseFloat(document.getElementById('prodCost').value || 0),
       stock_qty: parseInt(document.getElementById('prodStock').value || 0, 10)
@@ -1974,7 +2283,7 @@ document.getElementById('movementForm').onsubmit = async e => {
   await loadInventoryData();
 };
 
-// 7. QR Rewards & Winners (Atomic Verification & Redemption, Zero Demo Winners)
+// 7. QR Reward Management (Section F — Atomic Verification & Redemption, Zero Demo Winners)
 async function loadRewardsData() {
   const [rwdRes, statsRes] = await Promise.all([
     apiFetch('/api/rewards?action=list'),
@@ -1987,13 +2296,41 @@ async function loadRewardsData() {
     document.getElementById('collectedStat').textContent = st.totalRedeemed + ' collected';
   }
   if (rwdRes.ok && rwdRes.data.rewards) {
-    const rewards = rwdRes.data.rewards;
-    const tbody = document.getElementById('rows');
-    tbody.innerHTML = rewards.length
-      ? rewards.map(r => '<tr><td>' + esc(r.customer_name) + '</td><td><code>' + esc(r.code) + '</code></td><td>' + esc(r.prize_icon || '🍿') + ' ' + esc(r.prize_name) + '</td><td>' + fmtMoney(r.unit_cost) + '</td><td><span class="' + (r.status === 'COLLECTED' ? 'collected' : 'waiting') + '">' + esc(r.status) + '</span></td></tr>').join('')
-      : '<tr><td colspan="5" style="text-align:center;color:var(--muted)">No genuine customer reward entries yet.</td></tr>';
+    cachedRewards = rwdRes.data.rewards;
+    renderFilteredRewardsTable();
   }
 }
+
+function renderFilteredRewardsTable() {
+  const tbody = document.getElementById('rows');
+  if (!tbody) return;
+  const q = (document.getElementById('rewardSearchInput')?.value || '').trim().toLowerCase();
+  const statusFilter = document.getElementById('rewardStatusFilter')?.value || '';
+
+  const filtered = cachedRewards.filter(r => {
+    if (statusFilter && r.status !== statusFilter) return false;
+    if (q) {
+      const hay = ((r.code || '') + ' ' + (r.customer_name || '') + ' ' + (r.prize_name || '')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  tbody.innerHTML = filtered.length
+    ? filtered.map(r => {
+        const statusLabel = r.status === 'COLLECTED' ? 'REDEEMED' : (r.status === 'WAITING' ? 'PENDING CLAIM' : r.status);
+        return '<tr><td>' + esc(r.customer_name) + '</td><td><code>' + esc(r.code) + '</code></td><td>' + esc(r.prize_icon || '🍿') + ' ' + esc(r.prize_name) + '</td><td>' + fmtMoney(r.unit_cost) + '</td><td><span class="' + (r.status === 'COLLECTED' ? 'collected' : 'waiting') + '">' + esc(statusLabel) + '</span></td></tr>';
+      }).join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--muted)">No matching customer reward entries yet.</td></tr>';
+}
+
+['rewardSearchInput', 'rewardStatusFilter'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', renderFilteredRewardsTable);
+    el.addEventListener('change', renderFilteredRewardsTable);
+  }
+});
 
 document.getElementById('check').onsubmit = async e => {
   e.preventDefault();
@@ -2046,7 +2383,7 @@ document.getElementById('generateBatchQrBtn').onclick = async () => {
     return;
   }
   const slips = res.data.rewards || [];
-  const baseUrl = location.origin + location.pathname;
+  const baseUrl = location.origin + '/';
   document.getElementById('qrSlipsContainer').innerHTML = slips.map((s, idx) => {
     const scanUrl = baseUrl + '?code=' + encodeURIComponent(s.code);
     const qrImg = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=4&data=' + encodeURIComponent(scanUrl);
@@ -2127,7 +2464,7 @@ window.markNotifRead = async id => {
 };
 document.getElementById('refreshNotificationsBtn').onclick = loadNotificationsData;
 
-// 10. Settings
+// 10. Settings (Section H)
 async function loadSettingsData() {
   const res = await apiFetch('/api/operations?action=get-settings');
   if (!res.ok) return;
@@ -2235,7 +2572,7 @@ async function initApp() {
     isSignupStillAvailable = false;
     setOwnerAuthMode(false);
     syncOwnerIdentityUI();
-    navigateOwnerRoute(section || 'rewards', false);
+    navigateOwnerRoute(section || 'overview', false);
     return;
   }
 
@@ -2250,7 +2587,7 @@ window.addEventListener('popstate', () => {
   const params = new URLSearchParams(location.search);
   const section = params.get('section');
   if (currentUser) {
-    navigateOwnerRoute(section || 'rewards', false);
+    navigateOwnerRoute(section || 'overview', false);
   } else {
     show('owner', false);
   }
