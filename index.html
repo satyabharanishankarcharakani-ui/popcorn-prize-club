@@ -492,9 +492,19 @@ body.owner-mode-active .nav.active {
   <div id="subTabPnl" style="display:none" class="pnl-container">
     <div class="pnl-cards-grid">
       <div class="pnl-card">
-        <div class="pnl-card-label"><span>Total Packet Sales</span> <span>💰</span></div>
+        <div class="pnl-card-label"><span>Total Sales Revenue</span> <span>💰</span></div>
         <div class="pnl-card-val" id="pnlSales">₹0</div>
-        <div class="pnl-card-sub" id="pnlSalesSub">From batches sold</div>
+        <div class="pnl-card-sub" id="pnlSalesSub">From batches / UPI + Cash</div>
+      </div>
+      <div class="pnl-card" style="border-color:rgba(168,85,247,0.45)">
+        <div class="pnl-card-label"><span>Mom's Total UPI Received</span> <span>📲</span></div>
+        <div class="pnl-card-val" id="pnlTotalUpi" style="color:#c084fc;text-shadow:0 0 15px rgba(192,132,252,0.3)">₹0</div>
+        <div class="pnl-card-sub" id="pnlUpiSub">PhonePe + BharatPe + GPay</div>
+      </div>
+      <div class="pnl-card">
+        <div class="pnl-card-label"><span>Cash Received</span> <span>💵</span></div>
+        <div class="pnl-card-val" id="pnlCashTotal" style="color:#fcd34d">₹0</div>
+        <div class="pnl-card-sub">Direct counter cash</div>
       </div>
       <div class="pnl-card">
         <div class="pnl-card-label"><span>Popcorn Making Cost</span> <span>🍿</span></div>
@@ -521,6 +531,60 @@ body.owner-mode-active .nav.active {
         <div class="pnl-card-val pnl-profit" id="pnlMargin">0.0%</div>
         <div class="pnl-card-sub">Net Profit ÷ Sales</div>
       </div>
+    </div>
+
+    <!-- MOM'S UPI & CASH COLLECTION TRACKER (PHONEPE, BHARATPE, GPAY, PAYTM) -->
+    <div class="pnl-table-panel" style="border-color:rgba(168,85,247,0.32)">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div>
+          <h3 style="margin:0;font-size:17px;color:#fff">📲 Mom's UPI & Payment Collection Tracker (PhonePe, BharatPe, GPay)</h3>
+          <div class="sub">Enter total money received on Mom's UPI apps & Cash — or log individual UPI payments below</div>
+        </div>
+        <span class="status" style="color:#c084fc">● MOM'S UPI SETTLEMENT TRACKER</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end">
+        <div>
+          <label style="color:#d8b4fe!important">🟣 PhonePe Received (₹)</label>
+          <input type="number" class="input" id="upiPhonePe" value="1850" min="0" onchange="savePnlConfig()">
+        </div>
+        <div>
+          <label style="color:#60a5fa!important">🔵 BharatPe QR / Soundbox (₹)</label>
+          <input type="number" class="input" id="upiBharatPe" value="1400" min="0" onchange="savePnlConfig()">
+        </div>
+        <div>
+          <label style="color:#4ade80!important">🟢 Google Pay / Paytm (₹)</label>
+          <input type="number" class="input" id="upiGPay" value="750" min="0" onchange="savePnlConfig()">
+        </div>
+        <div>
+          <label style="color:#fcd34d!important">💵 Cash in Hand (₹)</label>
+          <input type="number" class="input" id="upiCash" value="1000" min="0" onchange="savePnlConfig()">
+        </div>
+      </div>
+
+      <!-- Quick Add Single Payment Log -->
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:10px;align-items:end">
+        <div style="flex:1;min-width:140px">
+          <label>Quick Add Payment App</label>
+          <select class="input" id="quickUpiApp" style="margin:6px 0 0;height:44px">
+            <option value="PhonePe">🟣 PhonePe (Mom)</option>
+            <option value="BharatPe">🔵 BharatPe QR (Mom)</option>
+            <option value="GPay">🟢 Google Pay / Paytm</option>
+            <option value="Cash">💵 Cash at Counter</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:120px">
+          <label>Amount Received (₹)</label>
+          <input type="number" class="input" id="quickUpiAmt" placeholder="e.g. 50" min="1" style="margin:6px 0 0;height:44px">
+        </div>
+        <div style="flex:1.4;min-width:160px">
+          <label>Note / Customer (Optional)</label>
+          <input type="text" class="input" id="quickUpiNote" placeholder="e.g. 2 Popcorn + ₹20 Water" style="margin:6px 0 0;height:44px">
+        </div>
+        <button type="button" class="btn orange" onclick="addUpiPaymentEntry()" style="height:44px;padding:0 18px">＋ Add to Mom's UPI</button>
+      </div>
+
+      <div id="upiLogWrap" style="margin-top:14px;max-height:170px;overflow-y:auto"></div>
     </div>
 
     <!-- QUICK BATCH SALES & EXPENSE CALCULATOR FOR OWNER -->
@@ -806,7 +870,7 @@ function switchOwnerSubTab(tab) {
   if (tab === 'qr') renderQrSlipsSheet();
 }
 
-// REAL-TIME OFFERS PROFIT & LOSS (Connected to Counter Redemptions & QR Slips)
+// REAL-TIME OFFERS PROFIT & LOSS + MOM'S UPI TRACKER (PhonePe, BharatPe, GPay, Cash)
 function loadPnlConfig() {
   try {
     const cfg = JSON.parse(localStorage.getItem('popcorn-pnl-cfg') || 'null');
@@ -815,6 +879,10 @@ function loadPnlConfig() {
       if (document.getElementById('cfgSellPrice')) document.getElementById('cfgSellPrice').value = cfg.sellPrice ?? 50;
       if (document.getElementById('cfgMakeCost')) document.getElementById('cfgMakeCost').value = cfg.makeCost ?? 18;
       if (document.getElementById('cfgPaperCost')) document.getElementById('cfgPaperCost').value = cfg.paperCost ?? 120;
+      if (document.getElementById('upiPhonePe')) document.getElementById('upiPhonePe').value = cfg.phonePe ?? 1850;
+      if (document.getElementById('upiBharatPe')) document.getElementById('upiBharatPe').value = cfg.bharatPe ?? 1400;
+      if (document.getElementById('upiGPay')) document.getElementById('upiGPay').value = cfg.gPay ?? 750;
+      if (document.getElementById('upiCash')) document.getElementById('upiCash').value = cfg.cash ?? 1000;
     }
   } catch {}
 }
@@ -824,10 +892,63 @@ function savePnlConfig() {
     packets: Number(document.getElementById('cfgPackets')?.value || 100),
     sellPrice: Number(document.getElementById('cfgSellPrice')?.value || 50),
     makeCost: Number(document.getElementById('cfgMakeCost')?.value || 18),
-    paperCost: Number(document.getElementById('cfgPaperCost')?.value || 120)
+    paperCost: Number(document.getElementById('cfgPaperCost')?.value || 120),
+    phonePe: Number(document.getElementById('upiPhonePe')?.value || 0),
+    bharatPe: Number(document.getElementById('upiBharatPe')?.value || 0),
+    gPay: Number(document.getElementById('upiGPay')?.value || 0),
+    cash: Number(document.getElementById('upiCash')?.value || 0)
   };
   localStorage.setItem('popcorn-pnl-cfg', JSON.stringify(cfg));
   updatePnlView();
+}
+
+function addUpiPaymentEntry() {
+  const app = document.getElementById('quickUpiApp')?.value || 'PhonePe';
+  const amt = Number(document.getElementById('quickUpiAmt')?.value || 0);
+  const note = (document.getElementById('quickUpiNote')?.value || '').trim();
+  if (amt <= 0) {
+    toast('Please enter a valid rupee amount.');
+    return;
+  }
+  loadPnlConfig();
+  if (app === 'PhonePe' && document.getElementById('upiPhonePe')) {
+    document.getElementById('upiPhonePe').value = Number(document.getElementById('upiPhonePe').value || 0) + amt;
+  } else if (app === 'BharatPe' && document.getElementById('upiBharatPe')) {
+    document.getElementById('upiBharatPe').value = Number(document.getElementById('upiBharatPe').value || 0) + amt;
+  } else if (app === 'GPay' && document.getElementById('upiGPay')) {
+    document.getElementById('upiGPay').value = Number(document.getElementById('upiGPay').value || 0) + amt;
+  } else if (app === 'Cash' && document.getElementById('upiCash')) {
+    document.getElementById('upiCash').value = Number(document.getElementById('upiCash').value || 0) + amt;
+  }
+
+  let logs = [];
+  try { logs = JSON.parse(localStorage.getItem('popcorn-upi-logs') || '[]'); } catch {}
+  logs.unshift({
+    app,
+    amt,
+    note: note || 'Popcorn / Water bottle sale',
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  });
+  localStorage.setItem('popcorn-upi-logs', JSON.stringify(logs.slice(0, 50)));
+
+  if (document.getElementById('quickUpiAmt')) document.getElementById('quickUpiAmt').value = '';
+  if (document.getElementById('quickUpiNote')) document.getElementById('quickUpiNote').value = '';
+  savePnlConfig();
+  toast('Added ₹' + amt + ' to Mom\'s ' + app + '!');
+}
+
+function renderUpiLogs() {
+  const wrap = document.getElementById('upiLogWrap');
+  if (!wrap) return;
+  let logs = [];
+  try { logs = JSON.parse(localStorage.getItem('popcorn-upi-logs') || '[]'); } catch {}
+  if (!logs.length) {
+    wrap.innerHTML = '<div class="sub">No individual UPI entries logged today — totals above are active.</div>';
+    return;
+  }
+  wrap.innerHTML = '<table class="pnl-table"><thead><tr><th>App</th><th>Amount</th><th>Note</th><th>Time</th></tr></thead><tbody>' +
+    logs.slice(0, 8).map(l => '<tr><td><b>' + esc(l.app) + '</b></td><td style="color:#4ade80;font-weight:700">+₹' + Number(l.amt).toLocaleString('en-IN') + '</td><td>' + esc(l.note) + '</td><td>' + esc(l.time) + '</td></tr>').join('') +
+    '</tbody></table>';
 }
 
 function getPrizeCost(prizeName) {
@@ -841,6 +962,13 @@ function updatePnlView() {
   const sellPrice = Number(document.getElementById('cfgSellPrice')?.value || 50);
   const makeCost = Number(document.getElementById('cfgMakeCost')?.value || 18);
   const paperCost = Number(document.getElementById('cfgPaperCost')?.value || 120);
+
+  const phonePe = Number(document.getElementById('upiPhonePe')?.value || 0);
+  const bharatPe = Number(document.getElementById('upiBharatPe')?.value || 0);
+  const gPay = Number(document.getElementById('upiGPay')?.value || 0);
+  const cash = Number(document.getElementById('upiCash')?.value || 0);
+  const totalUpi = phonePe + bharatPe + gPay;
+  const totalCollectedMoney = totalUpi + cash;
 
   const allEntries = list();
   let totalGiftCost = 0;
@@ -875,14 +1003,19 @@ function updatePnlView() {
   const tbody = document.getElementById('pnlOfferBreakdownRows');
   if (tbody) tbody.innerHTML = breakdownRows;
 
-  const totalSales = packets * sellPrice;
+  // Use actual UPI + Cash if entered (> 0), otherwise packet batch sales
+  const batchSales = packets * sellPrice;
+  const totalSales = totalCollectedMoney > 0 ? totalCollectedMoney : batchSales;
   const totalProdCost = packets * makeCost;
   const totalInvestment = totalProdCost + totalGiftCost + paperCost;
   const netProfit = totalSales - totalInvestment;
   const margin = totalSales > 0 ? ((netProfit / totalSales) * 100).toFixed(1) : '0.0';
 
   if (document.getElementById('pnlSales')) document.getElementById('pnlSales').textContent = '₹' + totalSales.toLocaleString('en-IN');
-  if (document.getElementById('pnlSalesSub')) document.getElementById('pnlSalesSub').textContent = packets + ' packets × ₹' + sellPrice;
+  if (document.getElementById('pnlSalesSub')) document.getElementById('pnlSalesSub').textContent = 'UPI ₹' + totalUpi.toLocaleString('en-IN') + ' + Cash ₹' + cash.toLocaleString('en-IN');
+  if (document.getElementById('pnlTotalUpi')) document.getElementById('pnlTotalUpi').textContent = '₹' + totalUpi.toLocaleString('en-IN');
+  if (document.getElementById('pnlUpiSub')) document.getElementById('pnlUpiSub').textContent = 'PhonePe ₹' + phonePe + ' · BharatPe ₹' + bharatPe + ' · GPay ₹' + gPay;
+  if (document.getElementById('pnlCashTotal')) document.getElementById('pnlCashTotal').textContent = '₹' + cash.toLocaleString('en-IN');
   if (document.getElementById('pnlProdCost')) document.getElementById('pnlProdCost').textContent = '₹' + totalProdCost.toLocaleString('en-IN');
   if (document.getElementById('pnlGiftCost')) document.getElementById('pnlGiftCost').textContent = '₹' + totalGiftCost.toLocaleString('en-IN');
   if (document.getElementById('pnlGiftSub')) document.getElementById('pnlGiftSub').textContent = totalCollectedCount + ' gifts collected at counter';
@@ -898,6 +1031,7 @@ function updatePnlView() {
     margEl.textContent = margin + '%';
     margEl.className = 'pnl-card-val ' + (netProfit >= 0 ? 'pnl-profit' : 'pnl-loss');
   }
+  renderUpiLogs();
 }
 
 // PAPER QR SLIP GENERATOR (10-50 QR Slips for 100 Popcorn Packets)
