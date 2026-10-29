@@ -69,11 +69,11 @@ function seedStructuralDefaults() {
       description: 'Official QR lucky-gift rewards included in selected popcorn packs.',
       status: 'ACTIVE',
       prizes: [
-        { name: 'Free popcorn!', icon: '🍿', desc: 'One fresh popcorn, on us.', unit_cost: 20 },
-        { name: '50% off your next bag', icon: '🏷️', desc: 'A little something for your next visit.', unit_cost: 15 },
-        { name: 'Free topping upgrade', icon: '✨', desc: 'Make your next popcorn extra special.', unit_cost: 10 },
-        { name: 'Buy one, get one', icon: '🎉', desc: 'Bring a friend for your next snack.', unit_cost: 25 },
-        { name: 'A bonus mini pack', icon: '🍿', desc: 'A mini pack for your next movie moment.', unit_cost: 15 },
+        { name: 'Mini Masala Pack + ₹10 Water Bottle', icon: '🍿💧', desc: 'One spicy mini masala popcorn pack + chilled ₹10 water bottle combo!', unit_cost: 22, image: 'prize-masala-water10-combo.jpg' },
+        { name: 'Popcorn Tub + ₹20 Water Bottle Combo', icon: '🍿💧', desc: 'Fresh gourmet popcorn tub paired with a chilled ₹20 water bottle!', unit_cost: 35, image: 'prize-tub-water20-combo.jpg' },
+        { name: 'Free Fresh Popcorn Tub!', icon: '🍿', desc: 'One fresh hot gourmet popcorn tub, on us.', unit_cost: 20, image: 'prize-free-popcorn-tub.jpg' },
+        { name: 'Buy 1 Get 1 Free Masala & Cheese Duo', icon: '🎉', desc: 'Two overflowing tubs of masala and cheese popcorn for your next visit.', unit_cost: 25, image: 'prize-bogo-popcorn.jpg' },
+        { name: 'Mini Masala Pack + 50% Off VIP Token', icon: '🏷️', desc: 'Complimentary mini masala pack plus 50% off your next bag.', unit_cost: 18, image: 'prize-vip-combo-pack.jpg' },
       ],
       created_at: new Date().toISOString(),
     };

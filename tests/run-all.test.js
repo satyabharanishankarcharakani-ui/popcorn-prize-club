@@ -408,6 +408,19 @@ async function runAllTests() {
     assert.ok(html.includes('popcorn-light-hero.jpg'), 'Light hero image must be preserved');
     assert.ok(html.includes('popcorn-dark-hero.jpg'), 'Dark hero image must be preserved');
 
+    const prizeImages = [
+      'prize-masala-water10-combo.jpg',
+      'prize-tub-water20-combo.jpg',
+      'prize-free-popcorn-tub.jpg',
+      'prize-bogo-popcorn.jpg',
+      'prize-vip-combo-pack.jpg',
+    ];
+    for (const img of prizeImages) {
+      assert.ok(html.includes(img), `Scratch card prize image ${img} must be wired in index.html`);
+      const imgPath = path.join(__dirname, '..', img);
+      assert.ok(fs.existsSync(imgPath) && fs.statSync(imgPath).size > 50000, `Prize image ${img} must exist and be non-empty`);
+    }
+
     const requiredPages = [
       'page-profile',
       'page-edit-profile',
