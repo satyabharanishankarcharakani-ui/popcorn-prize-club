@@ -1,0 +1,229 @@
+// api/_security.js
+// Cryptographic, Session, Rate-Limiting, and Input Validation Layer
+const crypto = require('crypto');
+
+const SESSION_TTL_SECONDS = 60 * 60 * 12; // 12 hours
+
+function isStrictProduction() {
+  return process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
+}
+
+function isProdEnv() {
+  return process.env.NODE_ENV === 'production';
+}
+
+function getAuthSecret() {
+  const secret = process.env.AUTH_SECRET;
+  if (isProdEnv()) {
+    if (!secret || secret.length < 32 || secret.includes('replace_with')) {
+      throw new Error(
+        'CRITICAL CONFIGURATION ERROR: AUTH_SECRET must be configured with a random string of at least 32 characters in production. Failing closed.'
+      );
+    }
+    return secret;
+  }
+  return secret || 'popcorn-club-local-dev-secret-do-not-use-in-production-2026';
+}
+
+function hashPassword(password, existingSalt = null) {
+  if (!password || typeof password !== 'string' || password.length < 6) {
+    throw new Error('Password must be at least 6 characters.');
+  }
+  const salt = existingSalt || crypto.randomBytes(16).toString('hex');
+  const derivedKey = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+  return { hash: derivedKey, salt };
+}
+
+function verifyPassword(password, storedHash, salt) {
+  if (!password || !storedHash || !salt) return false;
+  try {
+    const { hash } = hashPassword(password, salt);
+    const hashBuf = Buffer.from(hash, 'hex');
+    const storedBuf = Buffer.from(storedHash, 'hex');
+    if (hashBuf.length !== storedBuf.length) return false;
+    return crypto.timingSafeEqual(hashBuf, storedBuf);
+  } catch {
+    return false;
+  }
+}
+
+function generateSecureRewardCode() {
+  const charset = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const bytes = crypto.randomBytes(6);
+  let result = 'PC-';
+  for (let i = 0; i < 6; i++) {
+    result += charset[bytes[i] % charset.length];
+  }
+  return result;
+}
+
+const revokedTokenSignatures = new Set();
+const revokedJtis = new Set();
+
+function revokeToken(token) {
+  if (!token || typeof token !== 'string') return;
+  const parts = token.split('.');
+  if (parts.length === 3) {
+    revokedTokenSignatures.add(parts[2]);
+    try {
+      const data = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
+      if (data.jti) revokedJtis.add(data.jti);
+    } catch {}
+    if (revokedTokenSignatures.size > 2000) {
+      revokedTokenSignatures.delete(revokedTokenSignatures.values().next().value);
+    }
+  }
+}
+
+function revokeJti(jti) {
+  if (jti) revokedJtis.add(String(jti));
+}
+
+function isJtiRevoked(jti) {
+  return Boolean(jti && revokedJtis.has(String(jti)));
+}
+
+function createSessionToken(user) {
+  const secret = getAuthSecret();
+  const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+  const now = Math.floor(Date.now() / 1000);
+  const jti = crypto.randomBytes(12).toString('hex');
+
+  const payloadObj = {
+    uid: user.id,
+    usr: user.username,
+    name: user.full_name,
+    rol: user.role,
+    jti,
+    iat: now,
+    exp: now + SESSION_TTL_SECONDS,
+  };
+  const payload = Buffer.from(JSON.stringify(payloadObj)).toString('base64url');
+
+  const signature = crypto
+    .createHmac('sha256', secret)
+    .update(`${header}.${payload}`)
+    .digest('base64url');
+
+  return `${header}.${payload}.${signature}`;
+}
+
+function verifySessionToken(token) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+
+  const [header, payload, signature] = parts;
+  if (revokedTokenSignatures.has(signature)) return null;
+
+  let secret;
+  try {
+    secret = getAuthSecret();
+  } catch (err) {
+    console.error('Session verification halted:', err.message);
+    return null;
+  }
+
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(`${header}.${payload}`)
+    .digest('base64url');
+
+  const sigBuf = Buffer.from(signature);
+  const expBuf = Buffer.from(expectedSignature);
+  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+    return null;
+  }
+
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    const now = Math.floor(Date.now() / 1000);
+    if (data.exp && data.exp < now) return null;
+    if (data.jti && revokedJtis.has(data.jti)) return null;
+    return {
+      id: data.uid,
+      username: data.usr,
+      full_name: data.name,
+      role: data.rol,
+      jti: data.jti,
+      iat: data.iat,
+      exp: data.exp,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function getTokenFromRequest(req) {
+  const authHeader = req.headers?.authorization || req.headers?.Authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.slice(7).trim();
+  }
+  if (req.headers?.cookie) {
+    const match = req.headers.cookie.match(/popcorn_session=([^;]+)/);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function getSessionFromRequest(req) {
+  const token = getTokenFromRequest(req);
+  return verifySessionToken(token);
+}
+
+const rateLimitMap = new Map();
+async function checkRateLimit(key, maxRequests = 20, windowMs = 60000) {
+  const kvUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const kvToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+
+  if (kvUrl && kvToken) {
+    try {
+      const res = await fetch(`${kvUrl}/incr/${encodeURIComponent(key)}`, {
+        headers: { Authorization: `Bearer ${kvToken}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const currentCount = data.result;
+        if (currentCount === 1) {
+          await fetch(`${kvUrl}/expire/${encodeURIComponent(key)}/${Math.ceil(windowMs / 1000)}`, {
+            headers: { Authorization: `Bearer ${kvToken}` },
+          });
+        }
+        return currentCount <= maxRequests;
+      }
+    } catch {}
+  }
+
+  const now = Date.now();
+  let record = rateLimitMap.get(key);
+  if (!record || now - record.startTime > windowMs) {
+    record = { startTime: now, count: 1 };
+    rateLimitMap.set(key, record);
+    return true;
+  }
+  record.count++;
+  return record.count <= maxRequests;
+}
+
+function sanitizeString(str, maxLen = 120) {
+  if (typeof str !== 'string') return '';
+  return str.trim().slice(0, maxLen).replace(/[<>]/g, '');
+}
+
+module.exports = {
+  SESSION_TTL_SECONDS,
+  isStrictProduction,
+  getAuthSecret,
+  hashPassword,
+  verifyPassword,
+  generateSecureRewardCode,
+  createSessionToken,
+  verifySessionToken,
+  revokeToken,
+  revokeJti,
+  isJtiRevoked,
+  getSessionFromRequest,
+  getTokenFromRequest,
+  checkRateLimit,
+  sanitizeString,
+};
