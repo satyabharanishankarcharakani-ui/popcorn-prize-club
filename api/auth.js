@@ -4,6 +4,8 @@ const {
   verifyPassword,
   createSessionToken,
   verifySessionToken,
+  createSignedOwnerVault,
+  getOwnerVaultFromRequest,
   getSessionFromRequest,
   getTokenFromRequest,
   revokeToken,
@@ -25,6 +27,7 @@ const {
   bootstrapOwnerIfEmpty,
   isFirstOwnerSignupAvailable,
   registerFirstOwner,
+  hydrateOwnerFromVault,
 } = require('./_db');
 
 module.exports = async function handler(req, res) {
@@ -48,6 +51,10 @@ module.exports = async function handler(req, res) {
 
   try {
     await bootstrapOwnerIfEmpty();
+    const vaultUser = getOwnerVaultFromRequest(req);
+    if (vaultUser) {
+      hydrateOwnerFromVault(vaultUser);
+    }
 
     // 0. GET /api/auth?action=setup-status (Check whether 1st-time Owner Sign-Up is available)
     if (action === 'setup-status') {
@@ -111,8 +118,14 @@ module.exports = async function handler(req, res) {
       }
 
       const isProduction = process.env.NODE_ENV === 'production';
-      const cookieHeader = `popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
-      res.setHeader('Set-Cookie', cookieHeader);
+      const rawOwner = await getUserById(ownerUser.id);
+      const ownerVault = createSignedOwnerVault(rawOwner);
+      const sessionCookie = `popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
+      const cookies = [sessionCookie];
+      if (ownerVault) {
+        cookies.push(`popcorn_owner_vault=${ownerVault}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${isProduction ? '; Secure' : ''}`);
+      }
+      res.setHeader('Set-Cookie', cookies);
 
       await addAuditLog({
         actor_id: ownerUser.id,
@@ -128,6 +141,7 @@ module.exports = async function handler(req, res) {
         success: true,
         message: 'Primary Owner account created! Sign-up is now permanently locked to Login only.',
         token,
+        owner_vault: ownerVault,
         user: ownerUser,
       });
     }
@@ -321,17 +335,26 @@ module.exports = async function handler(req, res) {
       });
 
       let refreshedToken;
+      let ownerVault;
+      const rawUpdated = await getUserById(session.id);
+      if (rawUpdated && rawUpdated.role === 'OWNER') {
+        ownerVault = createSignedOwnerVault(rawUpdated);
+      }
       if (newPassword) {
         refreshedToken = createSessionToken(updated);
         const isProduction = process.env.NODE_ENV === 'production';
-        const cookieHeader = `popcorn_session=${refreshedToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
-        res.setHeader('Set-Cookie', cookieHeader);
+        const cookies = [`popcorn_session=${refreshedToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`];
+        if (ownerVault) {
+          cookies.push(`popcorn_owner_vault=${ownerVault}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${isProduction ? '; Secure' : ''}`);
+        }
+        res.setHeader('Set-Cookie', cookies);
       }
 
       return res.status(200).json({
         success: true,
         message: 'Profile saved to database.',
         token: refreshedToken,
+        owner_vault: ownerVault,
         user: updated,
       });
     }

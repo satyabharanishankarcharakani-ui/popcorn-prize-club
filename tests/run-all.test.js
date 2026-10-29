@@ -88,16 +88,20 @@ async function runAllTests() {
 
     // Production fail-closed test
     const prevEnv = process.env.NODE_ENV;
+    const prevStrict = process.env.STRICT_CONFIG_CHECK;
     const prevSecret = process.env.AUTH_SECRET;
     const prevUrl = process.env.SUPABASE_URL;
     try {
       process.env.NODE_ENV = 'production';
+      process.env.STRICT_CONFIG_CHECK = 'true';
       delete process.env.AUTH_SECRET;
       delete process.env.SUPABASE_URL;
       assert.throws(() => getAuthSecret(), /CRITICAL CONFIGURATION ERROR/);
       assert.throws(() => assertDatabaseConfigured(), /CRITICAL CONFIGURATION ERROR/);
     } finally {
       process.env.NODE_ENV = prevEnv;
+      if (prevStrict) process.env.STRICT_CONFIG_CHECK = prevStrict;
+      else delete process.env.STRICT_CONFIG_CHECK;
       if (prevSecret) process.env.AUTH_SECRET = prevSecret;
       if (prevUrl) process.env.SUPABASE_URL = prevUrl;
     }

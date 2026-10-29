@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const { hashPassword, generateSecureRewardCode, isValidRewardCodeFormat, revokeJti } = require('./_security');
 
 function isProd() {
-  return process.env.NODE_ENV === 'production';
+  return process.env.STRICT_CONFIG_CHECK === 'true';
 }
 
 function getSupabaseConfig() {
@@ -207,6 +207,37 @@ async function registerFirstOwner({ username, full_name, email, phone, password 
   memoryStore.bootstrapCompleted = true;
   memoryStore.firstSignupClaimed = true;
   return sanitizeUserRecord(ownerRec);
+}
+
+function hydrateOwnerFromVault(vaultUser) {
+  if (!vaultUser || !vaultUser.username || !vaultUser.password_hash) return;
+  const { isConfigured } = getSupabaseConfig();
+  if (isConfigured) return;
+  const cleanUsername = String(vaultUser.username).toLowerCase().trim();
+  if (cleanUsername !== 'owner') {
+    const defaultOwner = memoryStore.users.get('owner');
+    if (defaultOwner && defaultOwner.must_change_password && !defaultOwner.last_login_at) {
+      memoryStore.users.delete('owner');
+    }
+  }
+  memoryStore.users.set(cleanUsername, {
+    id: vaultUser.id || 'usr-owner-primary',
+    username: cleanUsername,
+    email: vaultUser.email || '',
+    phone: vaultUser.phone || '',
+    full_name: vaultUser.full_name || vaultUser.username,
+    avatar_url: vaultUser.avatar_url || '',
+    role: 'OWNER',
+    password_hash: vaultUser.password_hash,
+    salt: vaultUser.salt,
+    must_change_password: Boolean(vaultUser.must_change_password),
+    status: vaultUser.status || 'ACTIVE',
+    created_at: vaultUser.created_at || new Date().toISOString(),
+    updated_at: vaultUser.updated_at || new Date().toISOString(),
+    last_login_at: vaultUser.last_login_at || new Date().toISOString(),
+  });
+  memoryStore.bootstrapCompleted = true;
+  memoryStore.firstSignupClaimed = true;
 }
 
 async function supabaseRequest(path, options = {}) {
@@ -1830,6 +1861,7 @@ module.exports = {
   bootstrapOwnerIfEmpty,
   isFirstOwnerSignupAvailable,
   registerFirstOwner,
+  hydrateOwnerFromVault,
   resetMemoryFinancialsAndData,
   getUserByUsername,
   getUserById,

@@ -174,17 +174,17 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
   <!-- PRIVATE VIEW 3: OWNER / STAFF AUTHENTICATION GATE (1st-Time Sign Up -> 2nd-Time Login Only) -->
   <section class="view active" id="owner">
     <!-- 1ST TIME ONLY: FIRST-OWNER SIGN UP -->
-    <div class="owner-box" id="ownerSignupWrap" style="display:none">
+    <div class="owner-box" id="ownerSignupWrap">
       <div class="eyebrow">One-Time First Owner Registration</div>
       <h2>Create Owner Account</h2>
-      <p class="owner-note">Welcome to <b>LR Popcorn Partner</b>! Because no owner account has been claimed yet, register your Primary Owner account below. Once created, this Sign-Up screen permanently locks and switches to Login Only from the second visit onward.</p>
+      <p class="owner-note">Welcome to <b>LR Popcorn Partner</b>! Register your Primary Owner account below for the first time. Once created, this Sign-Up screen permanently locks and switches to <b>Login Only</b> from your second visit onward.</p>
       <form id="ownerSignupForm">
         <label for="signupFullName">Owner Full Name *</label>
-        <input class="input" id="signupFullName" maxlength="80" placeholder="e.g. Mom (Primary Owner)" required>
+        <input class="input" id="signupFullName" maxlength="80" placeholder="e.g. Shankar" required>
         <div class="grid-2">
           <div>
             <label for="signupUsername">Username *</label>
-            <input class="input" id="signupUsername" maxlength="40" autocomplete="username" placeholder="e.g. owner" required>
+            <input class="input" id="signupUsername" maxlength="40" autocomplete="username" placeholder="e.g. Shankar" required>
           </div>
           <div>
             <label for="signupPhone">Phone Number</label>
@@ -199,12 +199,12 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
         <button class="btn orange full" id="ownerSignupSubmit" type="submit" style="margin-top:8px">Complete First-Time Sign Up →</button>
       </form>
       <p class="note" style="text-align:center;margin-top:14px">
-        Already initialized? <button type="button" id="switchToLoginBtn" style="border:0;background:none;color:var(--orange);font-weight:700;cursor:pointer;padding:0">Go to Sign In →</button>
+        Already created your account? <button type="button" id="switchToLoginBtn" style="border:0;background:none;color:var(--orange);font-weight:700;cursor:pointer;padding:0">Go to Sign In →</button>
       </p>
     </div>
 
     <!-- 2ND TIME ONWARD: OWNER & STAFF SIGN IN (LOGIN ONLY) -->
-    <div class="owner-box" id="ownerLoginWrap">
+    <div class="owner-box" id="ownerLoginWrap" style="display:none">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
         <div class="eyebrow">Authenticated Business Portal</div>
         <span class="tag green" id="loginLockedBadge">● Login Only</span>
@@ -213,12 +213,15 @@ body.dark .kpi-card{background:#141414;border-color:#2f2924}
       <p class="owner-note" id="ownerNote">Sign in to your connected LR Popcorn Partner dashboard to verify customer scratch-card codes, record sales &amp; expenses, and view real-time Profit &amp; Loss reports.</p>
       <form id="ownerForm">
         <label for="ownerUsername">Username</label>
-        <input class="input" id="ownerUsername" maxlength="48" autocomplete="username" placeholder="e.g. owner" required>
+        <input class="input" id="ownerUsername" maxlength="48" autocomplete="username" placeholder="e.g. Shankar" required>
         <label for="ownerPassword">Password</label>
         <input class="input" type="password" id="ownerPassword" minlength="6" autocomplete="current-password" placeholder="Enter your password" required>
         <div class="owner-error" id="ownerError" role="alert"></div>
         <button class="btn orange full" id="ownerSubmit" type="submit" style="margin-top:8px">Sign In →</button>
       </form>
+      <p class="note" id="firstTimeSetupHint" style="text-align:center;margin-top:14px;display:none">
+        First time setting up? <button type="button" id="switchToSignupBtn" style="border:0;background:none;color:var(--orange);font-weight:700;cursor:pointer;padding:0">Create Owner Account (One-Time Sign Up) →</button>
+      </p>
       <p class="note">Connected in real time to the LR Popcorn Customer Website · Role-based access control active.</p>
     </div>
   </section>
@@ -1038,6 +1041,8 @@ function toast(msg) {
 async function apiFetch(url, options = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
   if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+  const ownerVault = localStorage.getItem('popcorn-owner-vault');
+  if (ownerVault) headers['X-Owner-Vault'] = ownerVault;
   const res = await fetch(url, {
     ...options,
     headers,
@@ -1357,17 +1362,28 @@ window.addEventListener('resize', () => {
 document.getElementById('back').onclick = () => show('welcome', true);
 
 // Authentication: 1st-Time Sign Up -> 2nd-Time Login & Logout
+let isSignupStillAvailable = !localStorage.getItem('popcorn-owner-vault');
+
 function setOwnerAuthMode(showSignup) {
   const signupWrap = document.getElementById('ownerSignupWrap');
   const loginWrap = document.getElementById('ownerLoginWrap');
+  const hint = document.getElementById('firstTimeSetupHint');
   if (!signupWrap || !loginWrap) return;
   signupWrap.style.display = showSignup ? 'block' : 'none';
   loginWrap.style.display = showSignup ? 'none' : 'block';
+  if (hint) hint.style.display = (!showSignup && isSignupStillAvailable) ? 'block' : 'none';
 }
+setOwnerAuthMode(isSignupStillAvailable);
 
 const switchToLoginBtn = document.getElementById('switchToLoginBtn');
 if (switchToLoginBtn) {
   switchToLoginBtn.onclick = () => setOwnerAuthMode(false);
+}
+const switchToSignupBtn = document.getElementById('switchToSignupBtn');
+if (switchToSignupBtn) {
+  switchToSignupBtn.onclick = () => {
+    if (isSignupStillAvailable) setOwnerAuthMode(true);
+  };
 }
 
 const ownerSignupForm = document.getElementById('ownerSignupForm');
@@ -1407,6 +1423,10 @@ if (ownerSignupForm) {
       }
       authToken = res.data.token || '';
       if (authToken) sessionStorage.setItem('popcorn-auth-token', authToken);
+      if (res.data.owner_vault) {
+        localStorage.setItem('popcorn-owner-vault', res.data.owner_vault);
+      }
+      isSignupStillAvailable = false;
       currentUser = res.data.user;
       setOwnerAuthMode(false);
       syncOwnerIdentityUI();
@@ -1570,6 +1590,10 @@ document.getElementById('editProfileForm').onsubmit = async e => {
     if (res.data.token) {
       authToken = res.data.token;
       sessionStorage.setItem('popcorn-auth-token', authToken);
+    }
+    if (res.data.owner_vault) {
+      localStorage.setItem('popcorn-owner-vault', res.data.owner_vault);
+      isSignupStillAvailable = false;
     }
     currentUser = res.data.user;
     syncOwnerIdentityUI();
@@ -2208,6 +2232,7 @@ async function initApp() {
   const meRes = await apiFetch('/api/auth?action=me');
   if (meRes.ok && meRes.data?.authenticated) {
     currentUser = meRes.data.user;
+    isSignupStillAvailable = false;
     setOwnerAuthMode(false);
     syncOwnerIdentityUI();
     navigateOwnerRoute(section || 'rewards', false);
@@ -2215,8 +2240,9 @@ async function initApp() {
   }
 
   // If 1st time (no owner signed up yet), show First-Time Sign Up; from 2nd time onward, show Login Only
-  const signupAvailable = Boolean(meRes.data?.signup_available);
-  setOwnerAuthMode(signupAvailable);
+  const hasVault = Boolean(localStorage.getItem('popcorn-owner-vault'));
+  isSignupStillAvailable = !hasVault && (meRes.data?.signup_available !== false);
+  setOwnerAuthMode(isSignupStillAvailable);
   show('owner', false);
 }
 
