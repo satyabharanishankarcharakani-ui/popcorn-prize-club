@@ -31,6 +31,12 @@ module.exports = async function handler(req, res) {
   if (!session) {
     return res.status(401).json({ error: 'Authentication required to access business operations.' });
   }
+  if (req.method === 'POST' && session.must_change_password) {
+    return res.status(403).json({
+      error: 'Security Policy: You must change your initial bootstrap password in Edit Profile before performing business operations.',
+      code: 'PASSWORD_CHANGE_REQUIRED',
+    });
+  }
 
   let body = req.body;
   if (typeof body === 'string') {

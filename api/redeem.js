@@ -1,6 +1,6 @@
 // api/redeem.js
 // Atomic Single-Use Prize Verification & Redemption Endpoint
-const { getSessionFromRequest, checkRateLimit, sanitizeString } = require('./_security');
+const { getSessionFromRequest, isValidRewardCodeFormat, checkRateLimit, sanitizeString } = require('./_security');
 const { redeemRewardAtomic, getRewardByCode } = require('./_db');
 
 module.exports = async function handler(req, res) {
@@ -22,6 +22,12 @@ module.exports = async function handler(req, res) {
       error: 'Unauthorized: Counter operator authentication required to verify or redeem codes.',
     });
   }
+  if (session.must_change_password) {
+    return res.status(403).json({
+      error: 'Security Policy: You must change your initial bootstrap password in Edit Profile before redeeming rewards.',
+      code: 'PASSWORD_CHANGE_REQUIRED',
+    });
+  }
 
   let body = req.body;
   if (typeof body === 'string') {
@@ -41,6 +47,14 @@ module.exports = async function handler(req, res) {
   }
 
   const cleanCode = sanitizeString(String(rawCode).toUpperCase().trim(), 20);
+  if (!isValidRewardCodeFormat(cleanCode)) {
+    return res.status(400).json({
+      valid: false,
+      success: false,
+      code: 'INVALID_CODE',
+      message: 'Invalid or tampered reward code format.',
+    });
+  }
 
   try {
     if (action === 'verify' || action === 'lookup') {
@@ -50,6 +64,14 @@ module.exports = async function handler(req, res) {
           valid: false,
           code: 'NOT_FOUND',
           message: 'Code not found. Please double-check the characters.',
+        });
+      }
+
+      if (reward.status === 'EXPIRED' || (reward.expires_at && new Date(reward.expires_at).getTime() < Date.now())) {
+        return res.status(200).json({
+          valid: false,
+          code: 'EXPIRED',
+          message: 'This reward code has expired and can no longer be redeemed.',
         });
       }
 

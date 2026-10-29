@@ -94,6 +94,7 @@ function createSessionToken(user) {
     usr: user.username,
     name: user.full_name,
     rol: user.role,
+    mcp: Boolean(user.must_change_password),
     jti,
     iat: now,
     exp: now + SESSION_TTL_SECONDS,
@@ -145,6 +146,7 @@ function verifySessionToken(token) {
       username: data.usr,
       full_name: data.name,
       role: data.rol,
+      must_change_password: Boolean(data.mcp),
       jti: data.jti,
       iat: data.iat,
       exp: data.exp,
@@ -210,6 +212,11 @@ function sanitizeString(str, maxLen = 120) {
   return str.trim().slice(0, maxLen).replace(/[<>]/g, '');
 }
 
+function isValidRewardCodeFormat(code) {
+  if (!code || typeof code !== 'string') return false;
+  return /^PC-[A-Z0-9]{4,16}$/.test(code.trim().toUpperCase());
+}
+
 module.exports = {
   SESSION_TTL_SECONDS,
   isStrictProduction,
@@ -217,6 +224,7 @@ module.exports = {
   hashPassword,
   verifyPassword,
   generateSecureRewardCode,
+  isValidRewardCodeFormat,
   createSessionToken,
   verifySessionToken,
   revokeToken,

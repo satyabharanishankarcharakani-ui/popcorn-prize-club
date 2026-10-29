@@ -68,6 +68,7 @@ module.exports = async function handler(req, res) {
           full_name: dbUser.full_name,
           avatar_url: dbUser.avatar_url || '',
           role: dbUser.role,
+          must_change_password: Boolean(dbUser.must_change_password),
           status: dbUser.status,
           created_at: dbUser.created_at,
           last_login_at: dbUser.last_login_at,
@@ -155,6 +156,7 @@ module.exports = async function handler(req, res) {
           full_name: user.full_name,
           avatar_url: user.avatar_url || '',
           role: user.role,
+          must_change_password: Boolean(user.must_change_password),
         },
       });
     }
@@ -232,9 +234,18 @@ module.exports = async function handler(req, res) {
         details: { email: updated.email, phone: updated.phone, password_changed: Boolean(newPassword) },
       });
 
+      let refreshedToken;
+      if (newPassword) {
+        refreshedToken = createSessionToken(updated);
+        const isProduction = process.env.NODE_ENV === 'production';
+        const cookieHeader = `popcorn_session=${refreshedToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
+        res.setHeader('Set-Cookie', cookieHeader);
+      }
+
       return res.status(200).json({
         success: true,
         message: 'Profile saved to database.',
+        token: refreshedToken,
         user: updated,
       });
     }
@@ -279,6 +290,12 @@ module.exports = async function handler(req, res) {
     if (action === 'create-user') {
       if (session.role !== 'OWNER') {
         return res.status(403).json({ error: 'Unauthorized: Only the Primary Owner can create staff accounts.' });
+      }
+      if (session.must_change_password) {
+        return res.status(403).json({
+          error: 'Security Policy: You must change your initial bootstrap password in Edit Profile before creating staff accounts.',
+          code: 'PASSWORD_CHANGE_REQUIRED',
+        });
       }
       const newUsername = sanitizeString(body.username, 30);
       const newFullName = sanitizeString(body.full_name, 60);

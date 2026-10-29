@@ -101,22 +101,68 @@ async function runAllTests() {
       if (prevSecret) process.env.AUTH_SECRET = prevSecret;
       if (prevUrl) process.env.SUPABASE_URL = prevUrl;
     }
-    console.log('✓ [1/9] Cryptography, token revocation, and fail-closed production guards passed.');
+    console.log('✓ [1/12] Cryptography, token revocation, and fail-closed production guards passed.');
   }
 
-  // 2. EMPTY DATABASE HONEST STATE (ZERO FABRICATED FINANCIAL DATA)
+  // 2. FIRST-OWNER BOOTSTRAP, LOGIN/FAILURE, MANDATORY INITIAL PASSWORD CHANGE & EMPTY DB STATE
   let ownerToken = '';
   {
+    // Failed login must return 401
+    const badLoginReq = mockReq({
+      method: 'POST',
+      query: { action: 'login' },
+      body: { username: 'owner', password: 'WrongPassword999!' },
+    });
+    const badLoginRes = mockRes();
+    await authHandler(badLoginReq, badLoginRes);
+    assert.strictEqual(badLoginRes.statusCode, 401, 'Invalid credentials must return 401');
+
+    // First-owner login with initial bootstrap password
+    const initialPassword = process.env.PRIMARY_OWNER_INITIAL_PASSWORD || 'PopcornClub2026!';
     const loginReq = mockReq({
       method: 'POST',
       query: { action: 'login' },
-      body: { username: 'owner', password: process.env.PRIMARY_OWNER_INITIAL_PASSWORD || 'PopcornClub2026!' },
+      body: { username: 'owner', password: initialPassword },
     });
     const loginRes = mockRes();
     await authHandler(loginReq, loginRes);
     assert.strictEqual(loginRes.statusCode, 200, 'Owner login must succeed');
     ownerToken = loginRes.data.token;
     assert.ok(ownerToken, 'Owner login must return session token');
+    assert.strictEqual(loginRes.data.user.must_change_password, true, 'Bootstrapped first owner must have must_change_password: true');
+
+    // Attempting business mutations BEFORE changing initial password must be blocked with 403 PASSWORD_CHANGE_REQUIRED
+    const blockedSaleReq = mockReq({
+      method: 'POST',
+      query: { action: 'create-sale' },
+      headers: { authorization: `Bearer ${ownerToken}` },
+      body: { gross_amount: 100, payment_method: 'CASH' },
+    });
+    const blockedSaleRes = mockRes();
+    await operationsHandler(blockedSaleReq, blockedSaleRes);
+    assert.strictEqual(blockedSaleRes.statusCode, 403, 'Operations must be blocked until initial password is changed');
+    assert.strictEqual(blockedSaleRes.data.code, 'PASSWORD_CHANGE_REQUIRED');
+
+    // Change initial password via update-profile
+    const changePassReq = mockReq({
+      method: 'POST',
+      query: { action: 'update-profile' },
+      headers: { authorization: `Bearer ${ownerToken}` },
+      body: {
+        full_name: 'Mom (Primary Owner)',
+        email: 'mom@popcornprizeclub.com',
+        phone: '+91 9876543210',
+        current_password: initialPassword,
+        new_password: 'UpdatedOwnerSecure2026!',
+      },
+    });
+    const changePassRes = mockRes();
+    await authHandler(changePassReq, changePassRes);
+    assert.strictEqual(changePassRes.statusCode, 200, 'Initial password change must succeed');
+    assert.strictEqual(changePassRes.data.user.must_change_password, false, 'must_change_password must be cleared after password change');
+    assert.ok(changePassRes.data.token, 'Refreshed session token must be returned after password change');
+    ownerToken = changePassRes.data.token;
+    console.log('✓ [2/12] First-owner bootstrap, failed login rejection, and forced first-login password change passed.');
 
     // Check P&L when no financial records exist
     const pnlReq = mockReq({
@@ -133,10 +179,10 @@ async function runAllTests() {
     assert.strictEqual(pnlRes.data.summary.total_cogs, 0);
     assert.strictEqual(pnlRes.data.summary.operating_expenses, 0);
     assert.strictEqual(pnlRes.data.summary.net_profit, 0);
-    console.log('✓ [2/9] Empty database behavior verified (zero fabricated figures; honest empty state).');
+    console.log('✓ [3/12] Empty database behavior verified (zero fabricated figures; honest empty state).');
   }
 
-  // 3. UNAUTHORIZED ACCESS PROTECTION ACROSS ALL ENDPOINTS
+  // 4. UNAUTHORIZED ACCESS PROTECTION ACROSS ALL ENDPOINTS
   {
     for (const handler of [pnlHandler, operationsHandler, statsHandler, auditHandler, redeemHandler]) {
       const req = mockReq({ method: 'GET' });
@@ -144,10 +190,10 @@ async function runAllTests() {
       await handler(req, res);
       assert.strictEqual(res.statusCode, 401, 'Unauthenticated request must return 401');
     }
-    console.log('✓ [3/9] Server-side authentication guards on all private endpoints passed.');
+    console.log('✓ [4/12] Server-side authentication guards on all private endpoints passed.');
   }
 
-  // 4. OWNER PROFILE UPDATE & PERSISTENCE + RBAC STAFF MANAGEMENT
+  // 5. OWNER PROFILE UPDATE & PERSISTENCE + RBAC STAFF MANAGEMENT & SESSION LOGOUT
   let staffToken = '';
   {
     const updReq = mockReq({
@@ -211,10 +257,29 @@ async function runAllTests() {
     const forbiddenRes = mockRes();
     await auditHandler(forbiddenReq, forbiddenRes);
     assert.strictEqual(forbiddenRes.statusCode, 403, 'Staff must be blocked from Owner/Admin audit logs');
-    console.log('✓ [4/9] Owner profile persistence and RBAC permissions passed.');
+
+    // Test Staff logout and verify revoked session token is rejected
+    const logoutReq = mockReq({
+      method: 'POST',
+      query: { action: 'logout' },
+      headers: { authorization: `Bearer ${staffToken}` },
+    });
+    const logoutRes = mockRes();
+    await authHandler(logoutReq, logoutRes);
+    assert.strictEqual(logoutRes.statusCode, 200);
+    const afterLogoutMeReq = mockReq({
+      method: 'GET',
+      query: { action: 'me' },
+      headers: { authorization: `Bearer ${staffToken}` },
+    });
+    const afterLogoutMeRes = mockRes();
+    await authHandler(afterLogoutMeReq, afterLogoutMeRes);
+    assert.strictEqual(afterLogoutMeRes.statusCode, 401, 'Logged-out session token must return 401');
+
+    console.log('✓ [5/12] Owner profile persistence, RBAC permissions, and session logout passed.');
   }
 
-  // 5. DEMO WINNER EXCLUSION & ATOMIC SINGLE-USE QR REDEMPTION
+  // 6. DEMO WINNER EXCLUSION, ATOMIC SINGLE-USE QR REDEMPTION, EXPIRED & TAMPERED CODE REJECTION
   {
     // Create a synthetic demo record and confirm it is excluded from listRewards & cannot be redeemed
     const demoCode = generateSecureRewardCode();
@@ -236,6 +301,36 @@ async function runAllTests() {
     });
     assert.strictEqual(demoRedeem.success, false);
     assert.strictEqual(demoRedeem.code, 'DEMO_RECORD');
+
+    // Tampered / malformed reward code must be rejected with INVALID_CODE (400)
+    const tamperedReq = mockReq({
+      method: 'POST',
+      query: { action: 'redeem' },
+      headers: { authorization: `Bearer ${ownerToken}` },
+      body: { code: "PC-123'; DROP TABLE rewards;--" },
+    });
+    const tamperedRes = mockRes();
+    await redeemHandler(tamperedReq, tamperedRes);
+    assert.strictEqual(tamperedRes.statusCode, 400);
+    assert.strictEqual(tamperedRes.data.code, 'INVALID_CODE');
+
+    // Expired reward code must be rejected with EXPIRED
+    const expiredCode = generateSecureRewardCode();
+    await createReward({
+      code: expiredCode,
+      customer_name: 'Expired Ticket Holder',
+      prize_name: 'Mini Masala Pack + ₹10 Water Bottle',
+      unit_cost: 22,
+      status: 'WAITING',
+      expires_at: '2020-01-01T00:00:00.000Z',
+    });
+    const expiredRedeem = await redeemRewardAtomic({
+      code: expiredCode,
+      operator_id: 'usr-owner-primary',
+      operator_name: 'Mom',
+    });
+    assert.strictEqual(expiredRedeem.success, false);
+    assert.strictEqual(expiredRedeem.code, 'EXPIRED');
 
     // Issue a genuine customer reward via public API
     const playReq = mockReq({
@@ -259,7 +354,8 @@ async function runAllTests() {
     const results = await Promise.all(attempts);
     const successes = results.filter(r => r.success === true);
     assert.strictEqual(successes.length, 1, 'Exactly 1 concurrent redemption must succeed');
-    console.log('✓ [5/9] Demo winner exclusion and atomic single-use QR redemption passed.');
+    console.log('✓ [6/12] Atomic single-use QR redemption passed (10 concurrent requests -> 1 success).');
+    console.log('✓ [7/12] Demo, expired, invalid, already-redeemed, and tampered code rejection passed.');
   }
 
   // 6. PRODUCTS, INVENTORY MOVEMENTS, SALES, DUPLICATE DETECTION, REFUNDS & EXPENSES
@@ -394,11 +490,11 @@ async function runAllTests() {
     assert.strictEqual(s.operating_expenses, 70);
     assert.strictEqual(s.net_profit, 178);
 
-    console.log('✓ [6/9] Sales, duplicate detection, refunds, inventory stock, and expenses CRUD passed.');
-    console.log('✓ [7/9] Real Profit & Loss accounting formulas verified against exact test case.');
+    console.log('✓ [8/12] Sales, duplicate detection, refunds, inventory stock, and expenses CRUD passed.');
+    console.log('✓ [9/12] Real Profit & Loss accounting formulas verified against exact test case.');
   }
 
-  // 8. FRONTEND DOM & DEDICATED OWNER PAGES VERIFICATION
+  // 10 & 11. FRONTEND DOM, 5 PRIZE OFFERS, MOBILE LAYOUT & 12 DEDICATED OWNER PAGES VERIFICATION
   {
     const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
     assert.ok(!html.includes('id="demo"'), 'Add Demo Winner button (#demo) must be removed');
@@ -407,6 +503,7 @@ async function runAllTests() {
     assert.ok(!html.includes('popcorn-preview.js'), 'Broken 404 script popcorn-preview.js must be removed');
     assert.ok(html.includes('popcorn-light-hero.jpg'), 'Light hero image must be preserved');
     assert.ok(html.includes('popcorn-dark-hero.jpg'), 'Dark hero image must be preserved');
+    assert.ok(html.includes('@media(max-width:760px)'), 'Responsive mobile CSS layout must be present');
 
     const prizeImages = [
       'prize-masala-water10-combo.jpg',
@@ -420,6 +517,7 @@ async function runAllTests() {
       const imgPath = path.join(__dirname, '..', img);
       assert.ok(fs.existsSync(imgPath) && fs.statSync(imgPath).size > 50000, `Prize image ${img} must exist and be non-empty`);
     }
+    console.log('✓ [10/12] All 5 QR prize & combo offers and realistic images verified.');
 
     const requiredPages = [
       'page-profile',
@@ -438,25 +536,29 @@ async function runAllTests() {
     for (const id of requiredPages) {
       assert.ok(html.includes(`id="${id}"`), `Dedicated owner page/action #${id} must exist in index.html`);
     }
-    console.log('✓ [8/9] Frontend structure, 12 dedicated owner menu items/pages, and hero images verified.');
+    console.log('✓ [11/12] Frontend structure, 12 dedicated owner menu items/pages, mobile layout, and hero images verified.');
   }
 
-  // 9. ROBOTS.TXT & SITEMAP.XML VALIDATION
+  // 12. ROBOTS.TXT, SITEMAP.XML & SECURITY HEADERS VALIDATION
   {
     const robots = fs.readFileSync(path.join(__dirname, '..', 'robots.txt'), 'utf8');
     const sitemap = fs.readFileSync(path.join(__dirname, '..', 'sitemap.xml'), 'utf8');
+    const vercelConfig = fs.readFileSync(path.join(__dirname, '..', 'vercel.json'), 'utf8');
 
     assert.ok(robots.includes('Sitemap: https://popcorn-prize-club.vercel.app/sitemap.xml'));
     assert.ok(robots.includes('Disallow: /api/'));
     assert.ok(robots.includes('Disallow: /*?page=owner*'));
     assert.ok(sitemap.includes('<loc>https://popcorn-prize-club.vercel.app/</loc>'));
     assert.ok(!sitemap.includes('owner') && !sitemap.includes('api') && !sitemap.includes('code='));
+    assert.ok(vercelConfig.includes('Content-Security-Policy'));
+    assert.ok(vercelConfig.includes('Strict-Transport-Security'));
+    assert.ok(vercelConfig.includes('X-Frame-Options'));
 
     resetMemoryFinancialsAndData();
-    console.log('✓ [9/9] robots.txt and sitemap.xml technical SEO validation passed.');
+    console.log('✓ [12/12] robots.txt, sitemap.xml, and vercel.json security headers validation passed.');
   }
 
-  console.log('\nALL 9 TEST SUITES PASSED WITH ZERO ERRORS! ✓');
+  console.log('\nALL 12 TEST SUITES PASSED WITH ZERO ERRORS! ✓');
 }
 
 runAllTests().catch(err => {

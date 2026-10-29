@@ -2,7 +2,7 @@
 // Production-Hardened Database Layer (Supabase PostgreSQL + Fail-Closed Enforcement)
 // Strictly zero fabricated financial figures or fake winner records.
 const crypto = require('crypto');
-const { hashPassword, generateSecureRewardCode, revokeJti } = require('./_security');
+const { hashPassword, generateSecureRewardCode, isValidRewardCodeFormat, revokeJti } = require('./_security');
 
 function isProd() {
   return process.env.NODE_ENV === 'production';
@@ -172,6 +172,7 @@ async function bootstrapOwnerIfEmpty() {
         role: 'OWNER',
         password_hash: hash,
         salt,
+        must_change_password: true,
         status: 'ACTIVE',
       },
     });
@@ -193,23 +194,7 @@ async function bootstrapOwnerIfEmpty() {
       role: 'OWNER',
       password_hash: hash,
       salt,
-      status: 'ACTIVE',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      last_login_at: null,
-    });
-
-    const { hash: sHash, salt: sSalt } = hashPassword('PopcornShankar2026!');
-    memoryStore.users.set('shankar', {
-      id: 'usr-admin-shankar',
-      username: 'shankar',
-      email: 'shankar@popcornclub.local',
-      phone: '',
-      full_name: 'Shankar',
-      avatar_url: '',
-      role: 'ADMIN',
-      password_hash: sHash,
-      salt: sSalt,
+      must_change_password: true,
       status: 'ACTIVE',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -274,6 +259,7 @@ async function updateUserProfile(userId, { full_name, email, phone, avatar_url, 
     const { hash, salt } = hashPassword(new_password);
     updates.password_hash = hash;
     updates.salt = salt;
+    updates.must_change_password = false;
   }
 
   const { isConfigured } = getSupabaseConfig();
@@ -306,6 +292,7 @@ function sanitizeUserRecord(u) {
     full_name: u.full_name,
     avatar_url: u.avatar_url || '',
     role: u.role,
+    must_change_password: Boolean(u.must_change_password),
     status: u.status,
     created_at: u.created_at,
     updated_at: u.updated_at || u.created_at,
@@ -1108,6 +1095,7 @@ async function createReward({
   batch_name = null,
   status = 'WAITING',
   is_demo = false,
+  expires_at = null,
 }) {
   const finalCode = (code || generateSecureRewardCode()).toUpperCase().trim();
   const now = new Date().toISOString();
@@ -1124,6 +1112,7 @@ async function createReward({
     is_demo: Boolean(is_demo),
     status: ['GENERATED', 'WAITING', 'COLLECTED', 'EXPIRED', 'REVOKED'].includes(status) ? status : 'WAITING',
     created_at: now,
+    expires_at: expires_at || null,
     scratched_at: status === 'WAITING' ? now : null,
     redeemed_at: null,
     redeemed_by: null,
@@ -1215,6 +1204,13 @@ async function listRewards({ status, search, includeDemo = false, limit = 100, o
 
 async function redeemRewardAtomic({ code, operator_id, operator_name, notes }) {
   const cleanCode = String(code || '').toUpperCase().trim();
+  if (!isValidRewardCodeFormat(cleanCode)) {
+    return {
+      success: false,
+      code: 'INVALID_CODE',
+      message: 'Invalid or tampered reward code format.',
+    };
+  }
   const { isConfigured } = getSupabaseConfig();
 
   if (isConfigured) {
@@ -1257,6 +1253,15 @@ async function redeemRewardAtomic({ code, operator_id, operator_name, notes }) {
         success: false,
         code: 'DEMO_RECORD',
         message: 'Demo records cannot be redeemed as genuine customer prizes.',
+      };
+    }
+
+    if (reward.status === 'EXPIRED' || (reward.expires_at && new Date(reward.expires_at).getTime() < Date.now())) {
+      reward.status = 'EXPIRED';
+      return {
+        success: false,
+        code: 'EXPIRED',
+        message: 'This reward code has expired and can no longer be redeemed.',
       };
     }
 

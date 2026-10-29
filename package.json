@@ -5,11 +5,11 @@
   "private": true,
   "scripts": {
     "test": "node tests/run-all.test.js",
-    "test:security": "node tests/security.test.js",
-    "test:concurrency": "node tests/concurrency.test.js",
-    "test:rbac": "node tests/rbac.test.js",
-    "test:pnl": "node tests/pnl.test.js",
-    "test:operations": "node tests/operations.test.js"
+    "test:security": "node tests/run-all.test.js",
+    "test:concurrency": "node tests/run-all.test.js",
+    "test:rbac": "node tests/run-all.test.js",
+    "test:pnl": "node tests/run-all.test.js",
+    "test:operations": "node tests/run-all.test.js"
   },
   "author": "LR Popcorn Prize Club",
   "license": "UNLICENSED"

@@ -1087,6 +1087,10 @@ function navigateOwnerRoute(route, pushHistory = true) {
     show('owner', true);
     return;
   }
+  if (currentUser.must_change_password && route !== 'edit-profile' && route !== 'profile') {
+    route = 'edit-profile';
+    toast('Please change your initial bootstrap password first.');
+  }
   const target = OWNER_ROUTES.includes(route) ? route : 'rewards';
   currentOwnerRoute = target;
   show('shop', false);
@@ -1418,6 +1422,15 @@ async function loadProfileData() {
     document.getElementById('editEmail').value = currentUser.email || '';
     document.getElementById('editPhone').value = currentUser.phone || '';
     document.getElementById('editAvatarUrl').value = currentUser.avatar_url || '';
+    const errEl = document.getElementById('editProfileError');
+    if (errEl) {
+      if (currentUser.must_change_password) {
+        errEl.textContent = 'Security Policy: You signed in with a temporary initial bootstrap password. Please enter your current password and set a new strong password below to unlock all business operations.';
+        errEl.classList.add('show');
+      } else {
+        errEl.classList.remove('show');
+      }
+    }
   }
   if (statsRes.ok && statsRes.data.stats) {
     const st = statsRes.data.stats;
@@ -1453,6 +1466,10 @@ document.getElementById('editProfileForm').onsubmit = async e => {
       errEl.textContent = res.data?.error || 'Failed to update profile.';
       errEl.classList.add('show');
       return;
+    }
+    if (res.data.token) {
+      authToken = res.data.token;
+      sessionStorage.setItem('popcorn-auth-token', authToken);
     }
     currentUser = res.data.user;
     syncOwnerIdentityUI();

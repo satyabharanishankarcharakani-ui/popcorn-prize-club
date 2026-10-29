@@ -21,11 +21,13 @@ CREATE TABLE IF NOT EXISTS users (
     role VARCHAR(32) NOT NULL CHECK (role IN ('OWNER', 'ADMIN', 'STAFF')),
     password_hash VARCHAR(256) NOT NULL,
     salt VARCHAR(128) NOT NULL,
+    must_change_password BOOLEAN NOT NULL DEFAULT FALSE,
     status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'DISABLED')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     last_login_at TIMESTAMPTZ
 );
+ALTER TABLE users ADD COLUMN IF NOT EXISTS must_change_password BOOLEAN NOT NULL DEFAULT FALSE;
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 
 -- 2. ACTIVE SESSIONS (For Security & Active Sessions Page + Revocation)
@@ -187,12 +189,14 @@ CREATE TABLE IF NOT EXISTS rewards (
     is_demo BOOLEAN NOT NULL DEFAULT FALSE,
     status VARCHAR(32) NOT NULL DEFAULT 'WAITING' CHECK (status IN ('GENERATED', 'WAITING', 'COLLECTED', 'EXPIRED', 'REVOKED')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    expires_at TIMESTAMPTZ,
     scratched_at TIMESTAMPTZ,
     redeemed_at TIMESTAMPTZ,
     redeemed_by UUID REFERENCES users(id) ON DELETE SET NULL,
     operator_name VARCHAR(128),
     notes TEXT
 );
+ALTER TABLE rewards ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_rewards_code ON rewards(code);
 CREATE INDEX IF NOT EXISTS idx_rewards_status ON rewards(status);
 CREATE INDEX IF NOT EXISTS idx_rewards_is_demo ON rewards(is_demo);
@@ -249,6 +253,14 @@ DECLARE
 BEGIN
     p_code := UPPER(TRIM(p_code));
 
+    IF p_code !~ '^PC-[A-Z0-9]{4,16}$' THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'code', 'INVALID_CODE',
+            'message', 'Invalid or tampered reward code format.'
+        );
+    END IF;
+
     SELECT * INTO v_reward
     FROM rewards
     WHERE UPPER(code) = p_code
@@ -267,6 +279,17 @@ BEGIN
             'success', false,
             'code', 'DEMO_RECORD',
             'message', 'Demo records cannot be redeemed as genuine customer prizes.'
+        );
+    END IF;
+
+    IF v_reward.status = 'EXPIRED' OR (v_reward.expires_at IS NOT NULL AND v_reward.expires_at < NOW()) THEN
+        IF v_reward.status <> 'EXPIRED' THEN
+            UPDATE rewards SET status = 'EXPIRED' WHERE id = v_reward.id;
+        END IF;
+        RETURN jsonb_build_object(
+            'success', false,
+            'code', 'EXPIRED',
+            'message', 'This reward code has expired and can no longer be redeemed.'
         );
     END IF;
 
