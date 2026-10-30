@@ -393,7 +393,63 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // 0h. POST /api/auth?action=google-login (Direct API login using verified Google email or mock test)
+    // 0h. POST /api/auth?action=forgot-password (Self-service password reset)
+    if (req.method === 'POST' && action === 'forgot-password') {
+      const isAllowed = await checkRateLimit(`forgot-pass-${ip}`, 10, 60000);
+      if (!isAllowed) {
+        return res.status(429).json({ error: 'Too many password reset attempts. Please wait 60 seconds.' });
+      }
+
+      const account = sanitizeString(body.account || '', 120).toLowerCase().trim();
+      const newPassword = body.new_password || '';
+
+      if (!account) {
+        return res.status(400).json({ error: 'Please enter your username or Google email address.' });
+      }
+      if (!newPassword || newPassword.length < 6) {
+        return res.status(400).json({ error: 'New password must be at least 6 characters long.' });
+      }
+
+      const user = (await getUserByUsername(account)) || (await getUserByEmail(account));
+      if (!user) {
+        return res.status(404).json({
+          error: `No registered account found for "${account}". Please check your spelling or Sign Up first.`,
+          code: 'ACCOUNT_NOT_FOUND',
+        });
+      }
+
+      if (user.status === 'PENDING_APPROVAL') {
+        return res.status(403).json({
+          error: `Access Locked: This account (@${user.username}) is waiting for permission from Shankar & Mom.`,
+          code: 'PENDING_APPROVAL',
+        });
+      }
+
+      if (user.status === 'DISABLED') {
+        return res.status(403).json({
+          error: `Access Denied: This account has been disabled by the Primary Owner.`,
+          code: 'ACCOUNT_DISABLED',
+        });
+      }
+
+      await updateUserProfile(user.id, { new_password: newPassword });
+
+      await addAuditLog({
+        actor_id: user.id,
+        actor_name: user.full_name,
+        actor_role: user.role,
+        action: 'PASSWORD_RESET_SUCCESS',
+        details: { account, ip },
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: `Password reset successfully for @${user.username}! You can now sign in with your new password.`,
+        username: user.username,
+      });
+    }
+
+    // 0i. POST /api/auth?action=google-login (Direct API login using verified Google email or mock test)
     if (req.method === 'POST' && action === 'google-login') {
       const isAllowed = await checkRateLimit(`google-auth-${ip}`, 15, 60000);
       if (!isAllowed) {
