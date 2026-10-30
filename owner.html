@@ -200,8 +200,15 @@ body.dark .pass-toggle-btn{color:#9d9287}
 body.dark .pass-toggle-btn:hover{color:#ff9a62}
 .btn-pwa-install{display:none;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;border:1px solid var(--orange);background:linear-gradient(135deg,rgba(255,107,36,.18),rgba(255,107,36,.06));color:var(--orange);font:700 12px 'Space Grotesk',sans-serif;cursor:pointer;transition:.18s;box-shadow:0 2px 8px rgba(255,107,36,.15);line-height:1}
 .btn-pwa-install:hover{background:var(--orange);color:#fff;transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,107,36,.3)}
+.pwa-wa-banner{display:none;background:linear-gradient(90deg,#ff6b24,#e6530f);color:#fff;padding:10px 16px;text-align:center;font:700 12px 'DM Sans',sans-serif;box-shadow:0 3px 12px rgba(255,107,36,.3);position:relative;z-index:95}
+.pwa-install-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:150;align-items:center;justify-content:center;padding:18px}
+.pwa-install-modal-overlay.show{display:flex}
+.pwa-install-modal-box{background:#16171a;color:#f5f3ef;border:1px solid #35312c;border-radius:20px;max-width:390px;width:100%;padding:24px 20px;box-shadow:0 24px 60px rgba(0,0,0,.65);text-align:center}
 
 </style></head><body class="dark">
+<div class="pwa-wa-banner" id="pwaWaBanner">
+  📲 Open in Chrome: Tap the <b>three dots (⋮) in the top-right corner</b> and choose <b>"Open in Chrome"</b> to install the LR Owner app!
+</div>
 <header>
   <div class="brand" id="brandHome" role="button" tabindex="0" aria-label="LR Popcorn Partner Portal">
     <span class="mark">✦</span> LR POPCORN <span style="color:var(--orange)">OWNER</span>
@@ -315,6 +322,17 @@ body.dark .pass-toggle-btn:hover{color:#ff9a62}
       </button>
 
       <div class="auth-divider">or sign in with username / email</div>
+      <!-- Prominent Install Card for Mom & Owners -->
+      <div class="pwa-install-card" id="pwaCardLogin" style="margin:10px 0 16px;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,107,36,.35);background:linear-gradient(135deg,rgba(255,107,36,.12),rgba(255,107,36,.04));display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <img src="/owner-icon-192.png" alt="LR Owner" style="width:38px;height:38px;border-radius:9px;box-shadow:0 3px 10px rgba(0,0,0,.4)">
+          <div>
+            <div style="font:700 13px 'Space Grotesk',sans-serif;color:var(--ink)">Install LR Owner App</div>
+            <div style="font-size:11px;color:var(--muted)">Add to Phone Home Screen</div>
+          </div>
+        </div>
+        <button type="button" class="btn orange" id="pwaCardInstallBtn" style="padding:7px 14px;font-size:12px;font-weight:700;white-space:nowrap">Install 📲</button>
+      </div>
 
       <form id="ownerForm">
         <label for="ownerUsername">Username or Google Email</label>
@@ -3087,12 +3105,62 @@ if (ownerForgotForm) {
     }
   };
 }
+</script>
 
+<!-- PWA Install Guide Modal (For devices where native prompt is pending) -->
+<div class="pwa-install-modal-overlay" id="pwaModalOverlay" role="dialog" aria-modal="true" aria-labelledby="pwaModalTitle">
+  <div class="pwa-install-modal-box">
+    <div style="width:58px;height:58px;margin:0 auto 10px;border-radius:14px;background:#0c0d0e;border:1px solid #ff6b24;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(255,107,36,.3)">
+      <img src="/owner-icon-192.png" alt="LR Owner" style="width:44px;height:44px;border-radius:10px">
+    </div>
+    <h3 id="pwaModalTitle" style="margin:0 0 4px;font-size:19px">Install LR Owner</h3>
+    <p style="font-size:12px;color:var(--muted);margin:0 0 16px">Add directly to your Phone Home Screen in 2 steps:</p>
+    
+    <div style="text-align:left;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 14px;margin-bottom:18px;font-size:13px;line-height:1.6">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+        <span style="background:var(--orange);color:#fff;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>
+        <span>Tap the <b>three vertical dots (⋮)</b> in the top right corner of Chrome.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+        <span style="background:var(--orange);color:#fff;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>
+        <span>Tap <b>"Install app"</b> (or <b>"Add to Home screen"</b>).</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;border-top:1px dashed #3a332a;padding-top:10px;margin-top:4px">
+        <span style="font-size:14px">💡</span>
+        <span style="font-size:11px;color:#d5c7b8">If opened from WhatsApp, tap the <b>3 dots (⋮)</b> and select <b>"Open in Chrome"</b> first!</span>
+      </div>
+    </div>
+    
+    <button type="button" class="btn orange full" id="pwaModalCloseBtn" style="padding:11px;font-weight:700">Understood ✓</button>
+  </div>
+</div>
 
-// LR Owner PWA Service Worker Registration & Installation Handling
+<script>
+// Universal PWA Install Controller (Works on all Android & Chrome devices)
 let deferredPwaPrompt = null;
-const pwaInstallBtn = document.getElementById('pwaInstallBtn');
 const isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+const pwaCardLogin = document.getElementById('pwaCardLogin');
+const pwaCardInstallBtn = document.getElementById('pwaCardInstallBtn');
+const pwaModalOverlay = document.getElementById('pwaModalOverlay');
+const pwaModalCloseBtn = document.getElementById('pwaModalCloseBtn');
+const pwaWaBanner = document.getElementById('pwaWaBanner');
+
+// Detect WhatsApp in-app browser
+const ua = navigator.userAgent || '';
+const isInAppBrowser = /WhatsApp|FBAN|FBAV|Instagram/i.test(ua);
+if (isInAppBrowser && pwaWaBanner && !isRunningStandalone) {
+  pwaWaBanner.style.display = 'block';
+}
+
+if (!isRunningStandalone) {
+  if (pwaInstallBtn) pwaInstallBtn.style.display = 'inline-flex';
+  if (pwaCardLogin) pwaCardLogin.style.display = 'flex';
+} else {
+  if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+  if (pwaCardLogin) pwaCardLogin.style.display = 'none';
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -3106,34 +3174,49 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-if (!isRunningStandalone) {
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPwaPrompt = e;
-    if (pwaInstallBtn) {
-      pwaInstallBtn.style.display = 'inline-flex';
-    }
-  });
-
-  if (pwaInstallBtn) {
-    pwaInstallBtn.onclick = async () => {
-      if (!deferredPwaPrompt) return;
-      deferredPwaPrompt.prompt();
-      const choice = await deferredPwaPrompt.userChoice;
-      if (choice && choice.outcome === 'accepted') {
-        pwaInstallBtn.style.display = 'none';
-      }
-      deferredPwaPrompt = null;
-    };
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPwaPrompt = e;
+  if (!isRunningStandalone) {
+    if (pwaInstallBtn) pwaInstallBtn.style.display = 'inline-flex';
+    if (pwaCardLogin) pwaCardLogin.style.display = 'flex';
   }
+});
 
-  window.addEventListener('appinstalled', () => {
-    deferredPwaPrompt = null;
-    if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
-    if (typeof toast === 'function') {
-      toast('LR Owner installed to Home Screen ✓');
+async function handlePwaInstallClick() {
+  if (deferredPwaPrompt) {
+    deferredPwaPrompt.prompt();
+    const choice = await deferredPwaPrompt.userChoice;
+    if (choice && choice.outcome === 'accepted') {
+      if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+      if (pwaCardLogin) pwaCardLogin.style.display = 'none';
     }
-  });
+    deferredPwaPrompt = null;
+    return;
+  }
+  // If native prompt is not yet fired or in browser that requires manual menu action:
+  if (pwaModalOverlay) {
+    pwaModalOverlay.classList.add('show');
+  }
 }
+
+if (pwaInstallBtn) pwaInstallBtn.onclick = handlePwaInstallClick;
+if (pwaCardInstallBtn) pwaCardInstallBtn.onclick = handlePwaInstallClick;
+if (pwaModalCloseBtn) pwaModalCloseBtn.onclick = () => pwaModalOverlay.classList.remove('show');
+if (pwaModalOverlay) {
+  pwaModalOverlay.onclick = (e) => {
+    if (e.target === pwaModalOverlay) pwaModalOverlay.classList.remove('show');
+  };
+}
+
+window.addEventListener('appinstalled', () => {
+  deferredPwaPrompt = null;
+  if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+  if (pwaCardLogin) pwaCardLogin.style.display = 'none';
+  if (pwaModalOverlay) pwaModalOverlay.classList.remove('show');
+  if (typeof toast === 'function') {
+    toast('LR Owner installed to Home Screen ✓');
+  }
+});
 </script>
 </body></html>
