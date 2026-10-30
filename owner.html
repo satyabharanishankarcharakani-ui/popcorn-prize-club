@@ -1942,16 +1942,26 @@ async function loadGoogleConfig() {
   }
 }
 
-function startGoogleSignIn(errorElId) {
+async function startGoogleSignIn(errorElId) {
+  const errEl = document.getElementById(errorElId);
+  if (errEl) {
+    errEl.classList.remove('show');
+  }
+
+  // Check live Google config on Vercel
+  await loadGoogleConfig();
+
   if (!googleSignInEnabled) {
-    const errEl = document.getElementById(errorElId);
     if (errEl) {
-      errEl.textContent = 'Google Sign-In is not switched on yet. The owner must add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Vercel. Until then, please use username and password.';
+      errEl.innerHTML = '<b>Google Confirmation Setup Required:</b> To redirect directly to Google&#39;s account chooser &amp; confirmation screen, <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> must be added to your Vercel Project Environment Variables.<br><br>👉 <i>In the meantime, you can register or sign in directly below using your Google email address and password!</i>';
       errEl.classList.add('show');
     }
+    const emailInput = document.getElementById(errorElId === 'ownerSignupError' ? 'signupEmail' : 'ownerUsername');
+    if (emailInput) emailInput.focus();
     return;
   }
-  // Full-page redirect to accounts.google.com (shows the Google accounts on this phone / browser)
+
+  // Full-page redirect to Google's official OAuth account chooser & confirmation page
   window.location.href = '/api/auth?action=google-start';
 }
 
@@ -2321,46 +2331,46 @@ async function loadOverviewData() {
     act1Sub.textContent = 'Payment of ' + fmtMoney(lastSale.net_amount) + ' received via ' + (lastSale.payment_method || 'UPI') + '.';
   }
 
-  const res = await apiFetch('/api/stats');
-  if (!res.ok || !res.data?.stats) return;
-  const st = res.data.stats;
-  const td = st.today || {};
-  const wk = st.weekly || {};
-  const mo = st.monthly || {};
-
-  document.getElementById('ovTodaySales').textContent = fmtMoney(td.net_sales || 0);
-  document.getElementById('ovTodaySalesSub').textContent = (td.sales_count || 0) + ' sales recorded today';
-  document.getElementById('ovTodayExpenses').textContent = fmtMoney(td.expenses || 0);
-  document.getElementById('ovTodayExpSub').textContent = (td.expenses_count || 0) + ' expenses recorded today';
+  // Sync legacy compatibility elements for test suite & background metrics
+  const ovTdSales = document.getElementById('ovTodaySales');
+  if (ovTdSales) ovTdSales.textContent = fmtMoney(td.net_sales || 0);
+  const ovTdSalesSub = document.getElementById('ovTodaySalesSub');
+  if (ovTdSalesSub) ovTdSalesSub.textContent = (td.sales_count || 0) + ' sales recorded today';
+  const ovTdExp = document.getElementById('ovTodayExpenses');
+  if (ovTdExp) ovTdExp.textContent = fmtMoney(td.expenses || 0);
+  const ovTdExpSub = document.getElementById('ovTodayExpSub');
+  if (ovTdExpSub) ovTdExpSub.textContent = (td.expenses_count || 0) + ' expenses recorded today';
 
   const tdProfitEl = document.getElementById('ovTodayNetProfit');
-  tdProfitEl.textContent = fmtMoney(td.net_profit || 0);
-  tdProfitEl.style.color = (td.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
+  if (tdProfitEl) {
+    tdProfitEl.textContent = fmtMoney(td.net_profit || 0);
+    tdProfitEl.style.color = (td.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
+  }
 
-  document.getElementById('ovTotalRedemptions').textContent = st.totalRedeemed || 0;
-  document.getElementById('ovPendingClaims').textContent = st.pendingCollection || 0;
+  const ovTotRedeem = document.getElementById('ovTotalRedemptions');
+  if (ovTotRedeem) ovTotRedeem.textContent = st.totalRedeemed || 0;
+  const ovPendClaims = document.getElementById('ovPendingClaims');
+  if (ovPendClaims) ovPendClaims.textContent = st.pendingCollection || 0;
 
-  document.getElementById('ovWeekSales').textContent = fmtMoney(wk.net_sales || 0);
-  document.getElementById('ovWeekExpenses').textContent = fmtMoney(wk.expenses || 0);
+  const ovWkSales = document.getElementById('ovWeekSales');
+  if (ovWkSales) ovWkSales.textContent = fmtMoney(wk.net_sales || 0);
+  const ovWkExp = document.getElementById('ovWeekExpenses');
+  if (ovWkExp) ovWkExp.textContent = fmtMoney(wk.expenses || 0);
   const wkProfitEl = document.getElementById('ovWeekProfit');
-  wkProfitEl.textContent = fmtMoney(wk.net_profit || 0);
-  wkProfitEl.style.color = (wk.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
+  if (wkProfitEl) {
+    wkProfitEl.textContent = fmtMoney(wk.net_profit || 0);
+    wkProfitEl.style.color = (wk.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
+  }
 
-  document.getElementById('ovMonthSales').textContent = fmtMoney(mo.net_sales || 0);
-  document.getElementById('ovMonthExpenses').textContent = fmtMoney(mo.expenses || 0);
+  const ovMoSales = document.getElementById('ovMonthSales');
+  if (ovMoSales) ovMoSales.textContent = fmtMoney(mo.net_sales || 0);
+  const ovMoExp = document.getElementById('ovMonthExpenses');
+  if (ovMoExp) ovMoExp.textContent = fmtMoney(mo.expenses || 0);
   const moProfitEl = document.getElementById('ovMonthProfit');
-  moProfitEl.textContent = fmtMoney(mo.net_profit || 0);
-  moProfitEl.style.color = (mo.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
-
-  const txList = st.recentTransactions || [];
-  const txBody = document.getElementById('ovRecentTxRows');
-  txBody.innerHTML = txList.length
-    ? txList.map(tx => {
-        const isPos = tx.amount >= 0;
-        const badgeClass = tx.type === 'SALE' ? 'green' : 'red';
-        return '<tr><td>' + esc(tx.date || '—') + '</td><td><span class="tag ' + badgeClass + '">' + esc(tx.type) + '</span></td><td><b>' + esc(tx.title) + '</b></td><td>' + esc(tx.shop_name) + '</td><td>' + esc(tx.method) + '</td><td style="font-weight:700;color:' + (isPos ? 'var(--green)' : 'var(--danger)') + '">' + (isPos ? '+' : '-') + fmtMoney(Math.abs(tx.amount)) + '</td></tr>';
-      }).join('')
-    : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No transactions recorded yet. Use "+ Record Sale" or "+ Record Expense" to begin.</td></tr>';
+  if (moProfitEl) {
+    moProfitEl.textContent = fmtMoney(mo.net_profit || 0);
+    moProfitEl.style.color = (mo.net_profit || 0) >= 0 ? 'var(--green)' : 'var(--danger)';
+  }
 
   // Check for pending sign-up requests waiting for Shankar & Mom's permission
   const pendingPanel = document.getElementById('ovPendingApprovalsPanel');
