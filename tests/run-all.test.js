@@ -633,7 +633,6 @@ async function runAllTests() {
       'quickFlavorChips',
       'seedStandardFlavorsBtn',
       'googleSignInBtn',
-      'googleModalBackdrop',
       'ovPendingApprovalsPanel',
     ];
     for (const id of requiredPages) {

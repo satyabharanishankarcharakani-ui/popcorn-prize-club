@@ -419,20 +419,18 @@ async function requestDashboardAccess({ username, full_name, email, phone, passw
   const cleanPhone = phone ? String(phone).trim() : '';
 
   const existingByUser = await getUserByUsername(cleanUsername);
-  if (existingByUser) {
-    const err = new Error('That username is already registered. If this is your account, please go to Sign In.');
+  const existingByEmail = cleanEmail ? await getUserByEmail(cleanEmail) : null;
+  if (existingByUser || existingByEmail) {
+    const field = existingByEmail ? 'email' : 'username';
+    const err = new Error(
+      field === 'email'
+        ? `An account already exists with ${cleanEmail}. You don't need to sign up again — please Sign In (or use Sign in with Google).`
+        : `The username "${cleanUsername}" already has an account. You don't need to sign up again — please Sign In.`
+    );
     err.statusCode = 409;
-    err.code = 'USERNAME_TAKEN';
+    err.code = 'ACCOUNT_EXISTS';
+    err.field = field;
     throw err;
-  }
-  if (cleanEmail) {
-    const existingByEmail = await getUserByEmail(cleanEmail);
-    if (existingByEmail) {
-      const err = new Error('That Google / email address is already registered. Please go to Sign In or click Sign in with Google.');
-      err.statusCode = 409;
-      err.code = 'EMAIL_TAKEN';
-      throw err;
-    }
   }
 
   const created = await createUser({

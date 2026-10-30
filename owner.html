@@ -119,14 +119,6 @@ body.dark .btn-google{background:#16171a;color:#f5f3ef;border-color:#35312c;box-
 .btn-google:hover{border-color:var(--orange);transform:translateY(-1px)}
 .auth-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
 .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--line)}
-.google-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(8px);z-index:250;display:none;place-items:center;padding:16px}
-.google-modal-backdrop.show{display:grid;animation:fadeSlideIn .2s ease-out}
-.google-modal{width:100%;max-width:410px;background:#fff;color:#202124;border-radius:22px;padding:24px;box-shadow:0 24px 65px rgba(0,0,0,.55);border:1px solid #e0e0e0}
-body.dark .google-modal{background:#18191c;color:#f1f3f4;border-color:#35363a}
-.google-acct-item{width:100%;border:1px solid #e4e4e7;background:transparent;color:inherit;border-radius:13px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:11px;text-align:left;cursor:pointer;transition:.15s;font-family:inherit}
-body.dark .google-acct-item{border-color:#323438;background:rgba(255,255,255,.02)}
-.google-acct-item:hover{border-color:var(--orange);background:rgba(255,107,36,.08)}
-.google-acct-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4285F4,#34A853);color:#fff;font:700 14px 'Space Grotesk';display:grid;place-items:center;flex-shrink:0}
 
 /* Owner Header Avatar & Accessible Profile Menu */
 #siteNav{display:flex;align-items:center;gap:10px}
@@ -250,7 +242,7 @@ body.dark .chart-bar-row{border-color:#25201c}
 
       <button type="button" class="btn-google" id="googleSignupPickBtn">
         <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        <span>Choose Google Email from Phone / Device</span>
+        <span>Sign up with Google</span>
       </button>
 
       <div class="auth-divider">or fill details below</div>
@@ -316,39 +308,6 @@ body.dark .chart-bar-row{border-color:#25201c}
       <p class="note">Connected in real time to the LR Popcorn Customer Website · Protected by Shankar &amp; Mom Owner Approval.</p>
     </div>
 
-    <!-- GOOGLE ACCOUNT CHOOSER MODAL (Directs user to select the email present on their phone/device) -->
-    <div class="google-modal-backdrop" id="googleModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="googleModalTitle">
-      <div class="google-modal">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="display:flex;align-items:center;gap:8px;font:700 15px 'Space Grotesk'">
-            <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-            <span id="googleModalTitle">Choose a Google Account</span>
-          </div>
-          <button type="button" id="closeGoogleModalBtn" style="border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer">✕</button>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin:0 0 14px;line-height:1.5" id="googleModalSub">
-          Select the Google email on your phone that you provided during Sign Up to continue to <b>LR Popcorn Owner Portal</b>.
-        </p>
-
-        <!-- Saved Google accounts on this phone/browser -->
-        <div id="savedGoogleAccountsList" style="margin-bottom:10px"></div>
-
-        <!-- Tap to select from phone's native Google/Email autofill or enter another account -->
-        <form id="googleChooserForm">
-          <label for="googleChooserEmail" style="font-size:11px;color:var(--muted)">Select or tap your phone's Google email address</label>
-          <input class="input" type="email" id="googleChooserEmail" name="email" autocomplete="email" inputmode="email" placeholder="Tap to pick email on your phone (e.g. name@gmail.com)" required style="margin-bottom:8px">
-          <div id="googleChooserNameWrap" style="display:none">
-            <label for="googleChooserName" style="font-size:11px;color:var(--muted)">Your Name (for Sign Up)</label>
-            <input class="input" id="googleChooserName" autocomplete="name" placeholder="Your Full Name" style="margin-bottom:8px">
-          </div>
-          <div class="owner-error" id="googleChooserError" role="alert"></div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button type="button" class="btn secondary" id="cancelGoogleModalBtn" style="flex:1">Cancel</button>
-            <button type="submit" class="btn orange" id="googleChooserSubmitBtn" style="flex:2">Continue with Email →</button>
-          </div>
-        </form>
-      </div>
-    </div>
   </section>
 
   <!-- PRIVATE VIEW 2: AUTHENTICATED OWNER WORKSPACE -->
@@ -1130,7 +1089,7 @@ body.dark .chart-bar-row{border-color:#25201c}
             </div>
             <table>
               <thead>
-                <tr><th>Customer</th><th>Code</th><th>Prize</th><th>Gift Cost</th><th>Status</th></tr>
+                <tr><th>Customer</th><th>Code</th><th>Prize</th><th>Scratched Time</th><th>Status</th></tr>
               </thead>
               <tbody id="rows"></tbody>
             </table>
@@ -1146,12 +1105,13 @@ body.dark .chart-bar-row{border-color:#25201c}
           <div class="stat">Pending reward claims<b id="pending">0 waiting</b></div>
           <div class="stat">Redeemed at counter<b id="collectedStat">0 collected</b></div>
           <div class="tip">
-            <b>Batch Generate Paper QR Slips</b><br>
-            Create unique single-use QR codes to print and drop inside popcorn packets.
-            <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-              <input type="number" class="input" id="batchQrCount" value="12" min="1" max="50" style="margin:0;height:40px;width:85px">
-              <button type="button" class="btn orange" id="generateBatchQrBtn" style="padding:10px 14px">Generate Slips</button>
-              <button type="button" class="btn secondary" onclick="window.print()" style="padding:10px 14px">🖨️ Print</button>
+            <b>Batch Generate Paper QR Slips (Popcorn Pack Inserts)</b><br>
+            Generate unique single-use QR codes to print, cut into small paper cards, and drop inside your popcorn packets (e.g. 15 winning slips per 100 packets).<br>
+            <small style="color:var(--muted);display:block;margin-top:4px">Each QR code links directly to customer scratch-and-win page. When a customer scans with Google Lens and scratches the card, the prize, customer name, code, and timestamp update in the table on the left automatically!</small>
+            <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+              <input type="number" class="input" id="batchQrCount" value="15" min="1" max="100" style="margin:0;height:40px;width:85px" title="Number of QR slips to generate (e.g. 15 for 100 packs)">
+              <button type="button" class="btn orange" id="generateBatchQrBtn" style="padding:10px 14px">Generate QR Slips</button>
+              <button type="button" class="btn secondary" onclick="window.print()" style="padding:10px 14px">🖨️ Print Slips</button>
             </div>
           </div>
         </aside>
@@ -1604,201 +1564,115 @@ setOwnerAuthMode(isSignupStillAvailable);
   if (btn) btn.onclick = () => setOwnerAuthMode(true);
 });
 
-// Google Account Chooser Modal (Opens saved phone/device emails + native email autofill)
-let googleModalMode = 'login'; // 'login' | 'signup'
+// Real Google Sign-In (OAuth 2.0): the button sends the browser straight to Google's own account page
+let googleSignInEnabled = false;
 
-function openGoogleAccountModal(mode) {
-  googleModalMode = mode || 'login';
-  const backdrop = document.getElementById('googleModalBackdrop');
-  const titleEl = document.getElementById('googleModalTitle');
-  const subEl = document.getElementById('googleModalSub');
-  const nameWrap = document.getElementById('googleChooserNameWrap');
-  const errEl = document.getElementById('googleChooserError');
-  const emailInput = document.getElementById('googleChooserEmail');
-  const submitBtn = document.getElementById('googleChooserSubmitBtn');
-
-  if (!backdrop) return;
-  if (errEl) errEl.classList.remove('show');
-  if (titleEl) {
-    titleEl.textContent = googleModalMode === 'signup'
-      ? 'Select Google Email for Sign Up'
-      : 'Sign in with Google';
-  }
-  if (subEl) {
-    subEl.innerHTML = googleModalMode === 'signup'
-      ? 'Choose or tap the Google email present on your phone to pre-fill your Sign Up form.'
-      : 'Select the Google email on your phone that you gave during Sign Up to continue to <b>LR Popcorn Owner Dashboard</b>.';
-  }
-  if (nameWrap) {
-    nameWrap.style.display = googleModalMode === 'signup' ? 'block' : 'none';
-  }
-  if (submitBtn) {
-    submitBtn.textContent = googleModalMode === 'signup' ? 'Use This Google Email →' : 'Sign In with Google →';
-  }
-
-  renderSavedGoogleAccountsInModal();
-  backdrop.classList.add('show');
-  setTimeout(() => {
-    if (emailInput) emailInput.focus();
-  }, 80);
-}
-
-function closeGoogleAccountModal() {
-  const backdrop = document.getElementById('googleModalBackdrop');
-  if (backdrop) backdrop.classList.remove('show');
-}
-
-function renderSavedGoogleAccountsInModal() {
-  const listEl = document.getElementById('savedGoogleAccountsList');
-  if (!listEl) return;
-  const saved = getSavedGoogleAccounts();
-  if (!saved.length) {
-    listEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px 10px;border:1px dashed var(--line);border-radius:11px;margin-bottom:8px">Tap the email box below to view and select from the Google emails saved on your phone.</div>';
-    return;
-  }
-  listEl.innerHTML = '<div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">Accounts on this device:</div>' +
-    saved.map(acc => {
-      const initial = (acc.name || acc.email || 'G').trim().charAt(0).toUpperCase();
-      return '<button type="button" class="google-acct-item" data-google-email="' + esc(acc.email) + '" data-google-name="' + esc(acc.name || '') + '">' +
-        '<span class="google-acct-avatar">' + esc(initial) + '</span>' +
-        '<div style="overflow:hidden;flex:1">' +
-          '<div style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(acc.name || acc.email) + '</div>' +
-          '<div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(acc.email) + '</div>' +
-        '</div>' +
-        '<span style="font-size:12px;color:var(--orange);font-weight:700">Select →</span>' +
-      '</button>';
-    }).join('');
-
-  listEl.querySelectorAll('[data-google-email]').forEach(btn => {
-    btn.onclick = () => {
-      const email = btn.getAttribute('data-google-email');
-      const name = btn.getAttribute('data-google-name');
-      handleGoogleAccountSelected(email, name);
-    };
-  });
-}
-
-async function handleGoogleAccountSelected(email, name) {
-  const cleanEmail = String(email || '').toLowerCase().trim();
-  const errEl = document.getElementById('googleChooserError');
-  const submitBtn = document.getElementById('googleChooserSubmitBtn');
-  if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-    if (errEl) {
-      errEl.textContent = 'Please select or enter a valid Google email address.';
-      errEl.classList.add('show');
-    }
-    return;
-  }
-
-  if (googleModalMode === 'signup') {
-    saveGoogleAccountToDevice({ email: cleanEmail, name: name || cleanEmail.split('@')[0] });
-    closeGoogleAccountModal();
-    setOwnerAuthMode(true);
-    document.getElementById('signupEmail').value = cleanEmail;
-    if (name && !document.getElementById('signupFullName').value) {
-      document.getElementById('signupFullName').value = name;
-    }
-    if (!document.getElementById('signupUsername').value) {
-      document.getElementById('signupUsername').value = cleanEmail.split('@')[0].replace(/[^a-z0-9_]/gi, '').toLowerCase().slice(0, 24);
-    }
-    toast('Selected Google email: ' + cleanEmail);
-    document.getElementById('signupPassword').focus();
-    return;
-  }
-
-  // Google Sign-In mode: verify against backend /api/auth?action=google-login
-  if (errEl) errEl.classList.remove('show');
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Checking Google account...';
-  }
+async function loadGoogleConfig() {
   try {
-    const res = await apiFetch('/api/auth?action=google-login', {
-      method: 'POST',
-      body: JSON.stringify({ email: cleanEmail, name: name || '' })
-    });
-
-    if (!res.ok || !res.data?.success) {
-      if (res.data?.code === 'EMAIL_NOT_REGISTERED') {
-        closeGoogleAccountModal();
-        setOwnerAuthMode(true);
-        document.getElementById('signupEmail').value = cleanEmail;
-        if (name && !document.getElementById('signupFullName').value) {
-          document.getElementById('signupFullName').value = name;
-        }
-        if (!document.getElementById('signupUsername').value) {
-          document.getElementById('signupUsername').value = cleanEmail.split('@')[0].replace(/[^a-z0-9_]/gi, '').toLowerCase().slice(0, 24);
-        }
-        const sErr = document.getElementById('ownerSignupError');
-        if (sErr) {
-          sErr.textContent = res.data.error || 'This Google email is not registered yet. Complete Sign Up below to request permission from Shankar & Mom.';
-          sErr.classList.add('show');
-        }
-        return;
-      }
-
-      if (res.data?.code === 'PENDING_APPROVAL') {
-        saveGoogleAccountToDevice({ email: cleanEmail, name: res.data?.user?.full_name || name });
-        closeGoogleAccountModal();
-        setOwnerAuthMode(false);
-        const lErr = document.getElementById('ownerError');
-        if (lErr) {
-          lErr.textContent = res.data.error;
-          lErr.classList.add('show');
-        }
-        return;
-      }
-
-      if (errEl) {
-        errEl.textContent = res.data?.error || 'Could not sign in with this Google account.';
-        errEl.classList.add('show');
-      }
-      return;
-    }
-
-    saveGoogleAccountToDevice({
-      email: cleanEmail,
-      name: res.data.user?.full_name || name,
-      username: res.data.user?.username
-    });
-    closeGoogleAccountModal();
-    authToken = res.data.token || '';
-    if (authToken) sessionStorage.setItem('popcorn-auth-token', authToken);
-    currentUser = res.data.user;
-    syncOwnerIdentityUI();
-    toast('Signed in with Google as ' + (currentUser.full_name || currentUser.email));
-    navigateOwnerRoute(currentOwnerRoute || 'overview', true);
+    const res = await apiFetch('/api/auth?action=google-config');
+    googleSignInEnabled = Boolean(res.ok && res.data?.google_enabled);
   } catch {
+    googleSignInEnabled = false;
+  }
+}
+
+function startGoogleSignIn(errorElId) {
+  if (!googleSignInEnabled) {
+    const errEl = document.getElementById(errorElId);
     if (errEl) {
-      errEl.textContent = 'Unable to reach authentication server. Please try again.';
+      errEl.textContent = 'Google Sign-In is not switched on yet. The owner must add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Vercel. Until then, please use username and password.';
       errEl.classList.add('show');
     }
-  } finally {
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Sign In with Google →';
-    }
+    return;
   }
+  // Full-page redirect to accounts.google.com (shows the Google accounts on this phone / browser)
+  window.location.href = '/api/auth?action=google-start';
 }
 
 const googleSignInBtn = document.getElementById('googleSignInBtn');
-if (googleSignInBtn) googleSignInBtn.onclick = () => openGoogleAccountModal('login');
+if (googleSignInBtn) googleSignInBtn.onclick = () => startGoogleSignIn('ownerError');
 const googleSignupPickBtn = document.getElementById('googleSignupPickBtn');
-if (googleSignupPickBtn) googleSignupPickBtn.onclick = () => openGoogleAccountModal('signup');
-const closeGoogleModalBtn = document.getElementById('closeGoogleModalBtn');
-if (closeGoogleModalBtn) closeGoogleModalBtn.onclick = closeGoogleAccountModal;
-const cancelGoogleModalBtn = document.getElementById('cancelGoogleModalBtn');
-if (cancelGoogleModalBtn) cancelGoogleModalBtn.onclick = closeGoogleAccountModal;
+if (googleSignupPickBtn) googleSignupPickBtn.onclick = () => startGoogleSignIn('ownerSignupError');
 
-const googleChooserForm = document.getElementById('googleChooserForm');
-if (googleChooserForm) {
-  googleChooserForm.onsubmit = e => {
-    e.preventDefault();
-    const email = document.getElementById('googleChooserEmail').value.trim();
-    const name = document.getElementById('googleChooserName')?.value.trim() || '';
-    handleGoogleAccountSelected(email, name);
+// Handle the result when Google sends the user back to /owner?google=...
+function handleGoogleReturn() {
+  const params = new URLSearchParams(location.search);
+  const result = params.get('google');
+  if (!result) return false;
+  const email = params.get('email') || '';
+  const name = params.get('name') || '';
+  history.replaceState(null, '', '/owner');
+
+  const loginErr = document.getElementById('ownerError');
+  const loginNotice = document.getElementById('ownerLoginNotice');
+  const signupErr = document.getElementById('ownerSignupError');
+  const showLoginError = msg => {
+    setOwnerAuthMode(false);
+    if (loginErr) { loginErr.textContent = msg; loginErr.classList.add('show'); }
   };
+
+  if (result === 'signup') {
+    setOwnerAuthMode(true);
+    const emailEl = document.getElementById('signupEmail');
+    emailEl.value = email;
+    emailEl.readOnly = true;
+    if (name) document.getElementById('signupFullName').value = name;
+    if (!document.getElementById('signupUsername').value) {
+      document.getElementById('signupUsername').value = email.split('@')[0].replace(/[^a-z0-9_]/gi, '').toLowerCase().slice(0, 24);
+    }
+    if (signupErr) {
+      signupErr.textContent = 'Google verified ' + email + ', but no account exists yet. Choose a username and password below to finish Sign Up (Shankar & Mom must approve you).';
+      signupErr.classList.add('show');
+    }
+  } else if (result === 'pending') {
+    showLoginError('Permission Required: Your Google account (' + email + ') is waiting for approval from Shankar & Mom. You cannot open the Owner Dashboard until they approve you.');
+  } else if (result === 'disabled') {
+    showLoginError('Access Denied: The account for ' + email + ' has been rejected or disabled by the Primary Owner.');
+  } else if (result === 'cancelled') {
+    showLoginError('Google Sign-In was cancelled.');
+  } else if (result === 'not_configured') {
+    showLoginError('Google Sign-In is not switched on yet. Please use username and password.');
+  } else if (result === 'invalid_state') {
+    showLoginError('Google Sign-In expired or was tampered with. Please try again.');
+  } else if (result === 'error') {
+    showLoginError('Google Sign-In failed. Please try again.');
+  } else if (result === 'ok' && loginNotice) {
+    loginNotice.textContent = 'Signed in with Google.';
+  }
+  return true;
 }
+
+// Check whether an account already exists before signing up again
+async function checkExistingAccount() {
+  const username = document.getElementById('signupUsername').value.trim();
+  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+  const hintEl = document.getElementById('ownerSignupError');
+  if (!username && !email) return false;
+  try {
+    const res = await apiFetch('/api/auth?action=check-account', {
+      method: 'POST',
+      body: JSON.stringify({ username, email })
+    });
+    if (res.ok && res.data?.exists) {
+      const which = res.data.email_taken ? ('the email ' + email) : ('the username "' + username + '"');
+      hintEl.innerHTML = '<b>Account already exists</b> for ' + esc(which) + '. You don\'t need to sign up again. ' +
+        '<button type="button" id="goSignInFromExists" style="border:0;background:none;color:var(--orange);font-weight:700;cursor:pointer;padding:0">Go to Sign In →</button>';
+      hintEl.classList.add('show');
+      const btn = document.getElementById('goSignInFromExists');
+      if (btn) btn.onclick = () => {
+        setOwnerAuthMode(false);
+        document.getElementById('ownerUsername').value = res.data.email_taken ? email : username;
+        document.getElementById('ownerPassword').focus();
+      };
+      return true;
+    }
+  } catch {}
+  return false;
+}
+['signupUsername', 'signupEmail'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('blur', () => { if (el.value.trim().length >= 3) checkExistingAccount(); });
+});
 
 const ownerSignupForm = document.getElementById('ownerSignupForm');
 if (ownerSignupForm) {
@@ -1818,6 +1692,13 @@ if (ownerSignupForm) {
     const email = document.getElementById('signupEmail').value.trim().toLowerCase();
     const password = document.getElementById('signupPassword').value;
 
+    // First check whether this person already has an account
+    if (await checkExistingAccount()) {
+      submitBtn.disabled = false;
+      setOwnerAuthMode(true);
+      return;
+    }
+
     try {
       const res = await apiFetch('/api/auth?action=request-access', {
         method: 'POST',
@@ -1830,11 +1711,16 @@ if (ownerSignupForm) {
         })
       });
       if (!res.ok || !res.data.success) {
+        if (res.data?.code === 'ACCOUNT_EXISTS') {
+          await checkExistingAccount();
+          return;
+        }
         errEl.textContent = res.data?.error || 'Could not complete sign up.';
         errEl.classList.add('show');
         return;
       }
 
+      document.getElementById('signupEmail').readOnly = false;
       // Save their Google email on this device so "Sign in with Google" shows it immediately
       saveGoogleAccountToDevice({ email, name: fullName, username });
 
@@ -2720,7 +2606,8 @@ function renderFilteredRewardsTable() {
   tbody.innerHTML = filtered.length
     ? filtered.map(r => {
         const statusLabel = r.status === 'COLLECTED' ? 'REDEEMED' : (r.status === 'WAITING' ? 'PENDING CLAIM' : r.status);
-        return '<tr><td>' + esc(r.customer_name) + '</td><td><code>' + esc(r.code) + '</code></td><td>' + esc(r.prize_icon || '🍿') + ' ' + esc(r.prize_name) + '</td><td>' + fmtMoney(r.unit_cost) + '</td><td><span class="' + (r.status === 'COLLECTED' ? 'collected' : 'waiting') + '">' + esc(statusLabel) + '</span></td></tr>';
+        const scratchTime = r.scratched_at ? new Date(r.scratched_at).toLocaleString() : (r.created_at ? new Date(r.created_at).toLocaleString() : '—');
+        return '<tr><td>' + esc(r.customer_name) + '</td><td><code>' + esc(r.code) + '</code></td><td>' + esc(r.prize_icon || '🍿') + ' ' + esc(r.prize_name) + '</td><td style="font-size:11px;color:var(--muted)">' + esc(scratchTime) + '</td><td><span class="' + (r.status === 'COLLECTED' ? 'collected' : 'waiting') + '">' + esc(statusLabel) + '</span></td></tr>';
       }).join('')
     : '<tr><td colspan="5" style="text-align:center;color:var(--muted)">No matching customer reward entries yet.</td></tr>';
 }
@@ -2774,24 +2661,39 @@ document.getElementById('check').onsubmit = async e => {
 };
 
 document.getElementById('generateBatchQrBtn').onclick = async () => {
-  const count = Math.min(50, Math.max(1, parseInt(document.getElementById('batchQrCount').value || 12, 10)));
-  const res = await apiFetch('/api/rewards?action=batch-generate', {
-    method: 'POST',
-    body: JSON.stringify({ count, batch_name: 'Pack Insert Batch' })
-  });
-  if (!res.ok) {
-    toast(res.data?.error || 'Failed to generate QR slips.');
-    return;
+  const count = Math.min(100, Math.max(1, parseInt(document.getElementById('batchQrCount').value || 15, 10)));
+  const generateBtn = document.getElementById('generateBatchQrBtn');
+  generateBtn.disabled = true;
+  generateBtn.textContent = 'Generating...';
+  try {
+    const res = await apiFetch('/api/rewards?action=batch-generate', {
+      method: 'POST',
+      body: JSON.stringify({ count, batch_name: 'Pack Insert Batch' })
+    });
+    if (!res.ok) {
+      toast(res.data?.error || 'Failed to generate QR slips.');
+      return;
+    }
+    const slips = res.data.rewards || [];
+    const baseUrl = location.origin + '/';
+    document.getElementById('qrSlipsContainer').innerHTML = slips.map((s, idx) => {
+      const scanUrl = baseUrl + '?code=' + encodeURIComponent(s.code);
+      const qrImg = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=4&data=' + encodeURIComponent(scanUrl);
+      return '<div class="qr-paper-slip">' +
+        '<div style="font:700 11px \'Space Grotesk\',sans-serif;color:#df5416;letter-spacing:0.5px">✦ LR POPCORN CLUB ✦</div>' +
+        '<div style="font-size:9px;color:#7c7267;margin-top:2px">Scan with Google Lens / Camera</div>' +
+        '<img src="' + qrImg + '" alt="QR ' + esc(s.code) + '">' +
+        '<div class="code" style="font-size:13px;padding:4px 8px;margin-top:2px">' + esc(s.code) + '</div>' +
+        '<div style="font-size:11px;font-weight:700;margin-top:5px;color:#191613">' + esc(s.prize_icon) + ' ' + esc(s.prize_name) + '</div>' +
+        '<div style="font-size:8px;color:#8c7f73;margin-top:4px;border-top:1px dashed #d2b49a;padding-top:3px">✂ Cut along dashed line · Insert in popcorn pack #' + (idx + 1) + '</div>' +
+      '</div>';
+    }).join('');
+    toast('Generated ' + slips.length + ' unique QR slips ready to print and insert!');
+    await loadRewardsData();
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Generate QR Slips';
   }
-  const slips = res.data.rewards || [];
-  const baseUrl = location.origin + '/';
-  document.getElementById('qrSlipsContainer').innerHTML = slips.map((s, idx) => {
-    const scanUrl = baseUrl + '?code=' + encodeURIComponent(s.code);
-    const qrImg = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=4&data=' + encodeURIComponent(scanUrl);
-    return '<div class="qr-paper-slip"><div style="font:700 10px Space Grotesk;color:#df5416">✦ LR POPCORN CLUB ✦</div><img src="' + qrImg + '" alt="QR ' + esc(s.code) + '"><div class="code">' + esc(s.code) + '</div><div style="font-size:11px;font-weight:700;margin-top:4px">' + esc(s.prize_icon) + ' ' + esc(s.prize_name) + '</div><div style="font-size:9px;color:#8c7f73;margin-top:3px">✂ Slip #' + (idx + 1) + '</div></div>';
-  }).join('');
-  toast('Generated ' + slips.length + ' unique QR slips!');
-  await loadRewardsData();
 };
 
 // 8. Staff & Permissions (Owner Permission Gate for Sign-Up Requests)
@@ -2987,9 +2889,11 @@ window.revokeSessionByJti = async jti => {
 async function initApp() {
   const params = new URLSearchParams(location.search);
   const section = params.get('section');
+  await loadGoogleConfig();
 
   const meRes = await apiFetch('/api/auth?action=me');
   if (meRes.ok && meRes.data?.authenticated) {
+    if (params.get('google')) history.replaceState(null, '', '/owner');
     currentUser = meRes.data.user;
     isSignupStillAvailable = false;
     setOwnerAuthMode(false);
@@ -2998,10 +2902,11 @@ async function initApp() {
     return;
   }
 
-  // If 1st time (no owner signed up yet), show First-Time Sign Up; from 2nd time onward, show Login Only
+  // Not signed in: Sign In page by default, with Sign Up always available
   const hasVault = Boolean(localStorage.getItem('popcorn-owner-vault'));
   isSignupStillAvailable = !hasVault && (meRes.data?.signup_available !== false);
   setOwnerAuthMode(isSignupStillAvailable);
+  handleGoogleReturn();
   show('owner', false);
 }
 

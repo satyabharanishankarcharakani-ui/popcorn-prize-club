@@ -32,6 +32,13 @@ const {
   hydrateOwnerFromVault,
   getRawVaultSnapshot,
 } = require('./_db');
+const {
+  getGoogleConfig,
+  createState,
+  verifyState,
+  buildAuthUrl,
+  exchangeCodeForProfile,
+} = require('./_google');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
@@ -189,6 +196,7 @@ module.exports = async function handler(req, res) {
         return res.status(err.statusCode || 400).json({
           error: err.message,
           code: err.code || 'SIGNUP_ERROR',
+          field: err.field,
         });
       }
 
@@ -264,31 +272,70 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // 0d. POST /api/auth?action=google-login (Sign in with Google Email selected from phone/device)
-    if (req.method === 'POST' && action === 'google-login') {
-      const isAllowed = await checkRateLimit(`google-auth-${ip}`, 15, 60000);
+    // 0d. GET /api/auth?action=google-config (Is real Google Sign-In configured?)
+    if (action === 'google-config') {
+      const { enabled } = getGoogleConfig();
+      return res.status(200).json({ success: true, google_enabled: enabled });
+    }
+
+    // 0e. GET /api/auth?action=google-start -> 302 redirect to Google's real account chooser page
+    if (action === 'google-start') {
+      const { enabled } = getGoogleConfig();
+      if (!enabled) {
+        return res.status(503).json({
+          error: 'Google Sign-In is not configured yet. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Vercel Environment Variables.',
+          code: 'GOOGLE_NOT_CONFIGURED',
+        });
+      }
+      const isAllowed = await checkRateLimit(`google-start-${ip}`, 20, 60000);
       if (!isAllowed) {
-        return res.status(429).json({ error: 'Too many authentication attempts. Please wait 60 seconds.' });
+        return res.status(429).json({ error: 'Too many sign-in attempts. Please wait 60 seconds.' });
+      }
+      const { state, cookieValue } = createState();
+      const isProduction = process.env.NODE_ENV === 'production';
+      res.setHeader(
+        'Set-Cookie',
+        `popcorn_google_state=${cookieValue}; Path=/api; HttpOnly; SameSite=Lax; Max-Age=600${isProduction ? '; Secure' : ''}`
+      );
+      res.statusCode = 302;
+      res.setHeader('Location', buildAuthUrl(req, state));
+      return res.end ? res.end() : res.status(302).json({ redirect: buildAuthUrl(req, state) });
+    }
+
+    // 0f. GET /api/google/callback (rewritten to /api/auth?action=google-callback)
+    if (action === 'google-callback') {
+      const isProduction = process.env.NODE_ENV === 'production';
+      const clearState = `popcorn_google_state=; Path=/api; HttpOnly; SameSite=Lax; Max-Age=0${isProduction ? '; Secure' : ''}`;
+      const redirectTo = (params, extraCookies = []) => {
+        res.setHeader('Set-Cookie', [clearState, ...extraCookies]);
+        res.statusCode = 302;
+        res.setHeader('Location', `/owner?${new URLSearchParams(params).toString()}`);
+        return res.end ? res.end() : res.status(302).json({ redirect: `/owner?${new URLSearchParams(params).toString()}` });
+      };
+
+      const { enabled } = getGoogleConfig();
+      if (!enabled) return redirectTo({ google: 'not_configured' });
+      if (req.query?.error) return redirectTo({ google: 'cancelled' });
+      if (!verifyState(req.query?.state, req.headers?.cookie)) return redirectTo({ google: 'invalid_state' });
+      if (!req.query?.code) return redirectTo({ google: 'error' });
+
+      let profile;
+      try {
+        profile = await exchangeCodeForProfile(req, req.query.code);
+      } catch (err) {
+        console.error('Google OAuth error:', err.message);
+        return redirectTo({ google: 'error' });
       }
 
-      const email = sanitizeString(body.email || '', 120).toLowerCase();
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.status(400).json({ error: 'Please select or enter a valid Google email address.' });
-      }
-
-      const user = await getUserByEmail(email);
+      const user = await getUserByEmail(profile.email);
       if (!user) {
         await addAuditLog({
-          actor_name: email,
+          actor_name: profile.email,
           actor_role: 'ANONYMOUS',
           action: 'GOOGLE_LOGIN_UNREGISTERED',
-          details: { email, ip },
+          details: { email: profile.email, ip },
         });
-        return res.status(404).json({
-          error: `No account found for "${email}". Please Sign Up first with this Google email and wait for Owner permission from Shankar & Mom.`,
-          code: 'EMAIL_NOT_REGISTERED',
-          email,
-        });
+        return redirectTo({ google: 'signup', email: profile.email, name: profile.name });
       }
 
       if (user.status === 'PENDING_APPROVAL') {
@@ -297,10 +344,79 @@ module.exports = async function handler(req, res) {
           actor_name: user.full_name,
           actor_role: user.role,
           action: 'GOOGLE_LOGIN_BLOCKED_PENDING',
-          details: { email, ip },
+          details: { email: profile.email, ip },
         });
+        return redirectTo({ google: 'pending', email: profile.email });
+      }
+      if (user.status !== 'ACTIVE') {
+        return redirectTo({ google: 'disabled', email: profile.email });
+      }
+
+      const token = createSessionToken(user);
+      const decoded = verifySessionToken(token);
+      await updateUserLastLogin(user.id);
+      if (decoded && decoded.jti) {
+        await recordUserSession({
+          jti: decoded.jti,
+          user,
+          ip_address: ip,
+          user_agent: userAgent,
+          expires_at: new Date(decoded.exp * 1000).toISOString(),
+        });
+      }
+      await addAuditLog({
+        actor_id: user.id,
+        actor_name: user.full_name,
+        actor_role: user.role,
+        action: 'GOOGLE_LOGIN_SUCCESS',
+        details: { email: profile.email, ip },
+      });
+      const sessionCookie = `popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
+      return redirectTo({ google: 'ok' }, [sessionCookie]);
+    }
+
+    // 0g. POST /api/auth?action=check-account (Does an account already exist for this username / email?)
+    if (req.method === 'POST' && action === 'check-account') {
+      const isAllowed = await checkRateLimit(`check-account-${ip}`, 20, 60000);
+      if (!isAllowed) {
+        return res.status(429).json({ error: 'Too many checks. Please wait 60 seconds.' });
+      }
+      const username = sanitizeString(body.username || '', 40).toLowerCase();
+      const email = sanitizeString(body.email || '', 120).toLowerCase();
+      const byUser = username ? await getUserByUsername(username) : null;
+      const byEmail = email ? await getUserByEmail(email) : null;
+      return res.status(200).json({
+        success: true,
+        username_taken: Boolean(byUser),
+        email_taken: Boolean(byEmail),
+        exists: Boolean(byUser || byEmail),
+      });
+    }
+
+    // 0h. POST /api/auth?action=google-login (Direct API login using verified Google email or mock test)
+    if (req.method === 'POST' && action === 'google-login') {
+      const isAllowed = await checkRateLimit(`google-auth-${ip}`, 15, 60000);
+      if (!isAllowed) {
+        return res.status(429).json({ error: 'Too many authentication attempts. Please wait 60 seconds.' });
+      }
+
+      const email = sanitizeString(body.email || '', 120).toLowerCase();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'Please enter a valid Google email address.' });
+      }
+
+      const user = await getUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({
+          error: `No account found for "${email}". Please Sign Up first.`,
+          code: 'EMAIL_NOT_REGISTERED',
+          email,
+        });
+      }
+
+      if (user.status === 'PENDING_APPROVAL') {
         return res.status(403).json({
-          error: `Permission Required: Your account (${email}) is waiting for approval from Shankar & Mom. You cannot access the Owner Dashboard until they grant permission.`,
+          error: `Permission Required: Your account (${email}) is waiting for approval from Shankar & Mom.`,
           code: 'PENDING_APPROVAL',
           user: {
             full_name: user.full_name,
@@ -334,14 +450,6 @@ module.exports = async function handler(req, res) {
       const isProduction = process.env.NODE_ENV === 'production';
       const cookieHeader = `popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
       res.setHeader('Set-Cookie', cookieHeader);
-
-      await addAuditLog({
-        actor_id: user.id,
-        actor_name: user.full_name,
-        actor_role: user.role,
-        action: 'GOOGLE_LOGIN_SUCCESS',
-        details: { email, ip },
-      });
 
       return res.status(200).json({
         success: true,
@@ -420,6 +528,18 @@ module.exports = async function handler(req, res) {
         return res.status(401).json({ error: 'Invalid username or password.' });
       }
 
+      const isValid = verifyPassword(password, user.password_hash, user.salt);
+      if (!isValid) {
+        await addAuditLog({
+          actor_id: user.id,
+          actor_name: user.full_name,
+          actor_role: user.role,
+          action: 'LOGIN_FAILED',
+          details: { reason: 'Incorrect password', ip },
+        });
+        return res.status(401).json({ error: 'Invalid username or password.' });
+      }
+
       if (user.status === 'PENDING_APPROVAL') {
         await addAuditLog({
           actor_id: user.id,
@@ -445,18 +565,6 @@ module.exports = async function handler(req, res) {
           error: 'This account has been deactivated or rejected. Please contact Shankar & Mom.',
           code: 'ACCOUNT_DISABLED',
         });
-      }
-
-      const isValid = verifyPassword(password, user.password_hash, user.salt);
-      if (!isValid) {
-        await addAuditLog({
-          actor_id: user.id,
-          actor_name: user.full_name,
-          actor_role: user.role,
-          action: 'LOGIN_FAILED',
-          details: { reason: 'Incorrect password', ip },
-        });
-        return res.status(401).json({ error: 'Invalid username or password.' });
       }
 
       const token = createSessionToken(user);
