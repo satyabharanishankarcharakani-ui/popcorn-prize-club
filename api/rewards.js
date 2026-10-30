@@ -4,6 +4,7 @@
 const {
   getSessionFromRequest,
   generateSecureRewardCode,
+  isValidRewardCodeFormat,
   checkRateLimit,
   sanitizeString,
 } = require('./_security');
@@ -77,9 +78,22 @@ module.exports = async function handler(req, res) {
         }
       }
 
-      const prizeIndex = Math.floor(Math.random() * PRIZE_CATALOG.length);
-      const chosenPrize = PRIZE_CATALOG[prizeIndex];
-      const secureCode = generateSecureRewardCode();
+      let chosenPrize = null;
+      let prizeIndex = 0;
+      if (body.prize_name) {
+        const foundIdx = PRIZE_CATALOG.findIndex(
+          p => p.name.toLowerCase() === String(body.prize_name).toLowerCase()
+        );
+        if (foundIdx >= 0) {
+          prizeIndex = foundIdx;
+          chosenPrize = PRIZE_CATALOG[foundIdx];
+        }
+      }
+      if (!chosenPrize) {
+        prizeIndex = Math.floor(Math.random() * PRIZE_CATALOG.length);
+        chosenPrize = PRIZE_CATALOG[prizeIndex];
+      }
+      const secureCode = (preCode && isValidRewardCodeFormat(preCode)) ? preCode : generateSecureRewardCode();
 
       const created = await createReward({
         code: secureCode,

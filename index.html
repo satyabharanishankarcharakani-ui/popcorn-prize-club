@@ -185,6 +185,7 @@ document.getElementById('nameForm').onsubmit = async e => {
   document.getElementById('hello').textContent = customer;
   const urlCode = new URLSearchParams(location.search).get('code');
 
+  let serverSaved = false;
   try {
     const res = await fetch('/api/rewards?action=issue', {
       method: 'POST',
@@ -195,6 +196,7 @@ document.getElementById('nameForm').onsubmit = async e => {
     try { data = await res.json(); } catch {}
 
     if (res.ok && data && data.code) {
+      serverSaved = true;
       prizeCode = data.code;
       const pIdx = data.prize?.index ?? 0;
       prize = [
@@ -243,6 +245,13 @@ function reveal() {
   if (c.dataset.saved === 'true') return;
   c.dataset.saved = 'true';
   toast('Surprise revealed! Show your code in the shop.');
+  if (!serverSaved && prizeCode && customer) {
+    fetch('/api/rewards?action=issue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_name: customer, code: prizeCode, prize_name: prize ? prize[0] : undefined })
+    }).then(() => { serverSaved = true; }).catch(() => {});
+  }
 }
 
 const scratchCard = document.getElementById('cover');

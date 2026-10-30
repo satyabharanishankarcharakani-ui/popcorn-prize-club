@@ -8,9 +8,14 @@ function isProd() {
   return process.env.STRICT_CONFIG_CHECK === 'true';
 }
 
+const DEFAULT_SUPABASE_URL = 'https://gyigaxyxiffiuxeijxuh.supabase.co';
+const DEFAULT_SUPABASE_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5aWdheHl4aWZmaXV4ZWlqeHVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwOTA3NjQsImV4cCI6MjEwODY2Njc2NH0.JsgoZkxkOAq13XxH7Un4fVX4KrQM2VUJhmvu6yaliRc';
+
 function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY;
+  const url = process.env.SUPABASE_URL || (process.env.VERCEL ? DEFAULT_SUPABASE_URL : '');
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || (process.env.VERCEL ? DEFAULT_SUPABASE_KEY : '');
   const isConfigured = Boolean(url && key && !url.includes('your-project'));
   return { url, key, isConfigured };
 }
@@ -1358,6 +1363,10 @@ async function createReward({
 
   const { isConfigured } = getSupabaseConfig();
   if (isConfigured) {
+    const existing = await getRewardByCode(finalCode);
+    if (existing) {
+      return existing;
+    }
     const res = await supabaseRequest('rewards', { method: 'POST', body: newReward });
     if (res && res.length > 0) return res[0];
     throw new Error('Failed to persist reward in database.');

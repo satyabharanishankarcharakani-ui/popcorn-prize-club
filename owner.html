@@ -1636,7 +1636,7 @@ function startGoogleSignIn(errorElId) {
   if (!googleSignInEnabled) {
     const errEl = document.getElementById(errorElId);
     if (errEl) {
-      errEl.textContent = 'Google Sign-In is not switched on yet. The owner must add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Vercel. Until then, please use username and password.';
+      errEl.textContent = 'Google Authentication Setup Note: To open Google official account chooser (accounts.google.com), Google requires a registered Google OAuth Client ID. Until configured in Vercel, Shankar and Mom can sign in below with username/password or click Forgot Password to reset.';
       errEl.classList.add('show');
     }
     return;
