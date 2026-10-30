@@ -100,16 +100,33 @@ body.dark .tag{background:rgba(255,107,36,.16);color:#ff9b66}
 body.dark .tag.green{background:rgba(74,222,128,.14);color:#7ee081}
 body.dark .tag.red{background:rgba(248,113,113,.15);color:#fca5a5}
 
-.owner-box{max-width:470px;margin:38px auto;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid var(--line);border-radius:24px;padding:clamp(24px,5vw,38px);box-shadow:0 22px 60px #36201214}
-body.dark .owner-box{background:rgba(20,19,18,.84);border-color:rgba(255,145,66,.22);box-shadow:0 26px 70px rgba(0,0,0,.68)}
-.owner-box h2{font-size:32px;margin:10px 0}
-.owner-note{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 18px}
-.owner-error{display:none;color:#b42318;background:#fdecea;border:1px solid #f8c9c4;padding:10px 12px;border-radius:10px;font-size:12px;margin:8px 0 12px}
+.owner-box{max-width:480px;margin:34px auto;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid var(--line);border-radius:24px;padding:clamp(22px,5vw,34px);box-shadow:0 22px 60px #36201214}
+body.dark .owner-box{background:rgba(20,19,18,.86);border-color:rgba(255,145,66,.22);box-shadow:0 26px 70px rgba(0,0,0,.68)}
+.owner-box h2{font-size:30px;margin:10px 0}
+.owner-note{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 16px}
+.owner-error{display:none;color:#b42318;background:#fdecea;border:1px solid #f8c9c4;padding:10px 12px;border-radius:10px;font-size:12px;margin:8px 0 12px;line-height:1.5}
 body.dark .owner-error{background:#2a1412;border-color:#5c2620;color:#fca5a5}
 .owner-error.show{display:block}
-.owner-success{display:none;color:#1e6027;background:#e8f5e9;border:1px solid #b7dfb9;padding:10px 12px;border-radius:10px;font-size:12px;margin:8px 0 12px}
+.owner-success{display:none;color:#1e6027;background:#e8f5e9;border:1px solid #b7dfb9;padding:10px 12px;border-radius:10px;font-size:12px;margin:8px 0 12px;line-height:1.5}
 body.dark .owner-success{background:#132616;border-color:#2a5230;color:#86efac}
 .owner-success.show{display:block}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border-radius:14px;background:rgba(255,107,36,.08);border:1px solid var(--line);margin-bottom:18px}
+body.dark .auth-tabs{background:rgba(12,12,14,.9);border-color:#2f2822}
+.auth-tab{border:0;background:transparent;color:var(--muted);font:700 12px 'DM Sans',sans-serif;padding:10px 12px;border-radius:10px;cursor:pointer;transition:.18s}
+.auth-tab.active{background:linear-gradient(135deg,#ff7b36,#f05915);color:#fff;box-shadow:0 4px 14px rgba(255,107,36,.3)}
+.btn-google{width:100%;height:48px;border-radius:13px;border:1px solid var(--line);background:#fff;color:#1f1f1f;font:700 13px 'DM Sans',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:.18s;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+body.dark .btn-google{background:#16171a;color:#f5f3ef;border-color:#35312c;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.btn-google:hover{border-color:var(--orange);transform:translateY(-1px)}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.google-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(8px);z-index:250;display:none;place-items:center;padding:16px}
+.google-modal-backdrop.show{display:grid;animation:fadeSlideIn .2s ease-out}
+.google-modal{width:100%;max-width:410px;background:#fff;color:#202124;border-radius:22px;padding:24px;box-shadow:0 24px 65px rgba(0,0,0,.55);border:1px solid #e0e0e0}
+body.dark .google-modal{background:#18191c;color:#f1f3f4;border-color:#35363a}
+.google-acct-item{width:100%;border:1px solid #e4e4e7;background:transparent;color:inherit;border-radius:13px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:11px;text-align:left;cursor:pointer;transition:.15s;font-family:inherit}
+body.dark .google-acct-item{border-color:#323438;background:rgba(255,255,255,.02)}
+.google-acct-item:hover{border-color:var(--orange);background:rgba(255,107,36,.08)}
+.google-acct-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4285F4,#34A853);color:#fff;font:700 14px 'Space Grotesk';display:grid;place-items:center;flex-shrink:0}
 
 /* Owner Header Avatar & Accessible Profile Menu */
 #siteNav{display:flex;align-items:center;gap:10px}
@@ -216,16 +233,31 @@ body.dark .chart-bar-row{border-color:#25201c}
 </header>
 
 <main>
-  <!-- PRIVATE VIEW 1: OWNER / STAFF AUTHENTICATION GATE (1st-Time Sign Up -> 2nd-Time Login Only) -->
+  <!-- PRIVATE VIEW 1: OWNER / STAFF AUTHENTICATION GATE (Always-Available Sign In & Sign Up + Owner Permission Gate + Google Sign In) -->
   <section class="view active" id="owner">
-    <!-- 1ST TIME ONLY: FIRST-OWNER SIGN UP -->
+    <!-- SIGN UP / REQUEST DASHBOARD ACCESS -->
     <div class="owner-box" id="ownerSignupWrap">
-      <div class="eyebrow">One-Time First Owner Registration</div>
-      <h2>Create Owner Account</h2>
-      <p class="owner-note">Welcome to <b>LR Popcorn Prize Club Owner Portal</b>! Register your Primary Owner account below for the first time. Once created, this Sign-Up screen permanently locks and switches to <b>Login Only</b> from your second visit onward.</p>
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab" id="tabLoginFromSignup">Sign In</button>
+        <button type="button" class="auth-tab active" id="tabSignupActive">Sign Up / Request Access</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div class="eyebrow" id="signupEyebrow">Owner &amp; Staff Registration</div>
+        <span class="tag" id="signupModeBadge">🔒 Requires Owner Approval</span>
+      </div>
+      <h2 id="signupTitle">Sign Up for Dashboard</h2>
+      <p class="owner-note" id="signupDesc">Register your account below with your Google email. <b>Important:</b> Anyone who signs up requires permission from <b>Shankar &amp; Mom (Primary Owners)</b> before accessing the Owner Dashboard.</p>
+
+      <button type="button" class="btn-google" id="googleSignupPickBtn">
+        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        <span>Choose Google Email from Phone / Device</span>
+      </button>
+
+      <div class="auth-divider">or fill details below</div>
+
       <form id="ownerSignupForm">
-        <label for="signupFullName">Owner Full Name *</label>
-        <input class="input" id="signupFullName" maxlength="80" placeholder="e.g. Shankar / Mom" required>
+        <label for="signupFullName">Full Name *</label>
+        <input class="input" id="signupFullName" maxlength="80" autocomplete="name" placeholder="e.g. Shankar / Mom / Staff Name" required>
         <div class="grid-2">
           <div>
             <label for="signupUsername">Username *</label>
@@ -233,41 +265,89 @@ body.dark .chart-bar-row{border-color:#25201c}
           </div>
           <div>
             <label for="signupPhone">Phone Number</label>
-            <input class="input" id="signupPhone" maxlength="32" placeholder="+91 ...">
+            <input class="input" id="signupPhone" maxlength="32" autocomplete="tel" placeholder="+91 ...">
           </div>
         </div>
-        <label for="signupEmail">Email Address</label>
-        <input class="input" type="email" id="signupEmail" maxlength="120" placeholder="owner@popcornprizeclub.com">
-        <label for="signupPassword">Create Strong Password (min 6 chars) *</label>
-        <input class="input" type="password" id="signupPassword" minlength="6" autocomplete="new-password" placeholder="Choose your owner password" required>
+        <label for="signupEmail">Google Email Address (Used for Sign in with Google) *</label>
+        <input class="input" type="email" id="signupEmail" maxlength="120" autocomplete="email" placeholder="yourname@gmail.com" required>
+        <label for="signupPassword">Create Password (min 6 chars) *</label>
+        <input class="input" type="password" id="signupPassword" minlength="6" autocomplete="new-password" placeholder="Choose your password" required>
         <div class="owner-error" id="ownerSignupError" role="alert"></div>
-        <button class="btn orange full" id="ownerSignupSubmit" type="submit" style="margin-top:8px">Complete First-Time Sign Up →</button>
+        <div class="owner-success" id="ownerSignupSuccess" role="status"></div>
+        <button class="btn orange full" id="ownerSignupSubmit" type="submit" style="margin-top:8px">Sign Up &amp; Request Permission →</button>
       </form>
       <p class="note" style="text-align:center;margin-top:14px">
-        Already created your account? <button type="button" id="switchToLoginBtn" style="border:0;background:none;color:var(--orange);font-weight:700;cursor:pointer;padding:0">Go to Sign In →</button>
+        Already have an account? <button type="button" id="switchToLoginBtn" style="border:0;background:none;color:var(--orange);font-weight:700;cursor:pointer;padding:0">Go to Sign In →</button>
       </p>
     </div>
 
-    <!-- 2ND TIME ONWARD: OWNER & STAFF SIGN IN (LOGIN ONLY) -->
+    <!-- SIGN IN: OWNER & STAFF SIGN IN + SIGN IN WITH GOOGLE + SIGN UP OPTION EVERY TIME -->
     <div class="owner-box" id="ownerLoginWrap" style="display:none">
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab active" id="tabLoginActive">Sign In</button>
+        <button type="button" class="auth-tab" id="tabSignupFromLogin">Sign Up / Request Access</button>
+      </div>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
         <div class="eyebrow">Authenticated Business Portal</div>
-        <span class="tag green" id="loginLockedBadge">● Login Only</span>
+        <span class="tag green" id="loginLockedBadge">● Owner Protected</span>
       </div>
       <h2 id="ownerTitle">Owner &amp; Staff Sign In</h2>
-      <p class="owner-note" id="ownerNote">Sign in to your LR Popcorn Owner Dashboard to view today's sales &amp; profit, record daily sales and expenses, manage popcorn flavors, and verify customer QR reward codes.</p>
+      <p class="owner-note" id="ownerNote">Sign in with your username/password or <b>Sign in with Google</b> using the email you gave during Sign Up. Unapproved accounts cannot enter without permission from <b>Shankar &amp; Mom</b>.</p>
+
+      <button type="button" class="btn-google" id="googleSignInBtn">
+        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        <span>Sign in with Google</span>
+      </button>
+
+      <div class="auth-divider">or sign in with username / email</div>
+
       <form id="ownerForm">
-        <label for="ownerUsername">Username</label>
-        <input class="input" id="ownerUsername" maxlength="48" autocomplete="username" placeholder="e.g. Shankar" required>
+        <label for="ownerUsername">Username or Google Email</label>
+        <input class="input" id="ownerUsername" maxlength="120" autocomplete="username" placeholder="e.g. Shankar or yourname@gmail.com" required>
         <label for="ownerPassword">Password</label>
         <input class="input" type="password" id="ownerPassword" minlength="6" autocomplete="current-password" placeholder="Enter your password" required>
         <div class="owner-error" id="ownerError" role="alert"></div>
+        <div class="owner-success" id="ownerLoginNotice" role="status"></div>
         <button class="btn orange full" id="ownerSubmit" type="submit" style="margin-top:8px">Sign In →</button>
       </form>
-      <p class="note" id="firstTimeSetupHint" style="text-align:center;margin-top:14px;display:none">
-        First time setting up? <button type="button" id="switchToSignupBtn" style="border:0;background:none;color:var(--orange);font-weight:700;cursor:pointer;padding:0">Create Owner Account (One-Time Sign Up) →</button>
+      <p class="note" id="firstTimeSetupHint" style="text-align:center;margin-top:14px">
+        Need an account or requesting access? <button type="button" id="switchToSignupBtn" style="border:0;background:none;color:var(--orange);font-weight:700;cursor:pointer;padding:0">Sign Up (Requires Owner Permission) →</button>
       </p>
-      <p class="note">Connected in real time to the LR Popcorn Customer Website · Role-based access control active.</p>
+      <p class="note">Connected in real time to the LR Popcorn Customer Website · Protected by Shankar &amp; Mom Owner Approval.</p>
+    </div>
+
+    <!-- GOOGLE ACCOUNT CHOOSER MODAL (Directs user to select the email present on their phone/device) -->
+    <div class="google-modal-backdrop" id="googleModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="googleModalTitle">
+      <div class="google-modal">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:8px;font:700 15px 'Space Grotesk'">
+            <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            <span id="googleModalTitle">Choose a Google Account</span>
+          </div>
+          <button type="button" id="closeGoogleModalBtn" style="border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer">✕</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin:0 0 14px;line-height:1.5" id="googleModalSub">
+          Select the Google email on your phone that you provided during Sign Up to continue to <b>LR Popcorn Owner Portal</b>.
+        </p>
+
+        <!-- Saved Google accounts on this phone/browser -->
+        <div id="savedGoogleAccountsList" style="margin-bottom:10px"></div>
+
+        <!-- Tap to select from phone's native Google/Email autofill or enter another account -->
+        <form id="googleChooserForm">
+          <label for="googleChooserEmail" style="font-size:11px;color:var(--muted)">Select or tap your phone's Google email address</label>
+          <input class="input" type="email" id="googleChooserEmail" name="email" autocomplete="email" inputmode="email" placeholder="Tap to pick email on your phone (e.g. name@gmail.com)" required style="margin-bottom:8px">
+          <div id="googleChooserNameWrap" style="display:none">
+            <label for="googleChooserName" style="font-size:11px;color:var(--muted)">Your Name (for Sign Up)</label>
+            <input class="input" id="googleChooserName" autocomplete="name" placeholder="Your Full Name" style="margin-bottom:8px">
+          </div>
+          <div class="owner-error" id="googleChooserError" role="alert"></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button type="button" class="btn secondary" id="cancelGoogleModalBtn" style="flex:1">Cancel</button>
+            <button type="submit" class="btn orange" id="googleChooserSubmitBtn" style="flex:2">Continue with Email →</button>
+          </div>
+        </form>
+      </div>
     </div>
   </section>
 
@@ -302,6 +382,19 @@ body.dark .chart-bar-row{border-color:#25201c}
           <button type="button" class="btn secondary" data-owner-route="expenses">＋ Record Expense</button>
           <button type="button" class="btn secondary" data-owner-route="rewards">✓ Verify QR Code</button>
         </div>
+      </div>
+
+      <!-- Pending Owner Permission Requests Alert (Visible to Shankar & Mom when someone signs up) -->
+      <div class="panel" id="ovPendingApprovalsPanel" style="display:none;margin-bottom:18px;border-color:var(--orange)">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <div>
+            <div class="eyebrow">🔒 Owner Permission Required</div>
+            <h3 style="margin-top:4px">New Sign-Up Requests Waiting for Shankar &amp; Mom's Approval</h3>
+            <div class="sub">These people signed up on the Login page. They cannot enter the Owner Dashboard unless you grant permission.</div>
+          </div>
+          <button type="button" class="btn secondary" data-owner-route="staff">Manage All Accounts →</button>
+        </div>
+        <div id="ovPendingApprovalsList" style="margin-top:12px"></div>
       </div>
 
       <!-- Top 5 Key Metrics Requested in Section 3.A -->
@@ -1106,11 +1199,12 @@ body.dark .chart-bar-row{border-color:#25201c}
         </div>
 
         <div class="panel">
-          <h3>Authorized Accounts</h3>
+          <h3>Accounts &amp; Permission Requests</h3>
+          <div class="sub">Approve (`✓ Grant Permission`) or reject (`✕ Block`) anyone who signed up from the Login page.</div>
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Action</th></tr>
+                <tr><th>Name</th><th>Username &amp; Google Email</th><th>Role</th><th>Status</th><th>Permission / Action</th></tr>
               </thead>
               <tbody id="staffTableRows"></tbody>
             </table>
@@ -1432,28 +1526,277 @@ function syncOwnerIdentityUI() {
   document.getElementById('dropdownOwnerRole').textContent = currentUser.role || 'OWNER';
 }
 
-// Authentication: 1st-Time Sign Up -> 2nd-Time Login & Logout
+// Authentication: Always-Available Sign In & Sign Up + Owner Permission Gate (Shankar & Mom) + Sign in with Google
 let isSignupStillAvailable = !localStorage.getItem('popcorn-owner-vault');
+
+function getSavedGoogleAccounts() {
+  try {
+    const raw = localStorage.getItem('popcorn-google-accounts');
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveGoogleAccountToDevice({ email, name, username }) {
+  const cleanEmail = String(email || '').toLowerCase().trim();
+  if (!cleanEmail || !cleanEmail.includes('@')) return;
+  const list = getSavedGoogleAccounts().filter(a => a.email !== cleanEmail);
+  list.unshift({
+    email: cleanEmail,
+    name: String(name || username || cleanEmail.split('@')[0]).trim(),
+    username: String(username || '').trim(),
+    saved_at: new Date().toISOString()
+  });
+  try {
+    localStorage.setItem('popcorn-google-accounts', JSON.stringify(list.slice(0, 8)));
+  } catch {}
+}
 
 function setOwnerAuthMode(showSignup) {
   const signupWrap = document.getElementById('ownerSignupWrap');
   const loginWrap = document.getElementById('ownerLoginWrap');
   const hint = document.getElementById('firstTimeSetupHint');
+  const eyebrow = document.getElementById('signupEyebrow');
+  const badge = document.getElementById('signupModeBadge');
+  const title = document.getElementById('signupTitle');
+  const desc = document.getElementById('signupDesc');
+  const submitBtn = document.getElementById('ownerSignupSubmit');
   if (!signupWrap || !loginWrap) return;
+
   signupWrap.style.display = showSignup ? 'block' : 'none';
   loginWrap.style.display = showSignup ? 'none' : 'block';
-  if (hint) hint.style.display = (!showSignup && isSignupStillAvailable) ? 'block' : 'none';
+  if (hint) hint.style.display = 'block';
+
+  if (isSignupStillAvailable) {
+    if (eyebrow) eyebrow.textContent = '1st-Time Primary Owner Registration';
+    if (badge) {
+      badge.textContent = '✦ Primary Owner (Shankar & Mom)';
+      badge.className = 'tag green';
+    }
+    if (title) title.textContent = 'Create Primary Owner Account';
+    if (desc) {
+      desc.innerHTML = 'Register the Primary Owner account (<b>Shankar &amp; Mom</b>). After this, anyone else who signs up on the Login page will require your permission before they can open the Owner Dashboard.';
+    }
+    if (submitBtn) submitBtn.textContent = 'Create Primary Owner Account →';
+  } else {
+    if (eyebrow) eyebrow.textContent = 'Owner Permission Gate Active';
+    if (badge) {
+      badge.textContent = '🔒 Requires Owner Permission';
+      badge.className = 'tag';
+    }
+    if (title) title.textContent = 'Sign Up & Request Access';
+    if (desc) {
+      desc.innerHTML = 'Anyone can sign up here using their Google email, <b>but you cannot open the Owner Dashboard without permission from Shankar &amp; Mom</b>. Once they approve your request, you can Sign In or click <b>Sign in with Google</b>.';
+    }
+    if (submitBtn) submitBtn.textContent = 'Sign Up & Request Permission →';
+  }
 }
 setOwnerAuthMode(isSignupStillAvailable);
 
-const switchToLoginBtn = document.getElementById('switchToLoginBtn');
-if (switchToLoginBtn) {
-  switchToLoginBtn.onclick = () => setOwnerAuthMode(false);
+['switchToLoginBtn', 'tabLoginFromSignup'].forEach(id => {
+  const btn = document.getElementById(id);
+  if (btn) btn.onclick = () => setOwnerAuthMode(false);
+});
+['switchToSignupBtn', 'tabSignupFromLogin'].forEach(id => {
+  const btn = document.getElementById(id);
+  if (btn) btn.onclick = () => setOwnerAuthMode(true);
+});
+
+// Google Account Chooser Modal (Opens saved phone/device emails + native email autofill)
+let googleModalMode = 'login'; // 'login' | 'signup'
+
+function openGoogleAccountModal(mode) {
+  googleModalMode = mode || 'login';
+  const backdrop = document.getElementById('googleModalBackdrop');
+  const titleEl = document.getElementById('googleModalTitle');
+  const subEl = document.getElementById('googleModalSub');
+  const nameWrap = document.getElementById('googleChooserNameWrap');
+  const errEl = document.getElementById('googleChooserError');
+  const emailInput = document.getElementById('googleChooserEmail');
+  const submitBtn = document.getElementById('googleChooserSubmitBtn');
+
+  if (!backdrop) return;
+  if (errEl) errEl.classList.remove('show');
+  if (titleEl) {
+    titleEl.textContent = googleModalMode === 'signup'
+      ? 'Select Google Email for Sign Up'
+      : 'Sign in with Google';
+  }
+  if (subEl) {
+    subEl.innerHTML = googleModalMode === 'signup'
+      ? 'Choose or tap the Google email present on your phone to pre-fill your Sign Up form.'
+      : 'Select the Google email on your phone that you gave during Sign Up to continue to <b>LR Popcorn Owner Dashboard</b>.';
+  }
+  if (nameWrap) {
+    nameWrap.style.display = googleModalMode === 'signup' ? 'block' : 'none';
+  }
+  if (submitBtn) {
+    submitBtn.textContent = googleModalMode === 'signup' ? 'Use This Google Email →' : 'Sign In with Google →';
+  }
+
+  renderSavedGoogleAccountsInModal();
+  backdrop.classList.add('show');
+  setTimeout(() => {
+    if (emailInput) emailInput.focus();
+  }, 80);
 }
-const switchToSignupBtn = document.getElementById('switchToSignupBtn');
-if (switchToSignupBtn) {
-  switchToSignupBtn.onclick = () => {
-    if (isSignupStillAvailable) setOwnerAuthMode(true);
+
+function closeGoogleAccountModal() {
+  const backdrop = document.getElementById('googleModalBackdrop');
+  if (backdrop) backdrop.classList.remove('show');
+}
+
+function renderSavedGoogleAccountsInModal() {
+  const listEl = document.getElementById('savedGoogleAccountsList');
+  if (!listEl) return;
+  const saved = getSavedGoogleAccounts();
+  if (!saved.length) {
+    listEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px 10px;border:1px dashed var(--line);border-radius:11px;margin-bottom:8px">Tap the email box below to view and select from the Google emails saved on your phone.</div>';
+    return;
+  }
+  listEl.innerHTML = '<div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">Accounts on this device:</div>' +
+    saved.map(acc => {
+      const initial = (acc.name || acc.email || 'G').trim().charAt(0).toUpperCase();
+      return '<button type="button" class="google-acct-item" data-google-email="' + esc(acc.email) + '" data-google-name="' + esc(acc.name || '') + '">' +
+        '<span class="google-acct-avatar">' + esc(initial) + '</span>' +
+        '<div style="overflow:hidden;flex:1">' +
+          '<div style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(acc.name || acc.email) + '</div>' +
+          '<div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(acc.email) + '</div>' +
+        '</div>' +
+        '<span style="font-size:12px;color:var(--orange);font-weight:700">Select →</span>' +
+      '</button>';
+    }).join('');
+
+  listEl.querySelectorAll('[data-google-email]').forEach(btn => {
+    btn.onclick = () => {
+      const email = btn.getAttribute('data-google-email');
+      const name = btn.getAttribute('data-google-name');
+      handleGoogleAccountSelected(email, name);
+    };
+  });
+}
+
+async function handleGoogleAccountSelected(email, name) {
+  const cleanEmail = String(email || '').toLowerCase().trim();
+  const errEl = document.getElementById('googleChooserError');
+  const submitBtn = document.getElementById('googleChooserSubmitBtn');
+  if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    if (errEl) {
+      errEl.textContent = 'Please select or enter a valid Google email address.';
+      errEl.classList.add('show');
+    }
+    return;
+  }
+
+  if (googleModalMode === 'signup') {
+    saveGoogleAccountToDevice({ email: cleanEmail, name: name || cleanEmail.split('@')[0] });
+    closeGoogleAccountModal();
+    setOwnerAuthMode(true);
+    document.getElementById('signupEmail').value = cleanEmail;
+    if (name && !document.getElementById('signupFullName').value) {
+      document.getElementById('signupFullName').value = name;
+    }
+    if (!document.getElementById('signupUsername').value) {
+      document.getElementById('signupUsername').value = cleanEmail.split('@')[0].replace(/[^a-z0-9_]/gi, '').toLowerCase().slice(0, 24);
+    }
+    toast('Selected Google email: ' + cleanEmail);
+    document.getElementById('signupPassword').focus();
+    return;
+  }
+
+  // Google Sign-In mode: verify against backend /api/auth?action=google-login
+  if (errEl) errEl.classList.remove('show');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Checking Google account...';
+  }
+  try {
+    const res = await apiFetch('/api/auth?action=google-login', {
+      method: 'POST',
+      body: JSON.stringify({ email: cleanEmail, name: name || '' })
+    });
+
+    if (!res.ok || !res.data?.success) {
+      if (res.data?.code === 'EMAIL_NOT_REGISTERED') {
+        closeGoogleAccountModal();
+        setOwnerAuthMode(true);
+        document.getElementById('signupEmail').value = cleanEmail;
+        if (name && !document.getElementById('signupFullName').value) {
+          document.getElementById('signupFullName').value = name;
+        }
+        if (!document.getElementById('signupUsername').value) {
+          document.getElementById('signupUsername').value = cleanEmail.split('@')[0].replace(/[^a-z0-9_]/gi, '').toLowerCase().slice(0, 24);
+        }
+        const sErr = document.getElementById('ownerSignupError');
+        if (sErr) {
+          sErr.textContent = res.data.error || 'This Google email is not registered yet. Complete Sign Up below to request permission from Shankar & Mom.';
+          sErr.classList.add('show');
+        }
+        return;
+      }
+
+      if (res.data?.code === 'PENDING_APPROVAL') {
+        saveGoogleAccountToDevice({ email: cleanEmail, name: res.data?.user?.full_name || name });
+        closeGoogleAccountModal();
+        setOwnerAuthMode(false);
+        const lErr = document.getElementById('ownerError');
+        if (lErr) {
+          lErr.textContent = res.data.error;
+          lErr.classList.add('show');
+        }
+        return;
+      }
+
+      if (errEl) {
+        errEl.textContent = res.data?.error || 'Could not sign in with this Google account.';
+        errEl.classList.add('show');
+      }
+      return;
+    }
+
+    saveGoogleAccountToDevice({
+      email: cleanEmail,
+      name: res.data.user?.full_name || name,
+      username: res.data.user?.username
+    });
+    closeGoogleAccountModal();
+    authToken = res.data.token || '';
+    if (authToken) sessionStorage.setItem('popcorn-auth-token', authToken);
+    currentUser = res.data.user;
+    syncOwnerIdentityUI();
+    toast('Signed in with Google as ' + (currentUser.full_name || currentUser.email));
+    navigateOwnerRoute(currentOwnerRoute || 'overview', true);
+  } catch {
+    if (errEl) {
+      errEl.textContent = 'Unable to reach authentication server. Please try again.';
+      errEl.classList.add('show');
+    }
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign In with Google →';
+    }
+  }
+}
+
+const googleSignInBtn = document.getElementById('googleSignInBtn');
+if (googleSignInBtn) googleSignInBtn.onclick = () => openGoogleAccountModal('login');
+const googleSignupPickBtn = document.getElementById('googleSignupPickBtn');
+if (googleSignupPickBtn) googleSignupPickBtn.onclick = () => openGoogleAccountModal('signup');
+const closeGoogleModalBtn = document.getElementById('closeGoogleModalBtn');
+if (closeGoogleModalBtn) closeGoogleModalBtn.onclick = closeGoogleAccountModal;
+const cancelGoogleModalBtn = document.getElementById('cancelGoogleModalBtn');
+if (cancelGoogleModalBtn) cancelGoogleModalBtn.onclick = closeGoogleAccountModal;
+
+const googleChooserForm = document.getElementById('googleChooserForm');
+if (googleChooserForm) {
+  googleChooserForm.onsubmit = e => {
+    e.preventDefault();
+    const email = document.getElementById('googleChooserEmail').value.trim();
+    const name = document.getElementById('googleChooserName')?.value.trim() || '';
+    handleGoogleAccountSelected(email, name);
   };
 }
 
@@ -1462,56 +1805,81 @@ if (ownerSignupForm) {
   ownerSignupForm.onsubmit = async e => {
     e.preventDefault();
     const errEl = document.getElementById('ownerSignupError');
+    const okEl = document.getElementById('ownerSignupSuccess');
     const submitBtn = document.getElementById('ownerSignupSubmit');
     errEl.classList.remove('show');
+    if (okEl) okEl.classList.remove('show');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Creating owner account...';
+    submitBtn.textContent = 'Submitting...';
+
+    const fullName = document.getElementById('signupFullName').value.trim();
+    const username = document.getElementById('signupUsername').value.trim();
+    const phone = document.getElementById('signupPhone').value.trim();
+    const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+    const password = document.getElementById('signupPassword').value;
 
     try {
-      const res = await apiFetch('/api/auth?action=signup-first-owner', {
+      const res = await apiFetch('/api/auth?action=request-access', {
         method: 'POST',
         body: JSON.stringify({
-          full_name: document.getElementById('signupFullName').value.trim(),
-          username: document.getElementById('signupUsername').value.trim(),
-          phone: document.getElementById('signupPhone').value.trim(),
-          email: document.getElementById('signupEmail').value.trim(),
-          password: document.getElementById('signupPassword').value
+          full_name: fullName,
+          username,
+          phone,
+          email,
+          password
         })
       });
       if (!res.ok || !res.data.success) {
-        if (res.data?.code === 'ALREADY_INITIALIZED') {
-          setOwnerAuthMode(false);
-          const loginErr = document.getElementById('ownerError');
-          if (loginErr) {
-            loginErr.textContent = res.data.error;
-            loginErr.classList.add('show');
-          }
-          return;
-        }
         errEl.textContent = res.data?.error || 'Could not complete sign up.';
         errEl.classList.add('show');
         return;
       }
-      authToken = res.data.token || '';
-      if (authToken) sessionStorage.setItem('popcorn-auth-token', authToken);
+
+      // Save their Google email on this device so "Sign in with Google" shows it immediately
+      saveGoogleAccountToDevice({ email, name: fullName, username });
+
       if (res.data.owner_vault) {
         localStorage.setItem('popcorn-owner-vault', res.data.owner_vault);
       }
       isSignupStillAvailable = false;
-      currentUser = res.data.user;
-      setOwnerAuthMode(false);
-      syncOwnerIdentityUI();
+
+      // Case 1: 1st-Time Primary Owner (Shankar / Mom) -> immediate access
+      if (res.data.is_first_owner && res.data.token) {
+        authToken = res.data.token;
+        sessionStorage.setItem('popcorn-auth-token', authToken);
+        currentUser = res.data.user;
+        setOwnerAuthMode(false);
+        syncOwnerIdentityUI();
+        e.target.reset();
+        toast('Primary Owner account created! Welcome, ' + (currentUser.full_name || currentUser.username));
+        navigateOwnerRoute('overview', true);
+        return;
+      }
+
+      // Case 2: Subsequent Sign-Up -> PENDING_APPROVAL (Blocked until Shankar & Mom grant permission!)
       e.target.reset();
-      toast('Owner account created! Sign-up is now permanently locked to Login only.');
-      navigateOwnerRoute('overview', true);
+      setOwnerAuthMode(false);
+      const loginNotice = document.getElementById('ownerLoginNotice');
+      const loginErr = document.getElementById('ownerError');
+      if (loginErr) loginErr.classList.remove('show');
+      if (loginNotice) {
+        loginNotice.innerHTML = '<b>✓ Sign-Up Request Sent (' + esc(email) + ')!</b><br>Your account is waiting for permission from <b>Shankar &amp; Mom (Primary Owners)</b>. Without their approval, you cannot enter the Owner Dashboard. Once they approve you in <i>Staff &amp; Permissions</i>, click <b>Sign in with Google</b> above!';
+        loginNotice.classList.add('show');
+      }
+      toast('Sign-up submitted! Waiting for permission from Shankar & Mom.');
     } catch {
       errEl.textContent = 'Unable to reach authentication server. Please try again.';
       errEl.classList.add('show');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Complete First-Time Sign Up →';
+      setOwnerAuthMode(signupWrapIsVisible());
     }
   };
+}
+
+function signupWrapIsVisible() {
+  const el = document.getElementById('ownerSignupWrap');
+  return Boolean(el && el.style.display !== 'none');
 }
 
 document.getElementById('ownerForm').onsubmit = async e => {
@@ -1519,9 +1887,11 @@ document.getElementById('ownerForm').onsubmit = async e => {
   const username = document.getElementById('ownerUsername').value.trim();
   const password = document.getElementById('ownerPassword').value;
   const errEl = document.getElementById('ownerError');
+  const noticeEl = document.getElementById('ownerLoginNotice');
   const submitBtn = document.getElementById('ownerSubmit');
 
   errEl.classList.remove('show');
+  if (noticeEl) noticeEl.classList.remove('show');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Signing in...';
 
@@ -1538,6 +1908,13 @@ document.getElementById('ownerForm').onsubmit = async e => {
     authToken = res.data.token || '';
     if (authToken) sessionStorage.setItem('popcorn-auth-token', authToken);
     currentUser = res.data.user;
+    if (currentUser?.email) {
+      saveGoogleAccountToDevice({
+        email: currentUser.email,
+        name: currentUser.full_name,
+        username: currentUser.username
+      });
+    }
     syncOwnerIdentityUI();
     e.target.reset();
     toast('Welcome back, ' + (currentUser.full_name || currentUser.username));
@@ -1636,6 +2013,30 @@ async function loadOverviewData() {
         return '<tr><td>' + esc(tx.date || '—') + '</td><td><span class="tag ' + badgeClass + '">' + esc(tx.type) + '</span></td><td><b>' + esc(tx.title) + '</b></td><td>' + esc(tx.shop_name) + '</td><td>' + esc(tx.method) + '</td><td style="font-weight:700;color:' + (isPos ? 'var(--green)' : 'var(--danger)') + '">' + (isPos ? '+' : '-') + fmtMoney(Math.abs(tx.amount)) + '</td></tr>';
       }).join('')
     : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No transactions recorded yet. Use "+ Record Sale" or "+ Record Expense" to begin.</td></tr>';
+
+  // Check for pending sign-up requests waiting for Shankar & Mom's permission
+  const pendingPanel = document.getElementById('ovPendingApprovalsPanel');
+  const pendingList = document.getElementById('ovPendingApprovalsList');
+  if (pendingPanel && pendingList && (currentUser?.role === 'OWNER' || currentUser?.role === 'ADMIN')) {
+    const usersRes = await apiFetch('/api/auth?action=list-users');
+    const pendingUsers = (usersRes.ok && usersRes.data?.users ? usersRes.data.users : []).filter(u => u.status === 'PENDING_APPROVAL');
+    if (pendingUsers.length > 0) {
+      pendingPanel.style.display = 'block';
+      pendingList.innerHTML = pendingUsers.map(u =>
+        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px">' +
+          '<div><b>' + esc(u.full_name) + '</b> (<code>@' + esc(u.username) + '</code>' + (u.email ? ' · ' + esc(u.email) : '') + ')<br><small style="color:var(--muted)">Requested access via Sign Up · Waiting for Shankar &amp; Mom permission</small></div>' +
+          (currentUser?.role === 'OWNER'
+            ? '<div style="display:flex;gap:8px">' +
+                '<button type="button" class="btn orange" style="padding:7px 12px;font-size:12px" onclick="toggleStaffStatus(\'' + esc(u.id) + '\',\'ACTIVE\')">✓ Approve (Give Permission)</button>' +
+                '<button type="button" class="btn danger" style="padding:7px 12px;font-size:12px" onclick="toggleStaffStatus(\'' + esc(u.id) + '\',\'DISABLED\')">✕ Reject</button>' +
+              '</div>'
+            : '<span class="tag">Waiting for Primary Owner</span>') +
+        '</div>'
+      ).join('');
+    } else {
+      pendingPanel.style.display = 'none';
+    }
+  }
 }
 const refreshOverviewBtn = document.getElementById('refreshOverviewBtn');
 if (refreshOverviewBtn) refreshOverviewBtn.onclick = loadOverviewData;
@@ -2393,7 +2794,7 @@ document.getElementById('generateBatchQrBtn').onclick = async () => {
   await loadRewardsData();
 };
 
-// 8. Staff & Permissions
+// 8. Staff & Permissions (Owner Permission Gate for Sign-Up Requests)
 async function loadStaffData() {
   const res = await apiFetch('/api/auth?action=list-users');
   const tbody = document.getElementById('staffTableRows');
@@ -2402,7 +2803,24 @@ async function loadStaffData() {
     return;
   }
   const users = res.data.users || [];
-  tbody.innerHTML = users.map(u => '<tr><td><b>' + esc(u.full_name) + '</b></td><td>' + esc(u.username) + '</td><td><span class="tag">' + esc(u.role) + '</span></td><td><span class="tag ' + (u.status === 'ACTIVE' ? 'green' : 'red') + '">' + esc(u.status) + '</span></td><td>' + (u.role !== 'OWNER' && currentUser?.role === 'OWNER' ? '<button type="button" class="btn secondary" style="padding:6px 10px;font-size:11px" onclick="toggleStaffStatus(\'' + esc(u.id) + '\',\'' + (u.status === 'ACTIVE' ? 'DISABLED' : 'ACTIVE') + '\')">' + (u.status === 'ACTIVE' ? 'Disable' : 'Activate') + '</button>' : '—') + '</td></tr>').join('');
+  tbody.innerHTML = users.map(u => {
+    const isPending = u.status === 'PENDING_APPROVAL';
+    const statusClass = u.status === 'ACTIVE' ? 'green' : (isPending ? '' : 'red');
+    const statusText = isPending ? '⏳ WAITING PERMISSION' : u.status;
+    let actionHtml = '—';
+    if (u.role !== 'OWNER' && currentUser?.role === 'OWNER') {
+      if (isPending) {
+        actionHtml =
+          '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+            '<button type="button" class="btn orange" style="padding:6px 11px;font-size:11px" onclick="toggleStaffStatus(\'' + esc(u.id) + '\',\'ACTIVE\')">✓ Approve (Grant Permission)</button>' +
+            '<button type="button" class="btn secondary" style="padding:6px 10px;font-size:11px" onclick="toggleStaffStatus(\'' + esc(u.id) + '\',\'DISABLED\')">✕ Reject</button>' +
+          '</div>';
+      } else {
+        actionHtml = '<button type="button" class="btn secondary" style="padding:6px 10px;font-size:11px" onclick="toggleStaffStatus(\'' + esc(u.id) + '\',\'' + (u.status === 'ACTIVE' ? 'DISABLED' : 'ACTIVE') + '\')">' + (u.status === 'ACTIVE' ? 'Revoke Permission' : '✓ Grant Permission') + '</button>';
+      }
+    }
+    return '<tr><td><b>' + esc(u.full_name) + '</b></td><td><code>@' + esc(u.username) + '</code>' + (u.email ? '<br><small style="color:var(--muted)">' + esc(u.email) + '</small>' : '') + '</td><td><span class="tag">' + esc(u.role) + '</span></td><td><span class="tag ' + statusClass + '">' + esc(statusText) + '</span></td><td>' + actionHtml + '</td></tr>';
+  }).join('');
 }
 
 window.toggleStaffStatus = async (userId, status) => {
@@ -2411,8 +2829,12 @@ window.toggleStaffStatus = async (userId, status) => {
     body: JSON.stringify({ userId, status })
   });
   if (res.ok) {
-    toast('Account status updated.');
+    if (res.data?.owner_vault) {
+      localStorage.setItem('popcorn-owner-vault', res.data.owner_vault);
+    }
+    toast(status === 'ACTIVE' ? 'Permission granted! User can now sign in to the Owner Dashboard.' : 'Account access revoked.');
     await loadStaffData();
+    if (currentOwnerRoute === 'overview') await loadOverviewData();
   } else {
     toast(res.data?.error || 'Failed to update user.');
   }

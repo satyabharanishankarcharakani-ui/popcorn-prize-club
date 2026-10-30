@@ -221,9 +221,31 @@ function isValidRewardCodeFormat(code) {
   return /^PC-[A-Z0-9]{4,16}$/.test(code.trim().toUpperCase());
 }
 
-function createSignedOwnerVault(ownerRecord) {
+function createSignedOwnerVault(ownerRecord, teamUsers = []) {
   if (!ownerRecord || !ownerRecord.username || !ownerRecord.password_hash) return null;
   const secret = getAuthSecret();
+  const cleanTeam = Array.isArray(teamUsers)
+    ? teamUsers
+        .filter(u => u && u.username && u.username !== ownerRecord.username && u.password_hash)
+        .slice(0, 20)
+        .map(u => ({
+          id: u.id,
+          username: u.username,
+          email: u.email || '',
+          phone: u.phone || '',
+          full_name: u.full_name || u.username,
+          avatar_url: u.avatar_url || '',
+          role: u.role || 'STAFF',
+          password_hash: u.password_hash,
+          salt: u.salt,
+          must_change_password: Boolean(u.must_change_password),
+          status: u.status || 'PENDING_APPROVAL',
+          created_at: u.created_at || new Date().toISOString(),
+          updated_at: u.updated_at || new Date().toISOString(),
+          last_login_at: u.last_login_at || null,
+        }))
+    : [];
+
   const payloadObj = {
     id: ownerRecord.id,
     username: ownerRecord.username,
@@ -239,6 +261,7 @@ function createSignedOwnerVault(ownerRecord) {
     created_at: ownerRecord.created_at || new Date().toISOString(),
     updated_at: ownerRecord.updated_at || new Date().toISOString(),
     last_login_at: ownerRecord.last_login_at || new Date().toISOString(),
+    team_users: cleanTeam,
   };
   const payload = Buffer.from(JSON.stringify(payloadObj)).toString('base64url');
   const sig = crypto.createHmac('sha256', secret).update(`vault.${payload}`).digest('base64url');

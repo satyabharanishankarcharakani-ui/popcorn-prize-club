@@ -14,6 +14,7 @@ const {
 } = require('./_security');
 const {
   getUserByUsername,
+  getUserByEmail,
   getUserById,
   updateUserLastLogin,
   updateUserProfile,
@@ -27,7 +28,9 @@ const {
   bootstrapOwnerIfEmpty,
   isFirstOwnerSignupAvailable,
   registerFirstOwner,
+  requestDashboardAccess,
   hydrateOwnerFromVault,
+  getRawVaultSnapshot,
 } = require('./_db');
 
 module.exports = async function handler(req, res) {
@@ -118,8 +121,9 @@ module.exports = async function handler(req, res) {
       }
 
       const isProduction = process.env.NODE_ENV === 'production';
-      const rawOwner = await getUserById(ownerUser.id);
-      const ownerVault = createSignedOwnerVault(rawOwner);
+      const { primaryOwner, teamUsers } = getRawVaultSnapshot();
+      const rawOwner = primaryOwner || (await getUserById(ownerUser.id));
+      const ownerVault = createSignedOwnerVault(rawOwner, teamUsers);
       const sessionCookie = `popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
       const cookies = [sessionCookie];
       if (ownerVault) {
@@ -143,6 +147,215 @@ module.exports = async function handler(req, res) {
         token,
         owner_vault: ownerVault,
         user: ownerUser,
+      });
+    }
+
+    // 0c. POST /api/auth?action=request-access (Always-available Sign-Up with Owner Permission Gate)
+    if (req.method === 'POST' && action === 'request-access') {
+      const isAllowed = await checkRateLimit(`signup-req-${ip}`, 10, 60000);
+      if (!isAllowed) {
+        return res.status(429).json({ error: 'Too many signup requests. Please wait 60 seconds.' });
+      }
+
+      const fullName = sanitizeString(body.full_name || '', 80);
+      const username = sanitizeString(body.username || '', 40).toLowerCase();
+      const email = sanitizeString(body.email || '', 120).toLowerCase();
+      const phone = sanitizeString(body.phone || '', 32);
+      const password = String(body.password || '');
+
+      if (!fullName || fullName.length < 2) {
+        return res.status(400).json({ error: 'Full name is required (at least 2 characters).' });
+      }
+      if (!username || username.length < 3) {
+        return res.status(400).json({ error: 'Username is required (at least 3 characters).' });
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'A valid Google / email address is required so you can also Sign in with Google.' });
+      }
+      if (password.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+      }
+
+      let result;
+      try {
+        result = await requestDashboardAccess({
+          username,
+          full_name: fullName,
+          email,
+          phone,
+          password,
+        });
+      } catch (err) {
+        return res.status(err.statusCode || 400).json({
+          error: err.message,
+          code: err.code || 'SIGNUP_ERROR',
+        });
+      }
+
+      const isProduction = process.env.NODE_ENV === 'production';
+      const { primaryOwner, teamUsers } = getRawVaultSnapshot();
+      const ownerVault = primaryOwner ? createSignedOwnerVault(primaryOwner, teamUsers) : null;
+
+      if (result.is_first_owner) {
+        const ownerUser = result.user;
+        const token = createSessionToken(ownerUser);
+        const decoded = verifySessionToken(token);
+        if (decoded && decoded.jti) {
+          await recordUserSession({
+            jti: decoded.jti,
+            user: ownerUser,
+            ip_address: ip,
+            user_agent: userAgent,
+            expires_at: new Date(decoded.exp * 1000).toISOString(),
+          });
+        }
+        const cookies = [`popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`];
+        if (ownerVault) {
+          cookies.push(`popcorn_owner_vault=${ownerVault}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${isProduction ? '; Secure' : ''}`);
+        }
+        res.setHeader('Set-Cookie', cookies);
+
+        await addAuditLog({
+          actor_id: ownerUser.id,
+          actor_name: ownerUser.full_name,
+          actor_role: 'OWNER',
+          action: 'FIRST_OWNER_SIGNUP',
+          target_type: 'USER',
+          target_id: ownerUser.id,
+          details: { username: ownerUser.username, email: ownerUser.email, ip },
+        });
+
+        return res.status(201).json({
+          success: true,
+          is_first_owner: true,
+          pending_approval: false,
+          message: 'Primary Owner account created! Welcome to the Owner Dashboard.',
+          token,
+          owner_vault: ownerVault,
+          user: ownerUser,
+        });
+      }
+
+      if (ownerVault) {
+        res.setHeader(
+          'Set-Cookie',
+          `popcorn_owner_vault=${ownerVault}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${isProduction ? '; Secure' : ''}`
+        );
+      }
+
+      await addAuditLog({
+        actor_id: result.user.id,
+        actor_name: result.user.full_name,
+        actor_role: 'STAFF',
+        action: 'ACCESS_REQUEST_SUBMITTED',
+        target_type: 'USER',
+        target_id: result.user.id,
+        details: { username: result.user.username, email: result.user.email, status: 'PENDING_APPROVAL', ip },
+      });
+
+      return res.status(201).json({
+        success: true,
+        is_first_owner: false,
+        pending_approval: true,
+        code: 'PENDING_APPROVAL',
+        message: 'Sign-up submitted! Your account is waiting for permission from Shankar & Mom (Primary Owners). Without their approval, access to the Owner Dashboard is locked.',
+        owner_vault: ownerVault,
+        user: result.user,
+      });
+    }
+
+    // 0d. POST /api/auth?action=google-login (Sign in with Google Email selected from phone/device)
+    if (req.method === 'POST' && action === 'google-login') {
+      const isAllowed = await checkRateLimit(`google-auth-${ip}`, 15, 60000);
+      if (!isAllowed) {
+        return res.status(429).json({ error: 'Too many authentication attempts. Please wait 60 seconds.' });
+      }
+
+      const email = sanitizeString(body.email || '', 120).toLowerCase();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'Please select or enter a valid Google email address.' });
+      }
+
+      const user = await getUserByEmail(email);
+      if (!user) {
+        await addAuditLog({
+          actor_name: email,
+          actor_role: 'ANONYMOUS',
+          action: 'GOOGLE_LOGIN_UNREGISTERED',
+          details: { email, ip },
+        });
+        return res.status(404).json({
+          error: `No account found for "${email}". Please Sign Up first with this Google email and wait for Owner permission from Shankar & Mom.`,
+          code: 'EMAIL_NOT_REGISTERED',
+          email,
+        });
+      }
+
+      if (user.status === 'PENDING_APPROVAL') {
+        await addAuditLog({
+          actor_id: user.id,
+          actor_name: user.full_name,
+          actor_role: user.role,
+          action: 'GOOGLE_LOGIN_BLOCKED_PENDING',
+          details: { email, ip },
+        });
+        return res.status(403).json({
+          error: `Permission Required: Your account (${email}) is waiting for approval from Shankar & Mom. You cannot access the Owner Dashboard until they grant permission.`,
+          code: 'PENDING_APPROVAL',
+          user: {
+            full_name: user.full_name,
+            username: user.username,
+            email: user.email,
+            status: user.status,
+          },
+        });
+      }
+
+      if (user.status !== 'ACTIVE') {
+        return res.status(403).json({
+          error: 'Access Denied: This account has been rejected or disabled by the Primary Owner.',
+          code: 'ACCOUNT_DISABLED',
+        });
+      }
+
+      const token = createSessionToken(user);
+      const decoded = verifySessionToken(token);
+      await updateUserLastLogin(user.id);
+      if (decoded && decoded.jti) {
+        await recordUserSession({
+          jti: decoded.jti,
+          user,
+          ip_address: ip,
+          user_agent: userAgent,
+          expires_at: new Date(decoded.exp * 1000).toISOString(),
+        });
+      }
+
+      const isProduction = process.env.NODE_ENV === 'production';
+      const cookieHeader = `popcorn_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${isProduction ? '; Secure' : ''}`;
+      res.setHeader('Set-Cookie', cookieHeader);
+
+      await addAuditLog({
+        actor_id: user.id,
+        actor_name: user.full_name,
+        actor_role: user.role,
+        action: 'GOOGLE_LOGIN_SUCCESS',
+        details: { email, ip },
+      });
+
+      return res.status(200).json({
+        success: true,
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email || '',
+          phone: user.phone || '',
+          full_name: user.full_name,
+          avatar_url: user.avatar_url || '',
+          role: user.role,
+          must_change_password: Boolean(user.must_change_password),
+        },
       });
     }
 
@@ -186,14 +399,17 @@ module.exports = async function handler(req, res) {
         });
       }
 
-      const username = sanitizeString(body.username, 40);
+      const username = sanitizeString(body.username, 120);
       const password = String(body.password || '');
 
       if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required.' });
+        return res.status(400).json({ error: 'Username or email and password are required.' });
       }
 
-      const user = await getUserByUsername(username);
+      let user = await getUserByUsername(username);
+      if (!user && username.includes('@')) {
+        user = await getUserByEmail(username);
+      }
       if (!user) {
         await addAuditLog({
           actor_name: username,
@@ -204,8 +420,31 @@ module.exports = async function handler(req, res) {
         return res.status(401).json({ error: 'Invalid username or password.' });
       }
 
+      if (user.status === 'PENDING_APPROVAL') {
+        await addAuditLog({
+          actor_id: user.id,
+          actor_name: user.full_name,
+          actor_role: user.role,
+          action: 'LOGIN_BLOCKED_PENDING_APPROVAL',
+          details: { username: user.username, email: user.email, ip },
+        });
+        return res.status(403).json({
+          error: 'Permission Required: Your account is waiting for approval from Shankar & Mom (Primary Owners). Without their permission, you cannot access the Owner Dashboard.',
+          code: 'PENDING_APPROVAL',
+          user: {
+            full_name: user.full_name,
+            username: user.username,
+            email: user.email || '',
+            status: user.status,
+          },
+        });
+      }
+
       if (user.status !== 'ACTIVE') {
-        return res.status(403).json({ error: 'This account has been deactivated. Please contact the owner.' });
+        return res.status(403).json({
+          error: 'This account has been deactivated or rejected. Please contact Shankar & Mom.',
+          code: 'ACCOUNT_DISABLED',
+        });
       }
 
       const isValid = verifyPassword(password, user.password_hash, user.salt);
@@ -336,9 +575,10 @@ module.exports = async function handler(req, res) {
 
       let refreshedToken;
       let ownerVault;
-      const rawUpdated = await getUserById(session.id);
+      const { primaryOwner, teamUsers } = getRawVaultSnapshot();
+      const rawUpdated = primaryOwner || (await getUserById(session.id));
       if (rawUpdated && rawUpdated.role === 'OWNER') {
-        ownerVault = createSignedOwnerVault(rawUpdated);
+        ownerVault = createSignedOwnerVault(rawUpdated, teamUsers);
       }
       if (newPassword) {
         refreshedToken = createSessionToken(updated);
@@ -348,6 +588,12 @@ module.exports = async function handler(req, res) {
           cookies.push(`popcorn_owner_vault=${ownerVault}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${isProduction ? '; Secure' : ''}`);
         }
         res.setHeader('Set-Cookie', cookies);
+      } else if (ownerVault) {
+        const isProduction = process.env.NODE_ENV === 'production';
+        res.setHeader(
+          'Set-Cookie',
+          `popcorn_owner_vault=${ownerVault}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${isProduction ? '; Secure' : ''}`
+        );
       }
 
       return res.status(200).json({
@@ -431,6 +677,16 @@ module.exports = async function handler(req, res) {
         password: newPassword,
       });
 
+      const { primaryOwner, teamUsers } = getRawVaultSnapshot();
+      const ownerVault = primaryOwner ? createSignedOwnerVault(primaryOwner, teamUsers) : null;
+      if (ownerVault) {
+        const isProduction = process.env.NODE_ENV === 'production';
+        res.setHeader(
+          'Set-Cookie',
+          `popcorn_owner_vault=${ownerVault}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${isProduction ? '; Secure' : ''}`
+        );
+      }
+
       await addAuditLog({
         actor_id: session.id,
         actor_name: session.full_name,
@@ -441,7 +697,7 @@ module.exports = async function handler(req, res) {
         details: { username: newUsername, role: newRole },
       });
 
-      return res.status(201).json({ success: true, user: created });
+      return res.status(201).json({ success: true, user: created, owner_vault: ownerVault });
     }
 
     if (action === 'update-user') {
@@ -461,6 +717,16 @@ module.exports = async function handler(req, res) {
         return res.status(404).json({ error: 'User not found.' });
       }
 
+      const { primaryOwner, teamUsers } = getRawVaultSnapshot();
+      const ownerVault = primaryOwner ? createSignedOwnerVault(primaryOwner, teamUsers) : null;
+      if (ownerVault) {
+        const isProduction = process.env.NODE_ENV === 'production';
+        res.setHeader(
+          'Set-Cookie',
+          `popcorn_owner_vault=${ownerVault}; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000${isProduction ? '; Secure' : ''}`
+        );
+      }
+
       await addAuditLog({
         actor_id: session.id,
         actor_name: session.full_name,
@@ -471,7 +737,7 @@ module.exports = async function handler(req, res) {
         details: { status: newStatus, role: newRole },
       });
 
-      return res.status(200).json({ success: true, user: updated });
+      return res.status(200).json({ success: true, user: updated, owner_vault: ownerVault });
     }
 
     return res.status(400).json({ error: 'Invalid auth action.' });

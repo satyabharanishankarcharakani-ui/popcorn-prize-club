@@ -302,7 +302,72 @@ async function runAllTests() {
     await authHandler(afterLogoutMeReq, afterLogoutMeRes);
     assert.strictEqual(afterLogoutMeRes.statusCode, 401, 'Logged-out session token must return 401');
 
-    console.log('✓ [5/12] Owner profile persistence, RBAC permissions, and session logout passed.');
+    // Test Always-Available Sign-Up with Owner Permission Gate (request-access) & Sign in with Google (google-login)
+    const reqAccessReq = mockReq({
+      method: 'POST',
+      query: { action: 'request-access' },
+      body: {
+        full_name: 'New Helper',
+        username: 'new_helper',
+        email: 'helper@gmail.com',
+        phone: '+91 9000011111',
+        password: 'HelperPass123!',
+      },
+    });
+    const reqAccessRes = mockRes();
+    await authHandler(reqAccessReq, reqAccessRes);
+    assert.strictEqual(reqAccessRes.statusCode, 201);
+    assert.strictEqual(reqAccessRes.data.pending_approval, true, 'Subsequent signup must require Owner approval');
+    assert.strictEqual(reqAccessRes.data.user.status, 'PENDING_APPROVAL');
+    const pendingUserId = reqAccessRes.data.user.id;
+
+    // Verify PENDING_APPROVAL user is blocked from password login (403 PENDING_APPROVAL)
+    const blockedLoginReq = mockReq({
+      method: 'POST',
+      query: { action: 'login' },
+      body: { username: 'new_helper', password: 'HelperPass123!' },
+    });
+    const blockedLoginRes = mockRes();
+    await authHandler(blockedLoginReq, blockedLoginRes);
+    assert.strictEqual(blockedLoginRes.statusCode, 403);
+    assert.strictEqual(blockedLoginRes.data.code, 'PENDING_APPROVAL');
+
+    // Verify PENDING_APPROVAL user is blocked from Sign in with Google (403 PENDING_APPROVAL)
+    const blockedGoogleReq = mockReq({
+      method: 'POST',
+      query: { action: 'google-login' },
+      body: { email: 'helper@gmail.com' },
+    });
+    const blockedGoogleRes = mockRes();
+    await authHandler(blockedGoogleReq, blockedGoogleRes);
+    assert.strictEqual(blockedGoogleRes.statusCode, 403);
+    assert.strictEqual(blockedGoogleRes.data.code, 'PENDING_APPROVAL');
+
+    // Primary Owner (Shankar / Mom) grants permission -> status: 'ACTIVE'
+    const approveReq = mockReq({
+      method: 'POST',
+      query: { action: 'update-user' },
+      headers: { authorization: `Bearer ${ownerToken}` },
+      body: { userId: pendingUserId, status: 'ACTIVE' },
+    });
+    const approveRes = mockRes();
+    await authHandler(approveReq, approveRes);
+    assert.strictEqual(approveRes.statusCode, 200);
+    assert.strictEqual(approveRes.data.user.status, 'ACTIVE');
+
+    // Now Sign in with Google using the email given during Sign Up succeeds!
+    const googleOkReq = mockReq({
+      method: 'POST',
+      query: { action: 'google-login' },
+      body: { email: 'helper@gmail.com' },
+    });
+    const googleOkRes = mockRes();
+    await authHandler(googleOkReq, googleOkRes);
+    assert.strictEqual(googleOkRes.statusCode, 200);
+    assert.strictEqual(googleOkRes.data.success, true);
+    assert.ok(googleOkRes.data.token, 'Google sign-in must issue a valid session token after Owner approval');
+
+    console.log('✓ [5/12] Owner profile persistence, RBAC permissions, Owner Approval Gate, Sign in with Google, and session logout passed.');
   }
 
   // 6. DEMO WINNER EXCLUSION, ATOMIC SINGLE-USE QR REDEMPTION, EXPIRED & TAMPERED CODE REJECTION
@@ -567,6 +632,9 @@ async function runAllTests() {
       'pnlVisualChart',
       'quickFlavorChips',
       'seedStandardFlavorsBtn',
+      'googleSignInBtn',
+      'googleModalBackdrop',
+      'ovPendingApprovalsPanel',
     ];
     for (const id of requiredPages) {
       assert.ok(ownerHtml.includes(`id="${id}"`), `Dedicated owner page/action #${id} must exist in owner.html`);

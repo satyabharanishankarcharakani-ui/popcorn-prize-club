@@ -236,8 +236,46 @@ function hydrateOwnerFromVault(vaultUser) {
     updated_at: vaultUser.updated_at || new Date().toISOString(),
     last_login_at: vaultUser.last_login_at || new Date().toISOString(),
   });
+  if (Array.isArray(vaultUser.team_users)) {
+    for (const tu of vaultUser.team_users) {
+      if (tu && tu.username && tu.password_hash && tu.salt) {
+        const tuUser = String(tu.username).toLowerCase().trim();
+        if (tuUser && tuUser !== cleanUsername) {
+          memoryStore.users.set(tuUser, {
+            id: tu.id || 'usr-' + crypto.randomBytes(4).toString('hex'),
+            username: tuUser,
+            email: tu.email || '',
+            phone: tu.phone || '',
+            full_name: tu.full_name || tu.username,
+            avatar_url: tu.avatar_url || '',
+            role: tu.role || 'STAFF',
+            password_hash: tu.password_hash,
+            salt: tu.salt,
+            must_change_password: Boolean(tu.must_change_password),
+            status: tu.status || 'PENDING_APPROVAL',
+            created_at: tu.created_at || new Date().toISOString(),
+            updated_at: tu.updated_at || new Date().toISOString(),
+            last_login_at: tu.last_login_at || null,
+          });
+        }
+      }
+    }
+  }
   memoryStore.bootstrapCompleted = true;
   memoryStore.firstSignupClaimed = true;
+}
+
+function getRawVaultSnapshot() {
+  let primaryOwner = null;
+  const teamUsers = [];
+  for (const u of memoryStore.users.values()) {
+    if (u.role === 'OWNER' && !primaryOwner) {
+      primaryOwner = u;
+    } else {
+      teamUsers.push(u);
+    }
+  }
+  return { primaryOwner, teamUsers };
 }
 
 async function supabaseRequest(path, options = {}) {
@@ -349,6 +387,74 @@ async function getUserByUsername(username) {
   }
   if (isProd()) assertDatabaseConfigured();
   return memoryStore.users.get(cleanUsername) || null;
+}
+
+async function getUserByEmail(email) {
+  await bootstrapOwnerIfEmpty();
+  const cleanEmail = String(email || '').toLowerCase().trim();
+  if (!cleanEmail) return null;
+  const { isConfigured } = getSupabaseConfig();
+
+  if (isConfigured) {
+    const res = await supabaseRequest(`users?email=ilike.${encodeURIComponent(cleanEmail)}&limit=1`);
+    return res && res.length > 0 ? res[0] : null;
+  }
+  if (isProd()) assertDatabaseConfigured();
+  for (const u of memoryStore.users.values()) {
+    if (String(u.email || '').toLowerCase().trim() === cleanEmail) return u;
+  }
+  return null;
+}
+
+async function requestDashboardAccess({ username, full_name, email, phone, password }) {
+  const firstAvailable = await isFirstOwnerSignupAvailable();
+  if (firstAvailable) {
+    const primaryOwner = await registerFirstOwner({ username, full_name, email, phone, password });
+    return { user: primaryOwner, is_first_owner: true, pending_approval: false };
+  }
+
+  const cleanUsername = String(username || '').toLowerCase().trim();
+  const cleanName = String(full_name || '').trim();
+  const cleanEmail = email ? String(email).toLowerCase().trim() : '';
+  const cleanPhone = phone ? String(phone).trim() : '';
+
+  const existingByUser = await getUserByUsername(cleanUsername);
+  if (existingByUser) {
+    const err = new Error('That username is already registered. If this is your account, please go to Sign In.');
+    err.statusCode = 409;
+    err.code = 'USERNAME_TAKEN';
+    throw err;
+  }
+  if (cleanEmail) {
+    const existingByEmail = await getUserByEmail(cleanEmail);
+    if (existingByEmail) {
+      const err = new Error('That Google / email address is already registered. Please go to Sign In or click Sign in with Google.');
+      err.statusCode = 409;
+      err.code = 'EMAIL_TAKEN';
+      throw err;
+    }
+  }
+
+  const created = await createUser({
+    username: cleanUsername,
+    full_name: cleanName,
+    email: cleanEmail,
+    phone: cleanPhone,
+    role: 'STAFF',
+    password,
+    status: 'PENDING_APPROVAL',
+  });
+
+  try {
+    await createNotification({
+      type: 'ACCESS_REQUEST',
+      title: `New Dashboard Access Request: ${cleanName}`,
+      message: `${cleanName} (@${cleanUsername}${cleanEmail ? ' · ' + cleanEmail : ''}) signed up and is waiting for Owner permission from Shankar & Mom.`,
+      metadata: { user_id: created.id, username: cleanUsername, email: cleanEmail, status: 'PENDING_APPROVAL' },
+    });
+  } catch {}
+
+  return { user: created, is_first_owner: false, pending_approval: true };
 }
 
 async function getUserById(id) {
@@ -1947,9 +2053,12 @@ module.exports = {
   bootstrapOwnerIfEmpty,
   isFirstOwnerSignupAvailable,
   registerFirstOwner,
+  requestDashboardAccess,
   hydrateOwnerFromVault,
+  getRawVaultSnapshot,
   resetMemoryFinancialsAndData,
   getUserByUsername,
+  getUserByEmail,
   getUserById,
   updateUserLastLogin,
   updateUserProfile,
