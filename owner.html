@@ -3,7 +3,16 @@
 <meta name="google-site-verification" content="r3rE4aNkBJcxPAeBG8i33JTwYGG5X73ieorUEO4ngfY" />
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ff6b24">
+<meta name="theme-color" content="#0c0d0e">
+<link rel="manifest" href="/manifest-owner.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LR Owner">
+<link rel="icon" type="image/png" sizes="192x192" href="/owner-icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/owner-icon-512.png">
+<link rel="icon" type="image/svg+xml" href="/owner-icon.svg">
+<link rel="apple-touch-icon" href="/owner-icon-192.png">
 <meta name="robots" id="robotsMeta" content="noindex, nofollow">
 <meta name="description" content="LR Popcorn Prize Club Partner &amp; Owner Portal — Counter QR verification, sales, expenses, inventory, and real-time P&amp;L reports.">
 <link rel="canonical" id="canonicalLink" href="https://popcorn-prize-club.vercel.app/owner">
@@ -189,6 +198,8 @@ body.dark .chart-bar-row{border-color:#25201c}
 .pass-toggle-btn:hover{color:var(--orange);background:rgba(255,107,36,.1)}
 body.dark .pass-toggle-btn{color:#9d9287}
 body.dark .pass-toggle-btn:hover{color:#ff9a62}
+.btn-pwa-install{display:none;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;border:1px solid var(--orange);background:linear-gradient(135deg,rgba(255,107,36,.18),rgba(255,107,36,.06));color:var(--orange);font:700 12px 'Space Grotesk',sans-serif;cursor:pointer;transition:.18s;box-shadow:0 2px 8px rgba(255,107,36,.15);line-height:1}
+.btn-pwa-install:hover{background:var(--orange);color:#fff;transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,107,36,.3)}
 
 </style></head><body class="dark">
 <header>
@@ -197,6 +208,7 @@ body.dark .pass-toggle-btn:hover{color:#ff9a62}
   </div>
   <nav id="siteNav" aria-label="Partner navigation">
     <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme">☀ <span>Light mode</span></button>
+    <button class="btn-pwa-install" id="pwaInstallBtn" type="button" style="display:none" aria-label="Install LR Owner App">📲 <span>Install App</span></button>
     <div id="mainNavItems">
       <a class="nav" href="/" target="_blank" rel="noopener" style="text-decoration:none">↗ Customer Site</a>
       <button class="nav active" data-view="owner" id="ownerLink" type="button">Owner Dashboard</button>
@@ -3076,5 +3088,52 @@ if (ownerForgotForm) {
   };
 }
 
+
+// LR Owner PWA Service Worker Registration & Installation Handling
+let deferredPwaPrompt = null;
+const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+const isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw-owner.js', { scope: '/owner' })
+      .then(reg => {
+        // Safe static asset service worker registered
+      })
+      .catch(err => {
+        console.warn('[PWA] Service worker registration error:', err);
+      });
+  });
+}
+
+if (!isRunningStandalone) {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPwaPrompt = e;
+    if (pwaInstallBtn) {
+      pwaInstallBtn.style.display = 'inline-flex';
+    }
+  });
+
+  if (pwaInstallBtn) {
+    pwaInstallBtn.onclick = async () => {
+      if (!deferredPwaPrompt) return;
+      deferredPwaPrompt.prompt();
+      const choice = await deferredPwaPrompt.userChoice;
+      if (choice && choice.outcome === 'accepted') {
+        pwaInstallBtn.style.display = 'none';
+      }
+      deferredPwaPrompt = null;
+    };
+  }
+
+  window.addEventListener('appinstalled', () => {
+    deferredPwaPrompt = null;
+    if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+    if (typeof toast === 'function') {
+      toast('LR Owner installed to Home Screen ✓');
+    }
+  });
+}
 </script>
 </body></html>

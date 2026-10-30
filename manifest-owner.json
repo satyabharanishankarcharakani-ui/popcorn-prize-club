@@ -1,0 +1,48 @@
+{
+  "name": "LR Owner",
+  "short_name": "LR Owner",
+  "description": "LR Popcorn Prize Club — Business & Owner Management Portal",
+  "start_url": "/owner",
+  "scope": "/owner",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c0d0e",
+  "theme_color": "#0c0d0e",
+  "icons": [
+    {
+      "src": "/owner-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/owner-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/owner-icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/owner-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/owner-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ]
+}

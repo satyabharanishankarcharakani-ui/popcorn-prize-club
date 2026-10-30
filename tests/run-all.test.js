@@ -661,7 +661,57 @@ async function runAllTests() {
     console.log('✓ [12/12] robots.txt, sitemap.xml, and vercel.json security headers validation passed.');
   }
 
-  console.log('\nALL 12 TEST SUITES PASSED WITH ZERO ERRORS! ✓');
+  // 13. DEDICATED LR OWNER PWA (MANIFEST, SERVICE WORKER, ICONS & ZERO-API CACHING)
+  {
+    const manifestPath = path.join(__dirname, '..', 'manifest-owner.json');
+    assert.ok(fs.existsSync(manifestPath), 'manifest-owner.json must exist');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+
+    assert.strictEqual(manifest.name, 'LR Owner', 'PWA name must be "LR Owner"');
+    assert.strictEqual(manifest.short_name, 'LR Owner', 'PWA short_name must be "LR Owner"');
+    assert.strictEqual(manifest.start_url, '/owner', 'PWA start_url must be "/owner" (relative production route)');
+    assert.strictEqual(manifest.display, 'standalone', 'PWA must open in standalone mode');
+    assert.strictEqual(manifest.background_color, '#0c0d0e', 'Background color must match LR dark theme');
+
+    // Verify icons exist on disk
+    const requiredIcons = [
+      'owner-icon-192.png',
+      'owner-icon-512.png',
+      'owner-icon-maskable-192.png',
+      'owner-icon-maskable-512.png',
+      'owner-icon.svg',
+    ];
+    for (const iconFile of requiredIcons) {
+      assert.ok(fs.existsSync(path.join(__dirname, '..', iconFile)), `Icon ${iconFile} must exist`);
+    }
+
+    // Verify Service Worker security guardrails
+    const swPath = path.join(__dirname, '..', 'sw-owner.js');
+    assert.ok(fs.existsSync(swPath), 'sw-owner.js must exist');
+    const swContent = fs.readFileSync(swPath, 'utf8');
+
+    assert.ok(
+      swContent.includes("url.pathname.startsWith('/api/')"),
+      'Service worker must explicitly bypass cache for all /api/ private routes'
+    );
+    assert.ok(
+      swContent.includes("req.method !== 'GET'"),
+      'Service worker must only handle GET requests and bypass all mutations'
+    );
+
+    // Verify separation of concerns between Owner PWA and Customer Website
+    const ownerHtml = fs.readFileSync(path.join(__dirname, '..', 'owner.html'), 'utf8');
+    const customerHtml = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+
+    assert.ok(ownerHtml.includes('manifest-owner.json'), 'owner.html must link to manifest-owner.json');
+    assert.ok(ownerHtml.includes('sw-owner.js'), 'owner.html must register sw-owner.js');
+    assert.ok(!customerHtml.includes('manifest-owner.json'), 'Customer index.html must NOT link to owner manifest');
+    assert.ok(!customerHtml.includes('sw-owner.js'), 'Customer index.html must NOT register owner service worker');
+
+    console.log('✓ [13/13] Dedicated LR Owner PWA, manifest, icons, static service worker, and API cache guards passed.');
+  }
+
+  console.log('\nALL 13 TEST SUITES PASSED WITH ZERO ERRORS! ✓');
 }
 
 runAllTests().catch(err => {
